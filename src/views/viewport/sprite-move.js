@@ -63,16 +63,10 @@ function mountMoveDecisionRange(app, sprite, decision_range) {
 	const graphics = new Graphics();
 	graphics.rect(range.bounds.minX, range.bounds.minY, range.width, range.height);
 	graphics.fill('#0000')
-	//隐藏边框
 	// graphics.stroke({width: 2,color: '#00000011'});
 	graphics.interactive = true
-	// 添加鼠标样式
-	graphics.on('mousemove', (event) => {
-		app.view.style.cursor = 'move'
-	});
-	graphics.on('mouseout', (event) => {
-		app.view.style.cursor = ''
-	});
+	graphics.on('mousemove', (event) => app.view.style.cursor = 'move');
+	graphics.on('mouseout', (event) => app.view.style.cursor = 'move');
 	sprite.addChild(graphics);
 }
 

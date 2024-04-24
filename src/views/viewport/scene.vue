@@ -38,16 +38,16 @@
 
 	const playScene = () => {
 		playState.value = true
-		video.baseTexture.resource.play()
+		video.source.resource.play()
 	}
 
 	const pauseScene = () => {
 		playState.value = false
-		video.baseTexture.resource.pause()
+		video.source.resource.pause()
 	}
 
 	const load = () => {
-		video.baseTexture.resource.currentTime = currentTime.value
+		video.source.resource.currentTime = currentTime.value
 	}
 
 	const run = () => {
@@ -68,12 +68,12 @@
 	}
 	const loadVideo = async () => {
 		video = await Assets.load('/assets/video/xgplayer.mp4');
-		totalTime.value = video.baseTexture.resource.duration
+		totalTime.value = video.source.resource.duration
 		const videoSprite = new Sprite(video);
 		videoSprite.anchor.set(0.5);
 		videoSprite.x = app.screen.width / 2;
 		videoSprite.y = app.screen.height / 2;
-		video.baseTexture.resource.currentTime = currentTime.value
+		video.source.resource.currentTime = currentTime.value
 		videoSprite.interactive = true
 		app.stage.addChild(videoSprite);
 		pauseScene()

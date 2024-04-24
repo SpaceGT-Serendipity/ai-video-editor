@@ -14,8 +14,7 @@ export function mountScale(app, sprite) {
 	app.stage.on('mousedown', (event) => {
 		const point = event.data.getLocalPosition(sprite)
 		if (sprite.containsPoint(point) &&
-			Math.abs(point.x) > range.width / 2 &&
-			Math.abs(point.y) > range.height / 2) {
+			(Math.abs(point.x) > range.width / 2 || Math.abs(point.y) > range.height / 2)) {
 			isResizing = true;
 			startDistance = Math.sqrt(Math.sqrt(Math.pow(point.x, 2)) +
 				Math.sqrt(Math.pow(point.y, 2)));
@@ -30,42 +29,97 @@ export function mountScale(app, sprite) {
 			const scale = currentDistance / startDistance;
 			sprite.scale.x = scale
 			sprite.scale.y = scale;
+			sprite.alpha = 0.7;
 		}
 	});
 	app.stage.on('mouseup', (event) => {
 		isResizing = false;
 		startDistance = 0;
+		sprite.alpha = 1;
 	});
 }
 
 export function unmountScale(app, sprite) {
-
+	sprite.off('mousedown')
+	sprite.off('mousemove')
+	sprite.off('mouseup')
+	sprite.alpha = 1;
+	unmountScaleDecisionRange(sprite)
 }
-
-
 
 /**
  * 添加鼠标样式
  */
 function mountScaleDecisionRange(app, sprite, decision_range) {
 	const range = getRange(sprite, decision_range)
-	const graphics = new Graphics();
-	graphics.rect(range.bounds.minX, range.bounds.minY, range.width, range.height);
-	graphics.fill('#0000')
-	//隐藏边框
-	graphics.stroke({
-		width: 2,
-		color: '#00000011'
-	});
-	graphics.interactive = true
-	// 添加鼠标样式
-	graphics.on('mousemove', (event) => {
-		app.view.style.cursor = 'move'
-	});
-	graphics.on('mouseout', (event) => {
-		app.view.style.cursor = ''
-	});
-	sprite.addChild(graphics);
+	const areas = [{
+		label: 'left-top',
+		x: range.maxBounds.minX,
+		y: range.maxBounds.minY,
+		width: decision_range,
+		height: decision_range,
+		cursor: 'nw-resize'
+	}, {
+		label: 'top',
+		x: range.minBounds.minX,
+		y: range.maxBounds.minY,
+		width: range.width,
+		height: decision_range,
+		cursor: 'n-resize'
+	}, {
+		label: 'right-top',
+		x: range.minBounds.maxX,
+		y: range.maxBounds.minY,
+		width: decision_range,
+		height: decision_range,
+		cursor: 'ne-resize'
+	}, {
+		label: 'right',
+		x: range.minBounds.maxX,
+		y: range.minBounds.minY,
+		width: decision_range,
+		height: range.height,
+		cursor: 'e-resize'
+	}, {
+		label: 'right-bottom',
+		x: range.minBounds.maxX,
+		y: range.minBounds.maxY,
+		width: decision_range,
+		height: decision_range,
+		cursor: 'nw-resize'
+	}, {
+		label: 'bottom',
+		x: range.minBounds.minX,
+		y: range.minBounds.maxY,
+		width: range.width,
+		height: decision_range,
+		cursor: 'n-resize'
+	}, {
+		label: 'left-bottom',
+		x: range.maxBounds.minX,
+		y: range.minBounds.maxY,
+		width: decision_range,
+		height: decision_range,
+		cursor: 'ne-resize'
+	}, {
+		label: 'left',
+		x: range.maxBounds.minX,
+		y: range.minBounds.minY,
+		width: decision_range,
+		height: range.height,
+		cursor: 'e-resize'
+	}]
+	areas.forEach(area => {
+		const graphics = new Graphics();
+		graphics.interactive = true
+		graphics.rect(area.x, area.y, area.width, area.height);
+		graphics.fill('#0000')
+		// graphics.stroke({width: 2,color: '#00000011'});
+		graphics.on('mousemove', (event) => app.view.style.cursor = area.cursor);
+		graphics.on('mouseout', (event) => app.view.style.cursor = '');
+		sprite.addChild(graphics);
+	})
+
 }
 
 function unmountScaleDecisionRange(sprite) {
@@ -74,7 +128,6 @@ function unmountScaleDecisionRange(sprite) {
 	})
 }
 
-
 /**
  * @param decision_range 边缘距离
  */
@@ -82,11 +135,12 @@ function getRange(sprite, decision_range) {
 	return {
 		width: sprite.width - decision_range * 2,
 		height: sprite.height - decision_range * 2,
-		bounds: {
+		minBounds: {
 			maxX: sprite.bounds.maxX - decision_range,
 			maxY: sprite.bounds.maxY - decision_range,
 			minX: sprite.bounds.minX + decision_range,
 			minY: sprite.bounds.minY + decision_range
-		}
+		},
+		maxBounds: sprite.bounds
 	}
 }
