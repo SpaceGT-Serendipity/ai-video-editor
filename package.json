@@ -1,0 +1,26 @@
+{
+  "name": "ai-editor",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@pixi/sound": "^6.0.0",
+    "axios": "^1.6.8",
+    "bootstrap": "^5.3.3",
+    "element-plus": "^2.7.0",
+    "glightbox": "^3.3.0",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persist": "^1.0.0",
+    "vue": "^3.2.8",
+    "vue-i18n": "^9.10.2",
+    "vue-router": "^4.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.6.0",
+    "@vue/compiler-sfc": "^3.2.6",
+    "vite": "^2.5.2"
+  }
+}

@@ -1,0 +1,17 @@
+html {
+	--menu-hover-bg: #f0f0f0;
+	--menu-active-bg: #dee7ef;
+}
+
+html.dark {
+	/* 自定义深色背景颜色 */
+	--el-bg-color: #232329;
+	--el-border-color: #030303;
+	--el-text-color-primary: #c6c6ca;
+	--menu-hover-bg: #2E2E35;
+	--menu-active-bg: #060608;
+}
+
+html.dark .el-input {
+	--el-input-bg-color: #1B1B1D;
+}
