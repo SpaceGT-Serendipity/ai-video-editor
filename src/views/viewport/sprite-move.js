@@ -5,7 +5,6 @@ const {
 } = PIXI;
 
 export function mountMove(app, sprite) {
-	sprite.anchor.set(0.5);
 	let dragging = false;
 	const decision_range = 15; // 从里到外判定范文 边距像素
 	const range = getRange(sprite, decision_range)

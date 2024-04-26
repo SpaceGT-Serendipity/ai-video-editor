@@ -1,54 +1,78 @@
 <template>
-	<el-container>
-		<el-header>
-			<!-- 头部 -->
-			<Header />
-		</el-header>
+	<!-- <el-tour v-model="open"> -->
 		<el-container>
-			<el-aside>
-				<!-- 资源库菜单 -->
-				<Menu />
-			</el-aside>
-			<el-container class="workbench">
-				<el-container class="interior">
-					<!-- 资源库 -->
-					<ResourceLibrary />
-					<!-- 视口 -->
-					<Viewport />
-					<!-- 属性面板 -->
-					<PropertiesPanel />
+			<!-- <el-tour-step :target="ref1?.$el" title="Upload File"> -->
+				<el-header>
+					<!-- 头部 -->
+					<Header />
+				</el-header>
+			<!-- </el-tour-step> -->
+			<el-container>
+				<el-aside>
+					<!-- 资源库菜单 -->
+					<Menu @click="resourceRef.load($event)" />
+				</el-aside>
+				<el-container class="workbench">
+					<el-container ref="interiorRef" class="interior">
+						<!-- 资源库 -->
+						<Resource ref="resourceRef" />
+						<WindowResize direction="row"></WindowResize>
+						<div class="viewport-group">
+							<!-- 视口 -->
+							<Viewport />
+							<WindowResize direction="row"></WindowResize>
+							<!-- 属性面板 -->
+							<PropertiesPanel />
+						</div>
+					</el-container>
+					<WindowResize direction="column"></WindowResize>
+					<!-- 轨道 -->
+					<Track ref="trackRef" />
 				</el-container>
-				<!-- 轨道 -->
-				<Track />
 			</el-container>
+			<el-footer>
+				<!-- 底部信息 -->
+				<Footer></Footer>
+			</el-footer>
 		</el-container>
-		<el-footer>
-			<!-- 底部信息 -->
-			<Footer></Footer>
-		</el-footer>
-	</el-container>
+	<!-- </el-tour> -->
 </template>
 
 <script setup>
+	import WindowResize from '../components/window-resize.vue'
 	import Header from './header.vue'
 	import Footer from './footer.vue'
 	import Menu from './menu/index.vue'
-	import ResourceLibrary from './resource-library.vue'
+	import Resource from './resource/index.vue'
 	import Viewport from './viewport/index.vue'
 	import PropertiesPanel from './properties-panel.vue'
-	import Track from './track.vue'
+	import Track from './track/index.vue'
 	import {
-		ref
+		ref,
+		onMounted
 	} from 'vue'
+
+	const ref1 = ref()
+
+	const resourceRef = ref()
+	const interiorRef = ref()
+	const trackRef = ref()
+	const open = ref(true)
+
+	const handleRsize = (distance) => {
+		console.log(distance)
+	}
 </script>
 
 <style scoped>
 	.el-container {
 		height: 100%;
+		overflow: hidden;
 	}
 
 	.el-header {
-		border-bottom: 2px solid var(--el-border-color);
+		border-bottom: 1px solid var(--el-border-color);
+		box-shadow: var(--el-box-shadow-light);
 	}
 
 	.el-header {
@@ -58,7 +82,8 @@
 	}
 
 	.el-footer {
-		border-top: 2px solid var(--el-border-color);
+		border-top: 1px solid var(--el-border-color);
+		box-shadow: var(--el-box-shadow-light);
 		height: 40px;
 	}
 
@@ -73,28 +98,41 @@
 		justify-content: space-between;
 	}
 
+	.track {
+		height: 35%;
+		min-height: 200px;
+	}
+
 	.interior {
 		display: flex;
 		justify-content: space-between;
-		flex: 65
+		height: 65%;
+		min-height: 300px;
+
 	}
 
-	.interior .resource-library {
-		flex: 20;
+	.interior .resource {
+		width: 25%;
+		min-width: 300px;
+		max-width: 50%;
 	}
 
-	.interior .viewport {
-		border-left: 2px solid var(--el-border-color);
-		border-right: 2px solid var(--el-border-color);
-		flex: 60;
+	.interior .viewport-group {
+		display: flex;
+		width: 75%;
+		min-width: 800px;
+		flex: 1 1 0%;
 	}
 
-	.interior .properties-panel {
-		flex: 20;
+	.interior .viewport-group .viewport {
+		width: 70%;
+		min-width: 500px;
+		flex: 1 1 0%;
 	}
 
-	.track {
-		border-top: 2px solid var(--el-border-color);
-		flex: 35
+	.interior .viewport-group .properties-panel {
+		width: 30%;
+		min-width: 300px;
+		max-width: 600px;
 	}
 </style>

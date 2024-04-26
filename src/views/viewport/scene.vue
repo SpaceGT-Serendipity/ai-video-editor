@@ -14,7 +14,6 @@
 		Application,
 		Assets,
 		Container,
-		FillGradient,
 		Sprite,
 		Text,
 		TextStyle
@@ -23,39 +22,35 @@
 		mountMove,
 		unmountMove
 	} from './sprite-move.js'
-	
+
 	import {
 		mountScale,
 		unmountScale
 	} from './sprite-scale.js'
 
+	const emit = defineEmits(['load'])
 	const app = new Application();
-	const playState = ref(false)
-	const currentTime = ref(0)
-	const totalTime = ref(0)
 
-	let video = null;
+	// const playScene = () => {
+	// 	playState.value = true
+	// 	video.source.resource.play()
+	// }
 
-	const playScene = () => {
-		playState.value = true
-		video.source.resource.play()
-	}
+	// const pauseScene = () => {
+	// 	playState.value = false
+	// 	video.source.resource.pause()
+	// }
 
-	const pauseScene = () => {
-		playState.value = false
-		video.source.resource.pause()
-	}
+	// const load = () => {
+	// 	video.source.resource.currentTime = currentTime.value
+	// }
 
-	const load = () => {
-		video.source.resource.currentTime = currentTime.value
-	}
-
-	const run = () => {
-		const sound = Sound.from('/assets/audio/jin.mp3')
-		sound.play({
-			start: currentTime.value
-		});
-	}
+	// const run = () => {
+	// 	const sound = Sound.from('/assets/audio/jin.mp3')
+	// 	sound.play({
+	// 		start: currentTime.value
+	// 	});
+	// }
 
 	const loadImg = async () => {
 		const image = await Assets.load('/assets/image/1.png');
@@ -67,18 +62,15 @@
 		app.stage.addChild(sprite);
 	}
 	const loadVideo = async () => {
-		video = await Assets.load('/assets/video/xgplayer.mp4');
-		totalTime.value = video.source.resource.duration
-		const videoSprite = new Sprite(video);
-		videoSprite.anchor.set(0.5);
-		videoSprite.x = app.screen.width / 2;
-		videoSprite.y = app.screen.height / 2;
-		video.source.resource.currentTime = currentTime.value
-		videoSprite.interactive = true
-		app.stage.addChild(videoSprite);
-		pauseScene()
-		mountMove(app, videoSprite)
-		mountScale(app, videoSprite)
+		const video = await Assets.load('/assets/video/xgplayer.mp4');
+		const sprite = new Sprite(video);
+		sprite.x = app.screen.width / 2;
+		sprite.y = app.screen.height / 2;
+		sprite.anchor.set(0.5);
+		sprite.interactive = true
+		app.stage.addChild(sprite);
+		mountMove(app, sprite)
+		mountScale(app, sprite)
 	}
 	const loadBackground = async () => {
 		const background = await Assets.load('/assets/image/background.jpg');
@@ -108,15 +100,23 @@
 	onMounted(async () => {
 		const scene = document.querySelector('.scene')
 		await app.init({
-			resizeTo: scene,
+			// resizeTo: scene,
+			width: 1920,
+			height: 1080,
 			background: '#000000'
 		});
 		app.stage.interactive = true
 		scene.appendChild(app.canvas);
 		await loadBackground()
 		await loadBackgroundText()
-		await loadImg()
-		await loadVideo()
+		// await loadImg()
+		// await loadVideo()
+		emit('load')
+	})
+
+	defineExpose({
+		loadImg,
+		loadVideo
 	})
 </script>
 

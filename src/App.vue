@@ -1,11 +1,40 @@
 <script setup>
+	import ScreenSizeTips from './components/screen-size-tips.vue'
+	import BoundaryTips from './components/boundary-tips.vue'
+	import {
+		ref,
+		onMounted
+	} from 'vue'
+
+	const screenSizeTips = ref(false)
+	const boundaryTipsRight = ref(false)
+	const boundaryTipsBottom = ref(false)
+
+	const updateScreenSizeTips = () => {
+		if (window.innerWidth < 800 || window.innerHeight < 600) screenSizeTips.value = true
+		else screenSizeTips.value = false
+	}
+	const updateBoundaryTips = () => {
+		const app = document.querySelector('#app')
+		if (app.clientWidth > window.innerWidth + 20) boundaryTipsRight.value = true
+		else boundaryTipsRight.value = false
+		if (app.clientHeight > window.innerHeight + 20) boundaryTipsBottom.value = true
+		else boundaryTipsBottom.value = false
+	}
+	updateScreenSizeTips()
+	updateBoundaryTips()
+	window.addEventListener('resize', updateScreenSizeTips)
+	window.addEventListener('resize', updateBoundaryTips)
 </script>
 
 <template>
-	<router-view></router-view>
+	<BoundaryTips :right="boundaryTipsRight" :bottom="boundaryTipsBottom"></BoundaryTips>
+	<ScreenSizeTips v-if="screenSizeTips"></ScreenSizeTips>
+	<router-view v-else></router-view>
 </template>
 
 <style>
+	@import 'glightbox/dist/css/glightbox.min.css';
 	html {
 		background-color: var(--el-bg-color);
 	}
@@ -16,7 +45,10 @@
 	}
 
 	#app {
-		height: 100vh;
 		width: 100vw;
+		height: 100vh;
+		min-width: 1200px;
+		min-height: 700px;
+		user-select: none;
 	}
 </style>

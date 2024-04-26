@@ -5,7 +5,6 @@ const {
 } = PIXI;
 
 export function mountScale(app, sprite) {
-	sprite.anchor.set(0.5);
 	let isResizing = false;
 	let startDistance = 0;
 	const decision_range = 15; // 从外到里判定范文 边距像素
@@ -16,20 +15,24 @@ export function mountScale(app, sprite) {
 		if (sprite.containsPoint(point) &&
 			(Math.abs(point.x) > range.width / 2 || Math.abs(point.y) > range.height / 2)) {
 			isResizing = true;
-			startDistance = Math.sqrt(Math.sqrt(Math.pow(point.x, 2)) +
-				Math.sqrt(Math.pow(point.y, 2)));
-			startDistance = startDistance / sprite.scale.x
+			const x = point.x * sprite.scale.x
+			const y = point.y * sprite.scale.y
+			startDistance = Math.sqrt(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
+			startDistance = startDistance / (sprite.scale.x)
 		}
 	});
 	app.stage.on('mousemove', (event) => {
 		if (isResizing) {
 			const point = event.data.getLocalPosition(sprite)
-			const currentDistance = Math.sqrt(Math.sqrt(Math.pow(point.x, 2)) +
-				Math.sqrt(Math.pow(point.y, 2)));
+			const x = point.x * sprite.scale.x
+			const y = point.y * sprite.scale.y
+			let currentDistance = Math.sqrt(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
 			const scale = currentDistance / startDistance;
-			sprite.scale.x = scale
-			sprite.scale.y = scale;
-			sprite.alpha = 0.7;
+			if (scale > 0.3) {
+				sprite.scale.x = scale;
+				sprite.scale.y = scale;
+				sprite.alpha = 0.7;
+			}
 		}
 	});
 	app.stage.on('mouseup', (event) => {
@@ -37,6 +40,11 @@ export function mountScale(app, sprite) {
 		startDistance = 0;
 		sprite.alpha = 1;
 	});
+	app.view.addEventListener('mouseout', () => {
+		isResizing = false;
+		startDistance = 0;
+		sprite.alpha = 1;
+	})
 }
 
 export function unmountScale(app, sprite) {

@@ -1,47 +1,53 @@
 <template>
-	<div class="menu">
-		<Item v-for="item in menuList" :label="item.label" :active="active==item.label" @click="active=item.label">
-			{{item.title}}
-		</Item>
-	</div>
+	<el-scrollbar height="100%">
+		<div class="menu">
+			<Item v-for="item in menuList" :label="item.label" :active="active==item.label" @click="onClick(item)">
+				{{item.title}}
+			</Item>
+		</div>
+	</el-scrollbar>
 </template>
 
 <script setup>
 	import Item from './item.vue'
 	import {
-		ref
+		ref,
+		onMounted
 	} from 'vue'
 
+	const emits = defineEmits(['click'])
 	const menuList = [{
-		path: '',
 		label: 'template',
 		title: '模板'
 	}, {
-		path: '',
 		label: 'figure',
 		title: '数字人'
 	}, {
-		path: '',
 		label: 'text',
 		title: '文本'
 	}, {
-		path: '',
 		label: 'subtitle',
 		title: '字幕'
 	}, {
-		path: '',
 		label: 'image',
 		title: '图片'
 	}, {
-		path: '',
 		label: 'bgm',
 		title: '背景音乐'
 	}, {
-		path: '',
 		label: 'video',
 		title: '视频'
 	}]
 	const active = ref('template')
+
+	const onClick = (menu) => {
+		active.value = menu.label
+		emits('click', menu)
+	}
+
+	onMounted(() => {
+		onClick(menuList[4])
+	})
 </script>
 
 <style scoped>
