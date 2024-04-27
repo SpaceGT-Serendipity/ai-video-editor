@@ -1,5 +1,5 @@
 <template>
-	<div class="trackline">
+	<div class="controller layer">
 		<el-button link size="small">
 			<el-icon size="16px">
 				<View />
@@ -22,7 +22,7 @@
 </script>
 
 <style scoped>
-	.trackline {
+	.controller.layer {
 		display: flex;
 	}
 </style>

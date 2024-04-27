@@ -1,72 +1,74 @@
 <template>
 	<div class="track">
-		<toolbar></toolbar>
+		<toolbar v-if="haveResources"></toolbar>
 		<div class="view">
-			<div class="track-group">
-				<trackline v-for="i in 4"></trackline>
+			<div class="controller-group" v-if="haveResources">
+				<controller-layer v-for="i in 4"></controller-layer>
 			</div>
 			<div class="timeline-group">
-				<timeline-ruler></timeline-ruler>
-				<timeline v-for="i in 3"></timeline>
+				<timeline-ruler v-if="haveResources"></timeline-ruler>
+				<div class="timeline-layers">
+					<div v-if="haveResources">
+						<timeline-layer v-for="i in 4"></timeline-layer>
+					</div>
+					<el-empty v-else :image-size="80" description="暂无内容,点击左侧资源栏素材到此处" />
+				</div>
 			</div>
 		</div>
-		<!-- 		<VueDraggable ref="el" v-model="list">
-			<div v-for="item in list" :key="item.id">
-				{{ item.name }}
-			</div>
-		</VueDraggable> -->
 	</div>
 </template>
 
 <script setup>
 	import Toolbar from './toolbar.vue'
-	import Trackline from './trackline.vue'
-	import Timeline from './timeline.vue'
-	import TimelineRuler from './timeline-ruler.vue'
+	import ControllerLayer from './controller/layer.vue'
+	import TimelineLayer from './timeline/layer.vue'
+	import TimelineRuler from './timeline/ruler.vue'
 	import {
 		ref
 	} from 'vue'
-	import {
-		VueDraggable
-	} from 'vue-draggable-plus'
 
-	const list = ref([{
-			name: 'Joao',
-			id: 1
-		},
-		{
-			name: 'Jean',
-			id: 2
-		},
-		{
-			name: 'Johanna',
-			id: 3
-		},
-		{
-			name: 'Juan',
-			id: 4
-		}
-	])
+	const haveResources = ref(true)
 </script>
 
 <style scoped>
 	.track {
-		--timeline-ruler-height: 40px;
-	}
-
-	.view {
+		--track-timeline-ruler-height: 40px;
+		--track-layer: 50px;
 		display: flex;
+		flex-direction: column;
 	}
 
-	.track-group {
+	.track .view {
+		display: flex;
+		height: 100%;
+	}
+
+	.track .el-empty {
+		height: calc(100% - 40px);
+		margin: 20px;
+		background-color: #2e2e35;
+		border: 1px dashed #505057;
+		border-radius: 4px;
+	}
+
+	.track .layer {
+		height: var(--track-layer);
+		margin-top: 10px;
+	}
+
+	.track .layer:first-child {
+		margin-top: 0px;
+	}
+
+	.controller-group {
 		flex: 0 0 100px;
 		display: flex;
 		flex-direction: column;
-		padding-top: var(--timeline-ruler-height);
+		padding-top: var(--track-timeline-ruler-height);
+		border-right: 1px solid var(--el-border-color);
 	}
 
-	.trackline {
-		height: 50px;
+	.controller-group .controller.layer {
 		padding: 0 20px;
 	}
 
@@ -74,11 +76,14 @@
 		flex: 1 1 0%;
 		display: flex;
 		flex-direction: column;
+		overflow: hidden;
 	}
 
+	.timeline-group .timeline.ruler {
+		height: var(--track-timeline-ruler-height);
+	}
 
-	.timeline-ruler {
-		height: var(--timeline-ruler-height);
-		background-color: #666;
+	.timeline-group .timeline-layers {
+		flex: 1 1 0%;
 	}
 </style>
