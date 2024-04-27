@@ -31,10 +31,13 @@
 	<BoundaryTips :right="boundaryTipsRight" :bottom="boundaryTipsBottom"></BoundaryTips>
 	<ScreenSizeTips v-if="screenSizeTips"></ScreenSizeTips>
 	<router-view v-else></router-view>
+	
 </template>
 
 <style>
+	@import "vue-draggable-resizable/style.css";
 	@import 'glightbox/dist/css/glightbox.min.css';
+
 	html {
 		background-color: var(--el-bg-color);
 	}

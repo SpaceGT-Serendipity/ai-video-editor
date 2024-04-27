@@ -3,16 +3,14 @@
 		<toolbar v-if="haveResources"></toolbar>
 		<div class="view">
 			<div class="controller-group" v-if="haveResources">
-				<controller-layer v-for="i in 4"></controller-layer>
+				<controller-layer v-for="i in 1"></controller-layer>
 			</div>
 			<div class="timeline-group">
 				<timeline-ruler v-if="haveResources"></timeline-ruler>
-				<div class="timeline-layers">
-					<div v-if="haveResources">
-						<timeline-layer v-for="i in 4"></timeline-layer>
-					</div>
-					<el-empty v-else :image-size="80" description="暂无内容,点击左侧资源栏素材到此处" />
+				<div v-if="haveResources" class="timeline-layers">
+					<timeline-layer v-for="i in 1"></timeline-layer>
 				</div>
+				<el-empty v-else :image-size="80" description="暂无内容,点击左侧资源栏素材到此处" />
 			</div>
 		</div>
 	</div>
@@ -65,7 +63,8 @@
 		display: flex;
 		flex-direction: column;
 		padding-top: var(--track-timeline-ruler-height);
-		border-right: 1px solid var(--el-border-color);
+		border-right: 1px solid var(--el-border-color-lighter);
+		
 	}
 
 	.controller-group .controller.layer {

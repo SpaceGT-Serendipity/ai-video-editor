@@ -2,6 +2,7 @@ import {
 	createApp
 } from 'vue'
 import App from './App.vue'
+import Test from './Test.vue'
 // element+ UI
 import ElementPlus from 'element-plus'
 import * as ElIconModules from '@element-plus/icons-vue'
@@ -21,20 +22,18 @@ import {
 import * as freeBrandsSvgIcons from '@fortawesome/free-brands-svg-icons'
 import * as freeRegularSvgIcons from '@fortawesome/free-regular-svg-icons'
 import * as freeSolidSvgIcons from '@fortawesome/free-solid-svg-icons'
+// 拖拽可修改大小
+import VueDraggableResizable from 'vue-draggable-resizable'
 
 const app = createApp(App)
 app.use(ElementPlus, {
 	locale: zhCn
 })
 app.use(router)
-app.mount('#app')
 
-for (let key in ElIconModules) {
-	app.component(key, ElIconModules[key])
-}
-
+for (let key in ElIconModules) app.component(key, ElIconModules[key])
 app.component('font-awesome-icon', FontAwesomeIcon)
-
+app.component('vue-draggable-resizable', VueDraggableResizable)
 library.add(
 	freeSolidSvgIcons.faExpand,
 	freeSolidSvgIcons.faCompress,
@@ -42,3 +41,5 @@ library.add(
 	freeSolidSvgIcons.faArrowRotateRight,
 	freeSolidSvgIcons.faICursor,
 )
+
+app.mount('#app')

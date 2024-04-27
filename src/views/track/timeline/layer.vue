@@ -1,10 +1,7 @@
 <template>
 	<div class="timeline layer">
-		<VueDraggable class="timeline draggable" ref="el" v-model="list">
-			<layer-unit v-for="item in list" :key="item.id" :name="item.name" 
-			:width="item.width" :color="item.color">
-			</layer-unit>
-		</VueDraggable>
+		<layer-unit :x="0" :w="200"></layer-unit>
+		<layer-unit :x="100" :w="400"></layer-unit>
 	</div>
 </template>
 
@@ -45,10 +42,8 @@
 </script>
 
 <style scoped>
-	.timeline.layer {}
-
-	.timeline .draggable {
-		display: flex;
-		height: 100%;
+	.timeline.layer {
+		position: relative;
+		background-color: var(--layer-bg);
 	}
 </style>

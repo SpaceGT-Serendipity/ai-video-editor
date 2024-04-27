@@ -2,6 +2,9 @@ html {
 	--menu-hover-bg: #f0f0f0;
 	--menu-active-bg: #dee7ef;
 	--track-toolbar-bg: #f4f4f5;
+	--layer-bg: #F5F5F3;
+	--layer-unit-bg: #86edff33;
+	--layer-unit-boder-color: rgb(17, 17, 17, 0.3);
 }
 
 html.dark {
@@ -12,6 +15,9 @@ html.dark {
 	--menu-hover-bg: #2E2E35;
 	--menu-active-bg: #060608;
 	--track-toolbar-bg: #29292D;
+	--layer-bg: #28282E;
+	--layer-unit-bg: #2A4A50;
+	--layer-unit-boder-color: rgb(238, 238, 238, 0.3);
 }
 
 html.dark .el-input {
