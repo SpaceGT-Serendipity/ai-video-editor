@@ -5,6 +5,7 @@ html {
 	--layer-bg: #F5F5F3;
 	--layer-unit-bg: #86edff33;
 	--layer-unit-boder-color: rgb(17, 17, 17, 0.3);
+	--layer-unit-handle-bg: #96969680;
 }
 
 html.dark {
@@ -18,6 +19,7 @@ html.dark {
 	--layer-bg: #28282E;
 	--layer-unit-bg: #2A4A50;
 	--layer-unit-boder-color: rgb(238, 238, 238, 0.3);
+	--layer-unit-handle-bg: #fafafa80;
 }
 
 html.dark .el-input {

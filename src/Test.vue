@@ -1,27 +1,86 @@
-<script setup>
-	const classNameActive = 'my-active-class'
-</script>
-
 <template>
-	<vue-draggable-resizable :class-name-active="classNameActive" class-name="my-class">
-		<p>You can provide a default class name for the component when it's active using the
-			<b>class-name-active</b> prop.
-		</p>
-	</vue-draggable-resizable>
+	<div class="flex">
+		<div class="draggable" v-for="(item,index) in allList">
+			<vue-draggable-resizable v-for="(item2,index2) in allList[index]" :axis="'x'" :x="index2 * 300" :h="40"
+				:key="item2.id" class="cursor-move">
+				{{ item2.name }}
+			</vue-draggable-resizable>
+		</div>
+	</div>
 </template>
-<style>
-	.my-class {
-		background-color: green;
-		border: 1px solid red;
-		-webkit-transition: background-color 200ms linear;
-		-ms-transition: background-color 200ms linear;
-		transition: background-color 200ms linear;
+
+<script setup>
+	import {
+		ref
+	} from 'vue'
+	import {
+		VueDraggable
+	} from 'vue-draggable-plus'
+
+	const allList = ref([
+		[{
+				name: 'Joao',
+				id: '1'
+			},
+			{
+				name: 'Jean',
+				id: '2'
+			},
+			{
+				name: 'Johanna',
+				id: '3'
+			},
+			{
+				name: 'Juan',
+				id: '4'
+			}
+		],
+		[{
+				name: '2-Joao',
+				id: '2-1'
+			},
+			{
+				name: '2-Jean',
+				id: '2-2'
+			},
+			{
+				name: '2-Johanna',
+				id: '2-3'
+			},
+			{
+				name: '2-Juan',
+				id: '2-4'
+			}
+		]
+	])
+
+	function onUpdate() {
+		console.log('update')
 	}
 
-	.my-active-class {
-		border: 1px solid black;
-		-webkit-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-		-moz-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-		box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+	function onAdd() {
+		console.log('add')
+	}
+
+	function remove() {
+		console.log('remove')
+	}
+</script>
+
+<style scoped>
+	.flex {
+		background-color: #fff;
+		color: #000000;
+		display: flex;
+		flex-direction: column;
+		gap: 50px;
+		height: 100%;
+		text-align: center;
+	}
+
+	.draggable {
+		width: 100%;
+		height: 50px;
+		background-color: #999;
 	}
 </style>

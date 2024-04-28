@@ -3,13 +3,11 @@
 		<toolbar v-if="haveResources"></toolbar>
 		<div class="view">
 			<div class="controller-group" v-if="haveResources">
-				<controller-layer v-for="i in 1"></controller-layer>
+				<controller-layer v-for="i in 2"></controller-layer>
 			</div>
 			<div class="timeline-group">
 				<timeline-ruler v-if="haveResources"></timeline-ruler>
-				<div v-if="haveResources" class="timeline-layers">
-					<timeline-layer v-for="i in 1"></timeline-layer>
-				</div>
+				<timeline-layers v-if="haveResources"></timeline-layers>
 				<el-empty v-else :image-size="80" description="暂无内容,点击左侧资源栏素材到此处" />
 			</div>
 		</div>
@@ -19,8 +17,9 @@
 <script setup>
 	import Toolbar from './toolbar.vue'
 	import ControllerLayer from './controller/layer.vue'
-	import TimelineLayer from './timeline/layer.vue'
+	import TimelineLayers from './timeline/layers.vue'
 	import TimelineRuler from './timeline/ruler.vue'
+
 	import {
 		ref
 	} from 'vue'
@@ -49,26 +48,18 @@
 		border-radius: 4px;
 	}
 
-	.track .layer {
-		height: var(--track-layer);
-		margin-top: 10px;
-	}
-
-	.track .layer:first-child {
-		margin-top: 0px;
-	}
-
 	.controller-group {
 		flex: 0 0 100px;
 		display: flex;
 		flex-direction: column;
 		padding-top: var(--track-timeline-ruler-height);
 		border-right: 1px solid var(--el-border-color-lighter);
-		
+
 	}
 
 	.controller-group .controller.layer {
 		padding: 0 20px;
+		height: var(--track-layer);
 	}
 
 	.timeline-group {

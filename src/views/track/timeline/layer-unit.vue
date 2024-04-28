@@ -1,25 +1,27 @@
 <template>
-	<vue-draggable-resizable :class-name="config.className" :class-name-active="config.classNameActive"
+	<vue-draggable-resizable ref="unitRef" :class-name="config.className" :class-name-active="config.classNameActive"
 		:parent="config.parent" :prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x"
-		:y="config.y" :w="config.w" :h="config.h" :z="config.z" :handles="config.handles">
-		<p>
-			放一堆图片叠加。。。
-		</p>
-		<span class="select-left" data-v-eebe4d78="" style="cursor: ew-resize; width: 14px;"></span>
+		:y="config.y" :w="config.w" :h="config.h" :z="config.z" :min-width="config.minWidth" :handles="config.handles"
+		:on-drag="onDrag" :on-resize="onResize" @dragging="onDragging" @drag-stop="onDragStop">
+		{{title}}
 	</vue-draggable-resizable>
 </template>
 
 <script setup>
 	import {
-		ref
+		ref,
+		reactive,
+		onMounted
 	} from 'vue'
 
+	const unitRef = ref()
+	const emits = defineEmits(['onDrag'])
 	const props = defineProps({
+		title: String,
 		x: Number,
 		w: Number,
 	})
-
-	const config = {
+	const config = reactive({
 		className: 'layer-unit',
 		classNameActive: 'layer-unit-active',
 		parent: true, //移动范围限制到父标签中
@@ -29,8 +31,45 @@
 		y: 0, //初始y坐标
 		w: props.w || 0, //初始宽度
 		h: 50, //初始高度
-		z: 0, //z-index索引
+		z: 1, //z-index索引
+		minWidth: 50,
 		handles: ['mr', 'ml'], // 拖动手柄只保留左右
+	})
+	const position = reactive({
+		x: config.x,
+		y: config.y,
+		w: config.w,
+		h: config.h,
+		dragging: false
+	})
+
+	// 触碰检测
+	const onDrag = (x, y) => {
+		position.x = x;
+		position.y = y;
+		updateDragState()
+		return true
+	}
+	const onResize = (handle, x, y, width, height) => {
+		position.x = x;
+		position.y = y;
+		position.w = width;
+		position.h = height;
+	}
+	const onDragging = () => {
+		position.dragging = true
+		updateDragState()
+
+	}
+	const onDragStop = () => {
+		position.dragging = false
+		updateDragState()
+	}
+	const updateDragState = () => {
+		emits('onDrag', {
+			unit: unitRef.value,
+			position
+		})
 	}
 </script>
 
@@ -42,12 +81,12 @@
 		border: 2px dashed #fff0;
 		border-radius: 5px;
 		background-color: var(--layer-unit-bg);
-		transition: background-color 200ms linear;
 		overflow: hidden;
 	}
 
 	.layer-unit-active {
 		border: 2px solid var(--layer-unit-boder-color);
+		z-index: 99 !important;
 	}
 
 	.layer-unit-active:deep(.handle-ml) {
@@ -59,7 +98,7 @@
 		left: 0;
 		margin: 0;
 		border: none;
-		background-color: #fafafa80;
+		background-color: var(--layer-unit-handle-bg);
 		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAcAgMAAAA/7yYmAAAACVBMVEUAAAD///////9zeKVjAAAAAnRSTlMAtc2YijsAAAASSURBVAjXYwgIYFiwgJooIAAAih8hwSRVivkAAAAASUVORK5CYII=);
 		background-repeat: no-repeat;
 		background-position: center center;
@@ -75,7 +114,7 @@
 		right: 0;
 		margin: 0;
 		border: none;
-		background-color: #fafafa80;
+		background-color: var(--layer-unit-handle-bg);
 		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAcAgMAAAA/7yYmAAAACVBMVEUAAAD///////9zeKVjAAAAAnRSTlMAtc2YijsAAAASSURBVAjXYwgIYFiwgJooIAAAih8hwSRVivkAAAAASUVORK5CYII=);
 		background-repeat: no-repeat;
 		background-position: center center;
