@@ -1,25 +1,22 @@
 <template>
 	<div class="timeline-layers" ref="layersRef">
 		<timeline-layer v-for="(item,index) in layers" v-model="layers[index]" :drop-data="dragData" @on-drag="onDrag"
-			@on-drop="onDrop"></timeline-layer>
-		<div v-if="dragData">
-			{{dragData.position}}
-		</div>
+			@on-drop="onDrop($event,index)"></timeline-layer>
 		<div class="virtual-location" ref="virtualLocationRef">
-			<div v-if="dragData">
-				{{dragData.data}}
-			</div>
+			<div v-if="dragData"> {{dragData.data.name}} </div>
 		</div>
 	</div>
 </template>
 
 <script setup>
 	import TimelineLayer from './layer.vue'
-
 	import {
 		ref,
 		onMounted
 	} from 'vue'
+	import {
+		v4 as uuidv4
+	} from 'uuid'
 
 	const layersRef = ref()
 	const virtualLocationRef = ref()
@@ -53,25 +50,44 @@
 		dragData.value = event
 	}
 
-	const onDrop = (event) => {
-		const index = layers.value.findIndex(layer => layer.findIndex(unit => unit.id == event.data.id) > -1)
-		layers.value.splice(index, 0, [event.data]);
+	const onDrop = (event, newIndex) => {
+		if (event.dropMode == 'newLayer')
+			layers.value.splice(newIndex + 1, 0, [{
+				...event.data,
+				id: uuidv4()
+			}]);
+		if (event.dropMode == 'appendUnit')
+			layers.value[newIndex].push({
+				...event.data,
+				id: uuidv4()
+			})
+		for (let i = 0; i < layers.value.length; i++) {
+			const layer = layers.value[i];
+			for (let j = 0; j < layer.length; j++) {
+				const unit = layer[j];
+				if (unit.id == event.data.id) {
+					layer.splice(j, 1)
+				}
+			}
+			if (layer.length == 0) {
+				layers.value.splice(i, 1)
+			}
+		}
 	}
 	onMounted(() => {
 		let drop = false
 		const renderDrag = (event) => {
 			if (drop && dragData.value) {
 				if (dragData.value.position.dragging) {
-					const mouseX = event.pageX;
 					const mouseY = event.pageY;
 					const rect = dragData.value.unit.$el.getBoundingClientRect()
 					if (mouseY > (rect.top + dragData.value.position.h) ||
 						mouseY < (rect.top)) {
 						virtualLocationRef.value.style.display = 'initial';
-						virtualLocationRef.value.style.width = dragData.value.position.w + 'px';
-						virtualLocationRef.value.style.height = dragData.value.position.h + 'px';
+						virtualLocationRef.value.style.width = rect.width + 'px';
+						virtualLocationRef.value.style.height = rect.width.height + 'px';
+						virtualLocationRef.value.style.left = rect.left + 'px';
 						virtualLocationRef.value.style.top = (mouseY - dragData.value.position.h / 2) + 'px';
-						virtualLocationRef.value.style.left = (mouseX - dragData.value.position.w / 2) + 'px';
 						return;
 					}
 				}

@@ -15,7 +15,7 @@
 	} from 'vue'
 
 	const unitRef = ref()
-	const emits = defineEmits(['onDrag'])
+	const emits = defineEmits(['onDrag', 'onResize'])
 	const props = defineProps({
 		title: String,
 		x: Number,
@@ -48,6 +48,7 @@
 		position.x = x;
 		position.y = y;
 		updateDragState()
+		updateResizeState()
 		return true
 	}
 	const onResize = (handle, x, y, width, height) => {
@@ -55,6 +56,7 @@
 		position.y = y;
 		position.w = width;
 		position.h = height;
+		updateResizeState()
 	}
 	const onDragging = () => {
 		position.dragging = true
@@ -70,6 +72,9 @@
 			unit: unitRef.value,
 			position
 		})
+	}
+	const updateResizeState = () => {
+		emits('onResize', position)
 	}
 </script>
 

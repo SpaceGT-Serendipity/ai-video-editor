@@ -3,6 +3,7 @@ html {
 	--menu-active-bg: #dee7ef;
 	--track-toolbar-bg: #f4f4f5;
 	--layer-bg: #F5F5F3;
+	--layer-graggle-bg: #e6e6fe;
 	--layer-unit-bg: #86edff33;
 	--layer-unit-boder-color: rgb(17, 17, 17, 0.3);
 	--layer-unit-handle-bg: #96969680;
@@ -17,6 +18,7 @@ html.dark {
 	--menu-active-bg: #060608;
 	--track-toolbar-bg: #29292D;
 	--layer-bg: #28282E;
+	--layer-graggle-bg: #303035;
 	--layer-unit-bg: #2A4A50;
 	--layer-unit-boder-color: rgb(238, 238, 238, 0.3);
 	--layer-unit-handle-bg: #fafafa80;
