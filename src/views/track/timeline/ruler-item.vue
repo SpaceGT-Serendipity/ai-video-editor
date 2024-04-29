@@ -13,13 +13,21 @@
 			<i></i>
 			<i></i>
 		</div>
-		<span class="ruler-item-num">00:00:00.00</span>
+		<span class="ruler-item-num">{{dateFormat(props.time,'hh:mm:ss.SS')}}</span>
 	</div>
 </template>
 
 <script setup>
+	import {
+		dateFormat
+	} from '../../../utils/time.js'
+	import {
+		ref
+	} from 'vue'
+	
 	const props = defineProps({
-		width: String
+		width: String,
+		time: Number
 	})
 </script>
 
@@ -28,7 +36,7 @@
 		position: relative;
 		display: inline-block;
 		height: 22px;
-		transition: width .3s ease-in-out;
+		transition: width .2s ease-in-out;
 	}
 
 	.ruler-item-scale {
@@ -48,14 +56,16 @@
 		bottom: 0;
 	}
 
-	.ruler-item-scale i{
+	.ruler-item-scale i {
 		width: 1px;
 		height: 6px;
 		background-color: var(--el-border-color-dark);
+		opacity: 0.5;
 	}
 
 	.ruler-item-scale i:last-child {
 		height: 10px;
 		background-color: var(--el-border-color-dark);
+		opacity: 1;
 	}
 </style>

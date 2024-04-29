@@ -12,44 +12,70 @@
 	import TimelineLayer from './layer.vue'
 	import {
 		ref,
-		onMounted
+		onMounted,
+		watch
 	} from 'vue'
 	import {
 		v4 as uuidv4
 	} from 'uuid'
 
+	const emits = defineEmits(['onDrag'])
+	const props = defineProps({
+		scale: {
+			type: Number,
+			default: 1
+		}, // 刻度缩放 defult 1
+	})
 	const layersRef = ref()
 	const virtualLocationRef = ref()
 	const layers = ref([
 		[{
-			name: 'Joao',
+			name: '心若向阳，无畏悲伤。让阳光洒满每个角落，点亮我们的人生之旅。',
 			id: '1',
 			x: 100,
-			w: 200
+			w: 200,
+			o_x: 100,
+			o_w: 200
 		}, {
-			name: 'Jean',
+			name: '浪漫不归于爱情,温暖不囿于亲人。',
 			id: '2',
 			x: 500,
-			w: 300
+			w: 300,
+			o_x: 500,
+			o_w: 300
 		}],
 		[{
-			name: '2-Joao',
+			name: '把所有的温柔和可爱都设置成了仅你可见。',
 			id: '2-1',
 			x: 0,
-			w: 100
+			w: 100,
+			o_x: 0,
+			o_w: 100
 		}, {
-			name: '2-Jean',
+			name: '梦想是一盏明灯，照亮我们前行的路，无论风雨多大，我们都要坚持不懈。',
 			id: '2-2',
 			x: 200,
-			w: 200
+			w: 200,
+			o_x: 200,
+			o_w: 200
 		}]
 	])
-	const dragData = ref(null)
 
+	watch(() => props.scale, (value) => {
+		layers.value.forEach(layer => {
+			layer.forEach(unit => {
+				unit.x = parseInt(unit.o_x * value)
+				unit.w = parseInt(unit.o_w * value)
+			})
+		})
+	})
+
+	const dragData = ref(null)
 	const onDrag = (event) => {
 		dragData.value = event
+		// 告知上级有元素移动，更新时间轴长度
+		emits('onDrag', event)
 	}
-
 	const onDrop = (event, newIndex) => {
 		if (event.dropMode == 'newLayer')
 			layers.value.splice(newIndex + 1, 0, [{

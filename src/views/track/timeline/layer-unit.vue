@@ -3,7 +3,7 @@
 		:parent="config.parent" :prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x"
 		:y="config.y" :w="config.w" :h="config.h" :z="config.z" :min-width="config.minWidth" :handles="config.handles"
 		:on-drag="onDrag" :on-resize="onResize" @dragging="onDragging" @drag-stop="onDragStop">
-		{{title}}
+		<slot></slot>
 	</vue-draggable-resizable>
 </template>
 
@@ -11,13 +11,13 @@
 	import {
 		ref,
 		reactive,
-		onMounted
+		onMounted,
+		watch
 	} from 'vue'
 
 	const unitRef = ref()
 	const emits = defineEmits(['onDrag', 'onResize'])
 	const props = defineProps({
-		title: String,
 		x: Number,
 		w: Number,
 	})
@@ -32,7 +32,7 @@
 		w: props.w || 0, //初始宽度
 		h: 50, //初始高度
 		z: 1, //z-index索引
-		minWidth: 50,
+		minWidth: 30,
 		handles: ['mr', 'ml'], // 拖动手柄只保留左右
 	})
 	const position = reactive({
@@ -41,6 +41,12 @@
 		w: config.w,
 		h: config.h,
 		dragging: false
+	})
+	watch(() => props.x, (value) => {
+		config.x = value
+	})
+	watch(() => props.w, (value) => {
+		config.w = value
 	})
 
 	// 触碰检测

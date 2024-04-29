@@ -24,13 +24,14 @@
 			</el-button>
 		</div>
 		<div class="button-group-right">
-			<el-button link size="small">
+			<el-button link size="small" @click="subtraction">
 				<el-icon size="20px">
 					<ZoomOut />
 				</el-icon>
 			</el-button>
-			<el-slider size="small" v-model="scale" :step="0.01" :max="2" :min="0.01" :format-tooltip="formatTooltip" />
-			<el-button link size="small">
+			<el-slider size="small" v-model="scale" :step="0.01" :max="1" :min="0.1" :format-tooltip="formatTooltip"
+				@input="emits('changeScale',$event)" />
+			<el-button link size="small" @click="addition">
 				<el-icon size="20px">
 					<ZoomIn />
 				</el-icon>
@@ -44,11 +45,25 @@
 		ref
 	} from 'vue'
 
+	const emits = defineEmits(['changeScale'])
 	const scale = ref(1)
-	
-	
+
 	const formatTooltip = (number) => {
 		return parseInt(number * 100.00) + '%'
+	}
+	const addition = () => {
+		scale.value = scale.value + 0.1
+		if (scale.value > 1) {
+			scale.value = 1
+		}
+		emits('changeScale', scale.value)
+	}
+	const subtraction = () => {
+		scale.value = scale.value - 0.1
+		if (scale.value < 0.1) {
+			scale.value = 0.1
+		}
+		emits('changeScale', scale.value)
 	}
 </script>
 
@@ -66,7 +81,7 @@
 	}
 
 	.el-slider {
-		width: 150px;
+		width: 200px;
 	}
 
 	.button-group-right {

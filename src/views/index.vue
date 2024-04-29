@@ -72,7 +72,6 @@
 
 	.el-header {
 		border-bottom: 1px solid var(--el-border-color);
-		box-shadow: var(--el-box-shadow-light);
 	}
 
 	.el-header {
@@ -83,7 +82,6 @@
 
 	.el-footer {
 		border-top: 1px solid var(--el-border-color);
-		box-shadow: var(--el-box-shadow-light);
 		height: 40px;
 	}
 

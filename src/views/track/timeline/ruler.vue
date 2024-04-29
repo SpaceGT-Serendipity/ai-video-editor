@@ -1,14 +1,61 @@
 <template>
-	<div class="timeline ruler">
-		<ruler-item width="300px" v-for="i in 10"></ruler-item>
+	<div class="timeline ruler" :style="{'width':(scaleCount*configOptions.scaleWidth)+'px'}">
+		<ruler-item :width="configOptions.scaleWidth+'px'" v-for="i in scaleCount"
+			:time="i*configOptions.scaleTime"></ruler-item>
 	</div>
 </template>
 <script setup>
 	import RulerItem from './ruler-item.vue'
+	import {
+		reactive,
+		computed,
+		onMounted,
+		watch
+	} from 'vue'
+
+	const props = defineProps({
+		scale: {
+			type: Number,
+			default: 1
+		}, // 刻度缩放 defult 1
+		time: Number, // 时间轴总时间
+		scaleWidth: Number, //刻度距离
+		scaleTime: Number, //刻度时间
+	})
+	const configOptions = reactive({
+		totalTime: props.time,
+		scaleWidth: props.scaleWidth,
+		scaleTime: props.scaleTime
+	})
+	const scaleCount = computed(() => parseInt(configOptions.totalTime / configOptions.scaleTime) + 1)
+
+	watch(() => props.scale, (value) => {
+		configOptions.scaleTime = parseInt(props.scaleTime / value)
+		resize()
+	})
+
+	const resize = (data) => {
+		// 获取屏幕尺寸或组件的宽度，取最大值
+		let width = window.innerWidth;
+		if (data && data > width) width = data
+		// 设置时间轴不小于宽度*1.5
+		let time = parseInt(width / configOptions.scaleWidth + 1) * configOptions.scaleTime * 1.5
+		// 新时间的大于当前时间更新
+		if (time > configOptions.totalTime) {
+			configOptions.totalTime = time
+			//主动触发window.resize事件，更新组件的移动范围
+			window.dispatchEvent(new Event('resize'));
+		}
+	}
+	onMounted(() => {
+		resize()
+	})
+	defineExpose({
+		resize
+	})
 </script>
 <style scoped>
 	.timeline.ruler {
-		min-width: 100%;
 		white-space: nowrap;
 		overflow: hidden;
 		z-index: 1;

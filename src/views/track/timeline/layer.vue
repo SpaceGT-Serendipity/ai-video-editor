@@ -1,7 +1,9 @@
 <template>
 	<div class="timeline layer container" ref="containerRef">
-		<layer-unit v-for="(item,index) in modelValue" :key="item.id" :title="item.name" :x="item.x" :w="item.w"
-			@on-drag="onDrag($event,item)" @on-resize="onResize($event,index)"></layer-unit>
+		<layer-unit v-for="(item,index) in modelValue" :key="item.id" :x="item.x" :w="item.w"
+			@on-drag="onDrag($event,item)" @on-resize="onResize($event,index)">
+			<div class="name">{{item.name}}</div>
+		</layer-unit>
 	</div>
 	<div class="timeline layer-gap" ref="layerGapRef"></div>
 </template>
@@ -99,5 +101,18 @@
 		display: flex;
 		gap: 10px;
 		align-items: center;
+	}
+
+	.layer-unit {
+		display: flex;
+		align-items: center;
+	}
+
+	.layer-unit .name {
+		font-size: 14px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		max-width: 100%;
 	}
 </style>

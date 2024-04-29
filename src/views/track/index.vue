@@ -1,21 +1,25 @@
 <template>
 	<div class="track">
-		<toolbar v-if="haveResources"></toolbar>
+		<toolbar v-if="haveResources" ref="toolbarRef" @change-scale="handleToolberChangeScale"></toolbar>
 		<div class="view">
 			<div class="controller-group" v-if="haveResources">
 				<controller-layer v-for="i in 2"></controller-layer>
 			</div>
-			<div class="timeline-group">
-				<timeline-ruler v-if="haveResources"></timeline-ruler>
-				<timeline-layers v-if="haveResources"></timeline-layers>
-				<el-empty v-else :image-size="80" description="暂无内容,点击左侧资源栏素材到此处" />
+			<div class="scrollbar">
+				<div class="timeline-group">
+					<timeline-ruler v-if="haveResources" ref="timelineRulerRef" :scale="scale" :time="1000 * 60 * 10"
+						:scale-width="200" :scale-time="1000 * 10"></timeline-ruler>
+					<timeline-layers v-if="haveResources" :scale="scale"
+						@on-drag="handleTimelineLayersOnDrag"></timeline-layers>
+					<el-empty v-else :image-size="80" description="暂无内容,点击左侧资源栏素材到此处" />
+				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-	import Toolbar from './toolbar.vue'
+	import Toolbar from './toolbar/index.vue'
 	import ControllerLayer from './controller/layer.vue'
 	import TimelineLayers from './timeline/layers.vue'
 	import TimelineRuler from './timeline/ruler.vue'
@@ -24,7 +28,18 @@
 		ref
 	} from 'vue'
 
+	const toolbarRef = ref()
+	const timelineRulerRef = ref()
 	const haveResources = ref(true)
+	const scale = ref(1)
+
+	const handleToolberChangeScale = (data) => {
+		scale.value = data.toFixed(2) * 1
+	}
+	const handleTimelineLayersOnDrag = (event) => {
+		const last_position = event.position.x + event.position.w
+		timelineRulerRef.value.resize(last_position)
+	}
 </script>
 
 <style scoped>
@@ -38,6 +53,7 @@
 	.track .view {
 		display: flex;
 		height: 100%;
+		
 	}
 
 	.track .el-empty {
@@ -63,10 +79,10 @@
 	}
 
 	.timeline-group {
-		flex: 1 1 0%;
 		display: flex;
 		flex-direction: column;
-		overflow: hidden;
+		width: max-content;
+		min-width: 200vw;
 	}
 
 	.timeline-group .timeline.ruler {
@@ -75,5 +91,39 @@
 
 	.timeline-group .timeline-layers {
 		flex: 1 1 0%;
+		
+	}
+
+	.scrollbar {
+		overflow: auto;
+	}
+
+	.scrollbar::-webkit-scrollbar-track {
+		box-shadow: inset 0 0 5px var(--scrollbar-background-color);
+		border-radius: 4px;
+		background-color: var(--scrollbar-background-color);
+		cursor: pointer;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb {
+		background-color: var(--scrollbar-foreground-color);
+		border-radius: 4px;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb {
+		height: 14px;
+		border-radius: 4px;
+		background-color: var(--scrollbar-foreground-color);
+		cursor: pointer;
+	}
+
+	.scrollbar::-webkit-scrollbar {
+		height: 2px;
+	}
+
+	.scrollbar:hover::-webkit-scrollbar {
+		height: 8px;
+		background-color: var(--scrollbar-background-color);
+		cursor: pointer;
 	}
 </style>
