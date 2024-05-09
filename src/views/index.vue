@@ -1,40 +1,42 @@
 <template>
 	<!-- <el-tour v-model="open"> -->
+	<el-container>
+		<!-- <el-tour-step :target="ref1?.$el" title="Upload File"> -->
+		<el-header>
+			<!-- 头部 -->
+			<Header />
+		</el-header>
+		<!-- </el-tour-step> -->
 		<el-container>
-			<!-- <el-tour-step :target="ref1?.$el" title="Upload File"> -->
-				<el-header>
-					<!-- 头部 -->
-					<Header />
-				</el-header>
-			<!-- </el-tour-step> -->
-			<el-container>
-				<el-aside>
-					<!-- 资源库菜单 -->
-					<Menu @click="resourceRef.load($event)" />
-				</el-aside>
-				<el-container class="workbench">
-					<el-container ref="interiorRef" class="interior">
-						<!-- 资源库 -->
-						<Resource ref="resourceRef" />
+			<el-aside>
+				<!-- 资源库菜单 -->
+				<Menu @click="resourceRef.load($event)" />
+			</el-aside>
+			<el-container class="workbench"  >
+				<el-container ref="interiorRef" class="interior">
+					<!-- 资源库 -->
+					<Resource ref="resourceRef" />
+					<WindowResize direction="row"></WindowResize>
+					<div class="viewport-group">
+						<!-- 视口 -->
+						<Viewport />
 						<WindowResize direction="row"></WindowResize>
-						<div class="viewport-group">
-							<!-- 视口 -->
-							<Viewport />
-							<WindowResize direction="row"></WindowResize>
-							<!-- 属性面板 -->
-							<PropertiesPanel />
-						</div>
-					</el-container>
-					<WindowResize direction="column"></WindowResize>
-					<!-- 轨道 -->
-					<Track ref="trackRef" />
+						<!-- 属性面板 -->
+						<PropertiesPanel />
+					</div>
 				</el-container>
+				<WindowResize direction="column"></WindowResize>
+				<!-- 轨道 -->
+				<Track ref="trackRef" />
 			</el-container>
-			<el-footer>
-				<!-- 底部信息 -->
-				<Footer></Footer>
-			</el-footer>
 		</el-container>
+		<el-footer>
+			<!-- 底部信息 -->
+			<Footer></Footer>
+		</el-footer>
+		<!-- 资源拖动显示 -->
+		<ResourceDragging ref="resourceDraggingRef"></ResourceDragging>
+	</el-container>
 	<!-- </el-tour> -->
 </template>
 
@@ -44,6 +46,7 @@
 	import Footer from './footer.vue'
 	import Menu from './menu/index.vue'
 	import Resource from './resource/index.vue'
+	import ResourceDragging from '../components/resource-dragging.vue'
 	import Viewport from './viewport/index.vue'
 	import PropertiesPanel from './properties-panel.vue'
 	import Track from './track/index.vue'
@@ -53,15 +56,12 @@
 	} from 'vue'
 
 	const ref1 = ref()
-
 	const resourceRef = ref()
+	const resourceDraggingRef = ref()
 	const interiorRef = ref()
 	const trackRef = ref()
 	const open = ref(true)
-
-	const handleRsize = (distance) => {
-		console.log(distance)
-	}
+ 
 </script>
 
 <style scoped>

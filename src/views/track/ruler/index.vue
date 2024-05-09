@@ -5,7 +5,7 @@
 	</div>
 </template>
 <script setup>
-	import RulerItem from './ruler-item.vue'
+	import RulerItem from './item.vue'
 	import {
 		reactive,
 		computed,

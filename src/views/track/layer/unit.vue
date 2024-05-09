@@ -12,14 +12,15 @@
 		ref,
 		reactive,
 		onMounted,
-		watch
+		watch,
+		getCurrentInstance
 	} from 'vue'
 
+	const instance = getCurrentInstance()
 	const unitRef = ref()
 	const emits = defineEmits(['onDrag', 'onResize'])
 	const props = defineProps({
-		x: Number,
-		w: Number,
+		data: Object
 	})
 	const config = reactive({
 		className: 'layer-unit',
@@ -27,61 +28,64 @@
 		parent: true, //移动范围限制到父标签中
 		preventDeactivation: false, //防止失去激活状态
 		axis: 'x', //固定移动轴向
-		x: props.x || 0, //初始x坐标
+		x: props.data.x || 0, //初始x坐标
 		y: 0, //初始y坐标
-		w: props.w || 0, //初始宽度
-		h: 50, //初始高度
+		w: props.data.w || 0, //初始宽度
+		h: props.data.h, //初始高度
 		z: 1, //z-index索引
 		minWidth: 30,
 		handles: ['mr', 'ml'], // 拖动手柄只保留左右
 	})
-	const position = reactive({
-		x: config.x,
-		y: config.y,
-		w: config.w,
-		h: config.h,
-		dragging: false
-	})
-	watch(() => props.x, (value) => {
+	
+	watch(() => props.data.x, (value) => {
 		config.x = value
 	})
-	watch(() => props.w, (value) => {
+	watch(() => props.data.w, (value) => {
 		config.w = value
 	})
 
-	// 触碰检测
+	// 拖拽事件
 	const onDrag = (x, y) => {
-		position.x = x;
-		position.y = y;
-		updateDragState()
-		updateResizeState()
+		props.data.x = x
+		props.data.y = y
+		emits('onDrag', props.data)
+		// 碰撞检测
 		return true
 	}
+	// 修改大小事件
 	const onResize = (handle, x, y, width, height) => {
-		position.x = x;
-		position.y = y;
-		position.w = width;
-		position.h = height;
-		updateResizeState()
+		props.data.x = x
+		props.data.w = width;
 	}
+	// 拖拽中事件
 	const onDragging = () => {
-		position.dragging = true
-		updateDragState()
-
+		props.data.dragging = true
+		emits('onDrag', props.data)
 	}
+	// 拖拽停止事件
 	const onDragStop = () => {
-		position.dragging = false
-		updateDragState()
+		props.data.dragging = false
+		emits('onDrag', props.data)
 	}
-	const updateDragState = () => {
-		emits('onDrag', {
-			unit: unitRef.value,
-			position
-		})
+	// 主动触发鼠标事件
+	const onMousedown = (event) => {
+		var mouseEvent = new MouseEvent('mousedown', {
+			'view': window,
+			'bubbles': true,
+			'cancelable': false,
+			'clientX': event.clientX,
+			'clientY': event.clientY
+		});
+		unitRef.value.$el.dispatchEvent(mouseEvent)
 	}
-	const updateResizeState = () => {
-		emits('onResize', position)
-	}
+
+	onMounted(() => {
+		props.data.instance = instance
+	})
+
+	defineExpose({
+		onMousedown
+	})
 </script>
 
 <style scoped>

@@ -3,10 +3,7 @@
 		<p>模板</p>
 		<el-scrollbar>
 			<div class="list">
-				<resource-sample v-for="i in 4"
-					cover="https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg"
-					src="https://yigee-source.oss-cn-beijing.aliyuncs.com/ai-portal/introduce.mp4"
-					title="带妆上阵"></resource-sample>
+				 
 			</div>
 		</el-scrollbar>
 	</div>

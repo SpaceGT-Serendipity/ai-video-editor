@@ -1,14 +1,14 @@
 <template>
-	<div class="resource-sample">
+	<div class="resource-sample" ref="resourceSampleRef">
 		<div class="card">
-			<el-image :src="cover"></el-image>
+			<el-image :src="data.cover"></el-image>
 			<div class="shade"></div>
 			<el-button link>
 				<el-icon size="26">
 					<CirclePlusFilled />
 				</el-icon>
 			</el-button>
-			<a class="glightbox video" :href="src">
+			<a class="glightbox video" :href="data.url">
 				<el-button link>
 					<el-icon size="26">
 						<View />
@@ -16,23 +16,41 @@
 				</el-button>
 			</a>
 		</div>
-		<div class="title">{{title}}</div>
+		<div class="title">{{data.name}}</div>
 	</div>
 </template>
 
 <script setup>
 	import GLightbox from 'glightbox';
 	import {
+		useResourceDragStore
+	} from '../store/resource-drag.js'
+	import {
+		ref,
 		onMounted
 	} from 'vue'
+
 	const props = defineProps({
-		cover: String,
-		src: String,
-		title: String,
+		data: Object
 	})
+	const store = useResourceDragStore()
+	const resourceSampleRef = ref()
 
 	onMounted(() => {
 		GLightbox();
+
+		let drop = false
+		resourceSampleRef.value.addEventListener('mousedown', (event) => {
+			drop = true
+		})
+		resourceSampleRef.value.addEventListener('mouseup', (event) => {
+			drop = false
+		})
+		resourceSampleRef.value.addEventListener('mouseleave', (event) => {
+			if (drop)
+				store.data = props.data
+			drop = false
+		})
 	})
 </script>
 
@@ -59,7 +77,7 @@
 		justify-content: center;
 		background-size: cover;
 		border-radius: 5px;
-
+		cursor: all-scroll;
 	}
 
 	.card .el-image {
@@ -102,5 +120,9 @@
 	.card:hover .el-image {
 		width: 105%;
 		height: 105%;
+	}
+
+	.card a {
+		-webkit-user-drag: none;
 	}
 </style>

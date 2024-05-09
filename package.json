@@ -16,7 +16,7 @@
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
-    "element-plus": "^2.7.0",
+    "element-plus": "^2.7.2",
     "glightbox": "^3.3.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persist": "^1.0.0",

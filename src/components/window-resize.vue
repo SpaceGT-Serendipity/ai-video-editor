@@ -83,7 +83,6 @@
 			startPosition.x = event.pageX || event.clientX + document.body.scrollLeft;
 			startPosition.y = event.pageY || event.clientY + document.body.scrollTop;
 			dragging.value = true
-			console.log(props.direction)
 			if (props.direction == 'row')
 				parentDocument.value.style.cursor = 'col-resize'
 			else if (props.direction == 'column')

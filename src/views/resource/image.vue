@@ -1,13 +1,10 @@
 <template>
 	<div class="image">
-		<el-tabs model-value="本地图片" class="demo-tabs">
+		<el-tabs model-value="预设图片" class="demo-tabs">
 			<el-tab-pane label="预设图片" name="预设图片">
 				<el-scrollbar>
 					<div class="list">
-						<resource-sample v-for="i in 4"
-							cover="https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg"
-							src="https://yigee-source.oss-cn-beijing.aliyuncs.com/ai-portal/introduce.mp4"
-							title="带妆上阵"></resource-sample>
+						<resource-sample v-for="item in publicList" :key="item.id" :data="item"></resource-sample>
 					</div>
 				</el-scrollbar>
 			</el-tab-pane>
@@ -46,6 +43,27 @@
 		ElMessageBox
 	} from 'element-plus'
 
+	const publicList = ref([{
+		id: '1',
+		cover: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg',
+		url: 'https://yigee-source.oss-cn-beijing.aliyuncs.com/ai-portal/introduce.mp4',
+		name: '带妆上阵1'
+	}, {
+		id: '2',
+		cover: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg',
+		url: 'https://yigee-source.oss-cn-beijing.aliyuncs.com/ai-portal/introduce.mp4',
+		name: '带妆上阵2'
+	}, {
+		id: '3',
+		cover: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg',
+		url: 'https://yigee-source.oss-cn-beijing.aliyuncs.com/ai-portal/introduce.mp4',
+		name: '带妆上阵3'
+	}, {
+		id: '4',
+		cover: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg',
+		url: 'https://yigee-source.oss-cn-beijing.aliyuncs.com/ai-portal/introduce.mp4',
+		name: '带妆上阵4'
+	}])
 	const fileList = ref([])
 
 	const fileProcess = () => {

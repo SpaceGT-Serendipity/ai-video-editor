@@ -5,10 +5,14 @@
 		ref,
 		onMounted
 	} from 'vue'
+	import {
+		useResourceDragStore
+	} from './store/resource-drag.js'
 
 	const screenSizeTips = ref(false)
 	const boundaryTipsRight = ref(false)
 	const boundaryTipsBottom = ref(false)
+	const resourceDragstore = useResourceDragStore()
 
 	const updateScreenSizeTips = () => {
 		if (window.innerWidth < 800 || window.innerHeight < 600) screenSizeTips.value = true
@@ -25,13 +29,18 @@
 	updateBoundaryTips()
 	window.addEventListener('resize', updateScreenSizeTips)
 	window.addEventListener('resize', updateBoundaryTips)
+
+	onMounted(() => {
+		document.addEventListener('mouseup', (event) => resourceDragstore.data = null)
+		document.addEventListener('mouseleave', (event) => resourceDragstore.data = null)
+	})
 </script>
 
 <template>
 	<BoundaryTips :right="boundaryTipsRight" :bottom="boundaryTipsBottom"></BoundaryTips>
 	<ScreenSizeTips v-if="screenSizeTips"></ScreenSizeTips>
 	<router-view v-else></router-view>
-	
+
 </template>
 
 <style>

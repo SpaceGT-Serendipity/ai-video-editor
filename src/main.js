@@ -24,12 +24,20 @@ import * as freeRegularSvgIcons from '@fortawesome/free-regular-svg-icons'
 import * as freeSolidSvgIcons from '@fortawesome/free-solid-svg-icons'
 // 拖拽可修改大小
 import VueDraggableResizable from 'vue-draggable-resizable'
+// 数据持久化
+import {
+	createPinia
+} from 'pinia'
+import piniaPersist from 'pinia-plugin-persist'
 
 const app = createApp(App)
 app.use(ElementPlus, {
 	locale: zhCn
 })
 app.use(router)
+const pinia = createPinia()
+pinia.use(piniaPersist)
+app.use(pinia)
 
 for (let key in ElIconModules) app.component(key, ElIconModules[key])
 app.component('font-awesome-icon', FontAwesomeIcon)
