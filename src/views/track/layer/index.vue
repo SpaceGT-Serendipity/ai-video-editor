@@ -70,38 +70,32 @@
 	const renderVirtualLocation = () => {
 		let drop = false
 		const renderDrag = (event) => {
-			if (drop && dragData.value) {
-				if (dragData.value.dragging) {
-					const mouseY = event.pageY;
-					const unitRef = dragData.value.instance.setupState.unitRef
-					const rect = unitRef.$el.getBoundingClientRect()
-					if (mouseY > (rect.top + dragData.value.h) || mouseY < (rect.top)) {
-						virtualLocationRef.value.style.display = 'flex';
-						virtualLocationRef.value.style.width = rect.width + 'px';
-						virtualLocationRef.value.style.height = rect.width.height + 'px';
-						virtualLocationRef.value.style.left = rect.left + 'px';
-						virtualLocationRef.value.style.top = (mouseY - dragData.value.h / 2) + 'px';
-						return;
-					}
+			if (drop && dragData.value && dragData.value.dragging) {
+				const mouseY = event.pageY;
+				const unitRef = dragData.value.instance.setupState.unitRef
+				const rect = unitRef.$el.getBoundingClientRect()
+				if (mouseY > (rect.top + dragData.value.h) || mouseY < (rect.top)) {
+					virtualLocationRef.value.style.display = 'flex';
+					virtualLocationRef.value.style.width = rect.width + 'px';
+					virtualLocationRef.value.style.height = rect.width.height + 'px';
+					virtualLocationRef.value.style.left = rect.left + 'px';
+					virtualLocationRef.value.style.top = (mouseY - dragData.value.h / 2) + 'px';
+					return;
+				} else {
+					virtualLocationRef.value.style.display = 'none'
 				}
 			}
-			virtualLocationRef.value.style.display = 'none'
 		}
-		layersRef.value.addEventListener('mousedown', (event) => {
-			drop = true
-			renderDrag(event)
-		})
+		layersRef.value.addEventListener('mousedown', (event) => drop = true)
 		layersRef.value.addEventListener('mousemove', (event) => {
 			if (drop) renderDrag(event)
+			else virtualLocationRef.value.style.display = 'none'
 		})
 		layersRef.value.addEventListener('mouseup', (event) => {
 			drop = false
-			renderDrag(event)
+			virtualLocationRef.value.style.display = 'none'
 		})
-		layersRef.value.addEventListener('mouseleave', (event) => {
-			drop = false
-			renderDrag(event)
-		})
+		layersRef.value.addEventListener('mouseleave', (event) => virtualLocationRef.value.style.display = 'none')
 	}
 	onMounted(() => {
 		renderVirtualLocation()

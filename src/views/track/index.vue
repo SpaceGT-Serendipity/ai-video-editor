@@ -94,7 +94,6 @@
 
 	const dragResourceToUploadDragTip = () => {
 		uploadDragTipRef.value.addEventListener('mouseenter', (event) => {
-			console.log(event)
 			if (resourceDragStore.data) {
 				const resource =
 					new ImageResource(resourceDragStore.data.name, resourceDragStore.data.cover)

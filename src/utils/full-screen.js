@@ -1,4 +1,8 @@
-//div标签全屏方法
+/**
+ * 废弃建议使用 vueuse 的全屏方法
+*/
+
+/* div标签全屏方法 */
 export function launchIntoFullscreen(element) {
 	if (element.requestFullscreen) {
 		element.requestFullscreen();
@@ -11,7 +15,7 @@ export function launchIntoFullscreen(element) {
 	}
 }
 
-//退出div标签全屏方法
+/*退出div标签全屏方法*/
 export function exitFullscreen() {
 	if (document.exitFullscreen) {
 		document.exitFullscreen();
