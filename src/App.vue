@@ -7,7 +7,7 @@
 	} from 'vue'
 	import {
 		useResourceDragStore
-	} from './store/resource-drag.js'
+	} from './store/resource.js'
 
 	const screenSizeTips = ref(false)
 	const boundaryTipsRight = ref(false)

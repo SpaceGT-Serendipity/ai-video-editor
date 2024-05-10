@@ -63,6 +63,9 @@
 	import {
 		dateFormat
 	} from '../../utils/time.js'
+	import {
+		loadImage
+	} from '../../api/resource.js'
 
 	const publicFileList = reactive([])
 	const localFileList = reactive([])
@@ -80,16 +83,17 @@
 		})
 		linkFileList.push(image)
 	}
-	const load = () => {
-		for (let i = 0; i < 20; i++) {
+	const load = async () => {
+		const res = await loadImage()
+		res.forEach(item => {
 			const image = new ImageResource({
-				name: '带妆上阵' + i,
-				url: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg'
+				name: item.name,
+				url: item.url
 			})
 			publicFileList.push(image)
-		}
+		})
 	}
-	
+
 	onMounted(() => {
 		load()
 	})
@@ -125,7 +129,7 @@
 	.upload {
 		margin-bottom: 10px;
 	}
-	
+
 	.link-group-button {
 		display: flex;
 		gap: 5px;

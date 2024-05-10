@@ -63,6 +63,9 @@
 	import {
 		dateFormat
 	} from '../../utils/time.js'
+	import {
+		loadVideo
+	} from '../../api/resource.js'
 
 	const publicFileList = reactive([])
 	const localFileList = reactive([])
@@ -78,8 +81,9 @@
 		linkFileList.push(video)
 	}
 	const load = async () => {
-		for (let i = 0; i < 3; i++) {
-			const video = await VideoResource.url('https://yigee-source.oss-cn-beijing.aliyuncs.com/ai-portal/introduce.mp4', '带妆上阵' + (i + 1))
+		const res = await loadVideo()
+		for (let i = 0; i < res.length; i++) {
+			const video = await VideoResource.url(res[i].url, res[i].name)
 			publicFileList.push(video)
 		}
 	}

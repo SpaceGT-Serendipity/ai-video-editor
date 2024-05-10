@@ -1,33 +1,33 @@
 <template>
-	<!-- <el-tour v-model="open"> -->
 	<el-container>
-		<!-- <el-tour-step :target="ref1?.$el" title="Upload File"> -->
-		<el-header>
+		<el-header ref="headerRef">
 			<!-- 头部 -->
-			<Header />
+			<Header>
+				<el-button icon="Promotion" text @click="openTour=true">产品引导</el-button>
+			</Header>
 		</el-header>
-		<!-- </el-tour-step> -->
 		<el-container>
 			<el-aside>
 				<!-- 资源库菜单 -->
 				<Menu @click="resourceRef.load($event)" />
 			</el-aside>
-			<el-container class="workbench"  >
-				<el-container ref="interiorRef" class="interior">
+			<el-container class="workbench">
+				<el-container class="interior">
 					<!-- 资源库 -->
 					<Resource ref="resourceRef" />
 					<WindowResize direction="row"></WindowResize>
 					<div class="viewport-group">
 						<!-- 视口 -->
-						<Viewport />
+						<Viewport ref="viewportRef" />
 						<WindowResize direction="row"></WindowResize>
 						<!-- 属性面板 -->
-						<PropertiesPanel />
+						<properties-panel ref="propertiesPanelRef"></properties-panel>
 					</div>
 				</el-container>
 				<WindowResize direction="column"></WindowResize>
 				<!-- 轨道 -->
-				<Track ref="trackRef" />
+				<Track ref="trackRef">
+				</Track>
 			</el-container>
 		</el-container>
 		<el-footer>
@@ -37,7 +37,23 @@
 		<!-- 资源拖动显示 -->
 		<ResourceDragging ref="resourceDraggingRef"></ResourceDragging>
 	</el-container>
-	<!-- </el-tour> -->
+	<el-tour v-model="openTour">
+		<el-tour-step :target="headerRef?.$el" title="头部导航栏">
+			可以设置项目名称，切换主题和语言，合成视频。
+		</el-tour-step>
+		<el-tour-step :target="resourceRef?.$el" title="资源列表">
+			选择需要的素材拖入时间线中，可上传本地文件。
+		</el-tour-step>
+		<el-tour-step :target="viewportRef?.$el" title="效果视口">
+			可在此处预览视频效果。
+		</el-tour-step>
+		<el-tour-step :target="propertiesPanelRef?.$el" title="属性面板">
+			可以调整资源呈现效果。
+		</el-tour-step>
+		<el-tour-step :target="trackRef?.$el" title="时间线编辑器">
+			将素材拖入时间线，开始编辑。
+		</el-tour-step>
+	</el-tour>
 </template>
 
 <script setup>
@@ -55,13 +71,13 @@
 		onMounted
 	} from 'vue'
 
-	const ref1 = ref()
+	const headerRef = ref()
 	const resourceRef = ref()
 	const resourceDraggingRef = ref()
-	const interiorRef = ref()
+	const viewportRef = ref()
 	const trackRef = ref()
-	const open = ref(true)
- 
+	const propertiesPanelRef = ref()
+	const openTour = ref(false)
 </script>
 
 <style scoped>

@@ -21,6 +21,8 @@
 	.yellow-demarcartion-line {
 		font-size: 12px;
 		opacity: 0.8;
+		position: relative;
+		z-index: 98;
 	}
 
 	.yellow-demarcartion-line .right {

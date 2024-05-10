@@ -2,6 +2,7 @@
 	<el-page-header icon="ArrowLeft" @back="onBack">
 		<template #content>
 			<span> AI 视频编辑器 </span>
+			<slot></slot>
 		</template>
 	</el-page-header>
 	<div class="project-name">
@@ -57,8 +58,6 @@
 		opacity: 0;
 		transition: opacity 0.2s;
 	}
-
-
 
 	.button-group {
 		display: flex;

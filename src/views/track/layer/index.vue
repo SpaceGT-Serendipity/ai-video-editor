@@ -1,6 +1,6 @@
 <template>
 	<div class="timeline-layers" ref="layersRef">
-		<layer-item v-for="(item,index) in layers" v-model="layers[index]" :drop-data="dragData" @on-drag="onDrag"
+		<layer-item v-for="(item,index) in layers" v-model="layers[index]" :last="layers.length==index+1" :drop-data="dragData" @on-drag="onDrag"
 			@on-drop="onDrop($event,index)"></layer-item>
 		<div class="virtual-location" ref="virtualLocationRef">
 			<div v-if="dragData" v-html="dragData.view"></div>

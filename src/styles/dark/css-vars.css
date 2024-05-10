@@ -1,4 +1,5 @@
 html {
+	--el-empty-bg: #fafafa;
 	--menu-hover-bg: #f0f0f0;
 	--menu-active-bg: #dee7ef;
 	--track-toolbar-bg: #f4f4f5;
@@ -16,6 +17,7 @@ html.dark {
 	--el-bg-color: #232329;
 	--el-border-color: #030303;
 	--el-text-color-primary: #c6c6ca;
+	--el-empty-bg: #2e2e35;
 	--menu-hover-bg: #2E2E35;
 	--menu-active-bg: #060608;
 	--track-toolbar-bg: #29292D;

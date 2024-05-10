@@ -53,12 +53,14 @@
 	} from 'vue'
 	import {
 		useResourceDragStore
-	} from '../../store/resource-drag.js'
+	} from '../../store/resource.js'
 	import {
-		useTrackStore
+		useTrackStore,
+		useTrackDataStore
 	} from '../../store/track.js'
 
 	const trackStore = useTrackStore()
+	const trackDataStore = useTrackDataStore()
 	const resourceDragStore = useResourceDragStore()
 	const toolbarRef = ref()
 	const timelineRulerRef = ref()
@@ -170,7 +172,7 @@
 	.track .el-empty {
 		height: calc(100% - 40px);
 		margin: 20px;
-		background-color: #2e2e35;
+		background-color: var(--el-empty-bg);
 		border: 1px dashed #505057;
 		border-radius: 4px;
 		width: 100%;
@@ -181,7 +183,7 @@
 		margin-top: var(--track-timeline-ruler-height);
 		overflow-y: auto;
 		overflow-x: hidden;
-		padding-bottom: 8px;
+		padding-bottom: calc(var(--track-layer-height) + 8px);
 	}
 
 	.controller-group::-webkit-scrollbar {
@@ -191,7 +193,13 @@
 	.controller-group .controller.layer {
 		padding: 0 20px;
 		height: var(--track-layer-height);
+		margin-bottom: 10px;
 	}
+
+	.controller-group .controller.layer:last-child {
+		margin-bottom: 0;
+	}
+
 
 	.timeline-group {
 		display: flex;

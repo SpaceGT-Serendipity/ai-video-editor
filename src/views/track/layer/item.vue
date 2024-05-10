@@ -6,7 +6,9 @@
 		</layer-unit>
 	</div>
 	<!-- 图层间隙，插入元素 -->
-	<div class="timeline layer-gap" ref="layerGapRef"></div>
+	<div class="timeline layer-gap" ref="layerGapRef" :class="{'last':last}">
+		<div v-if="last">插入新的时间线</div>
+	</div>
 </template>
 
 <script setup>
@@ -20,7 +22,8 @@
 	const emits = defineEmits(['onDrag', 'onDrop'])
 	const props = defineProps({
 		modelValue: Array,
-		dropData: Object
+		dropData: Object,
+		last: Boolean
 	})
 	const containerRef = ref()
 	const layerGapRef = ref()
@@ -34,9 +37,6 @@
 				containerRef.value.classList.remove('graggle')
 			}
 		});
-		containerRef.value.addEventListener('mouseleave', (event) => {
-			containerRef.value.classList.remove('graggle')
-		});
 		containerRef.value.addEventListener('mouseup', (event) => {
 			if (containerRef.value.classList.contains('graggle')) {
 				emits('onDrop', {
@@ -44,6 +44,10 @@
 					dropMode: 'appendUnit'
 				})
 			}
+			containerRef.value.classList.remove('graggle')
+		});
+		containerRef.value.addEventListener('mouseleave', (event) => {
+			containerRef.value.classList.remove('graggle')
 		});
 		// 拖拽至新增位置
 		layerGapRef.value.addEventListener('mouseenter', (event) => {
@@ -53,9 +57,6 @@
 				layerGapRef.value.classList.remove('graggle')
 			}
 		});
-		layerGapRef.value.addEventListener('mouseleave', (event) => {
-			layerGapRef.value.classList.remove('graggle')
-		});
 		layerGapRef.value.addEventListener('mouseup', (event) => {
 			if (layerGapRef.value.classList.contains('graggle')) {
 				emits('onDrop', {
@@ -63,6 +64,10 @@
 					dropMode: 'newLayer'
 				})
 			}
+			layerGapRef.value.classList.remove('graggle')
+		});
+		layerGapRef.value.addEventListener('mouseleave', (event) => {
+			layerGapRef.value.classList.remove('graggle')
 		});
 	})
 </script>
@@ -85,6 +90,22 @@
 
 	.timeline.layer-gap.graggle {
 		background-color: var(--el-color-warning);
+		opacity: 0.6;
+	}
+
+	.timeline.layer-gap.last {
+		height: var(--track-layer-height);
+		line-height: var(--track-layer-height);
+		margin: 0;
+	}
+
+	.timeline.layer-gap.last div {
+		display: none;
+		margin-left: 20px;
+	}
+
+	.timeline.layer-gap.last.graggle div {
+		display: initial;
 	}
 
 	.container {

@@ -18,17 +18,12 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 </script>
 
 <style scoped>
 	.controller.layer {
 		display: flex;
-		margin-bottom: 10px;
 		justify-content: center;
-	}
-
-	.controller.layer:first-child {
-		margin-top: 0px;
 	}
 </style>

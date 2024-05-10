@@ -22,3 +22,9 @@ export const useTrackStore = defineStore('track', {
 		secondWidth: (state) => state.trackTimelineRulerScaleWidth / (state.trackTimelineRulerScaleTime / 1000),
 	},
 })
+
+export const useTrackDataStore = defineStore('track-data', {
+	state: () => ({
+		list: []
+	}),
+})

@@ -16,7 +16,7 @@
 	} from 'vue'
 	import {
 		useResourceDragStore
-	} from '../store/resource-drag.js'
+	} from '../store/resource.js'
 
 	const store = useResourceDragStore()
 	const resourceDraggingRef = ref()
