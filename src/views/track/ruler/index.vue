@@ -1,7 +1,7 @@
 <template>
 	<div class="timeline ruler" :style="{'width':(scaleCount*configOptions.scaleWidth)+'px'}">
 		<ruler-item :width="configOptions.scaleWidth+'px'" v-for="i in scaleCount"
-			:time="i*configOptions.scaleTime"></ruler-item>
+			:time="(i-1)*configOptions.scaleTime"></ruler-item>
 	</div>
 </template>
 <script setup>

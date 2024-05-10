@@ -1,20 +1,26 @@
 <template>
-	<div class="track">
-		<toolbar v-if="haveResources" ref="toolbarRef" @change-scale="handleToolberChangeScale"></toolbar>
+	<div class="track" :style="{
+		'--controller-group-width':`${trackStore.controllerGroupWidth}px`,
+		'--track-layer-height':`${trackStore.trackLayerHeight}px`,
+		'--track-timeline-ruler-height':`${trackStore.trackTimelineRulerHeight}px`
+	}">
+		<toolbar v-show="haveResources" ref="toolbarRef" @change-scale="handleToolberChangeScale"></toolbar>
 		<div class="view" ref="dropZoneRef"
 			:style="{'position':isOverDropZone||resourceDragStore.data?'relative':'initial'}">
-			<div v-if="haveResources" class="controller-group" ref="controllerGroupRef">
+			<div v-show="haveResources" class="controller-group" ref="controllerGroupRef">
 				<controller-layer v-for="item in layers"></controller-layer>
 			</div>
-			<div v-if="haveResources" class="scrollbar" ref="scrollbarRef">
+			<div v-show="haveResources" class="scrollbar" ref="scrollbarRef">
 				<div class="timeline-group">
-					<timeline-ruler ref="timelineRulerRef" :scale="scale" :time="1000 * 60 * 10" :scale-width="200"
-						:scale-time="1000 * 10"></timeline-ruler>
+					<timeline-ruler ref="timelineRulerRef" :scale="scale"
+						:time="trackStore.trackTimelineRulerDefultTime"
+						:scale-width="trackStore.trackTimelineRulerScaleWidth"
+						:scale-time="trackStore.trackTimelineRulerScaleTime"></timeline-ruler>
 					<layer-centre ref="timelineLayersRef" v-model="layers" :scale="scale"
 						@on-drag="handleTimelineLayersOnDrag"></layer-centre>
 				</div>
 			</div>
-			<el-empty v-else :image-size="80" description="暂无内容,点击左侧资源栏素材到此处" />
+			<el-empty v-show="!haveResources" :image-size="80" description="暂无内容,请选择左侧资源栏素材到此处" />
 			<div v-show="isOverDropZone||resourceDragStore.data" class="upload-drag_tip" ref="uploadDragTipRef">
 				加载资源到轨道
 			</div>
@@ -40,13 +46,19 @@
 	} from '@vueuse/core'
 	import {
 		ref,
+		reactive,
 		onMounted,
-		nextTick
+		nextTick,
+		computed
 	} from 'vue'
 	import {
 		useResourceDragStore
 	} from '../../store/resource-drag.js'
+	import {
+		useTrackStore
+	} from '../../store/track.js'
 
+	const trackStore = useTrackStore()
 	const resourceDragStore = useResourceDragStore()
 	const toolbarRef = ref()
 	const timelineRulerRef = ref()
@@ -55,127 +67,9 @@
 	const controllerGroupRef = ref()
 	const uploadDragTipRef = ref()
 	const scrollbarRef = ref()
-	const haveResources = ref(true)
 	const scale = ref(1)
-	const layers = ref([
-		[
-			new LayerUnit(new TextResource('心若向阳，无畏悲伤。让阳光洒满每个角落，点亮我们的人生之旅。'), 0, 200),
-			new LayerUnit(new TextResource('把所有的温柔和可爱都设置成了仅你可见。'), 300, 100),
-			new LayerUnit(new TextResource('梦想是一盏明灯，照亮我们前行的路，无论风雨多大，我们都要坚持不懈。'), 500, 200),
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-		[
-			new LayerUnit(new ImageResource({
-				name: 'Image',
-				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
-			}), 200, 300),
-
-		],
-
-	])
+	const layers = reactive([])
+	const haveResources = computed(() => layers.length > 0)
 
 	/* 本地文件拖拽 */
 	const {
@@ -183,7 +77,7 @@
 	} = useDropZone(dropZoneRef, {
 		onDrop(files) {
 			files.forEach(file => {
-				layers.value.push([new LayerUnit(new ImageResource({
+				layers.push([new LayerUnit(new ImageResource({
 					name: file.name,
 					url: URL.createObjectURL(file)
 				}), 0, 300)])
@@ -198,7 +92,6 @@
 		const last_position = event.x + event.w
 		timelineRulerRef.value.resize(last_position)
 	}
-
 	/**
 	 * 拖拽资源到面板添加元素
 	 */
@@ -208,13 +101,19 @@
 				const resource = resourceDragStore.data
 				resourceDragStore.data = null
 				nextTick(() => {
-					const unit_w = 300;
-					const unit = new LayerUnit(resource,
+					const unit = new LayerUnit(resource, 0)
+					// 元素坐标
+					const x =
+						// 鼠标位置
 						event.pageX +
+						// 滚动调位置
 						scrollbarRef.value.scrollLeft -
-						scrollbarRef.value.offsetLeft -
-						(unit_w / 2), unit_w)
-					layers.value.push([unit])
+						// 图层区域左侧距离（轨道区左侧距离+控制区域宽度）
+						(dropZoneRef.value.offsetLeft + trackStore.controllerGroupWidth) -
+						// 单元宽度的一半，指针指向中间
+						(unit.w / 2)
+					unit.x = x;
+					layers.push([unit])
 					// 主动触发单元点击事件
 					nextTick(() => unit.instance.exposed.onMousedown(event))
 				})
@@ -241,8 +140,6 @@
 
 <style scoped>
 	.track {
-		--track-timeline-ruler-height: 40px;
-		--track-layer: 50px;
 		display: flex;
 		flex-direction: column;
 	}
@@ -282,7 +179,6 @@
 	.controller-group {
 		flex: 0 0 150px;
 		margin-top: var(--track-timeline-ruler-height);
-		border-right: 1px solid var(--el-border-color-lighter);
 		overflow-y: auto;
 		overflow-x: hidden;
 		padding-bottom: 8px;
@@ -294,7 +190,7 @@
 
 	.controller-group .controller.layer {
 		padding: 0 20px;
-		height: var(--track-layer);
+		height: var(--track-layer-height);
 	}
 
 	.timeline-group {
@@ -315,7 +211,7 @@
 	}
 
 	.timeline-group .timeline-layers::-webkit-scrollbar {
-		width: 1px;
+		width: 0px;
 	}
 
 	.scrollbar {

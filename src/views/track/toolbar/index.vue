@@ -29,7 +29,7 @@
 					<ZoomOut />
 				</el-icon>
 			</el-button>
-			<el-slider size="small" v-model="scale" :step="0.01" :max="1" :min="0.1" :format-tooltip="formatTooltip"
+			<el-slider size="small" v-model="scale" :step="0.01" :max="2" :min="0.2" :format-tooltip="formatTooltip"
 				@input="emits('changeScale',$event)" />
 			<el-button link size="small" @click="addition">
 				<el-icon size="20px">

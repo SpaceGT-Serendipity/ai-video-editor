@@ -1,17 +1,17 @@
 <template>
 	<div class="timeline ruler-item" :style="{'width':props.width}">
 		<div class="ruler-item-scale">
+			<i></i>
+			<i></i>
+			<i></i>
+			<i></i>
+			<i></i>
+			<i></i>
+			<i></i>
+			<i></i>
+			<i></i>
+			<i></i>
 			<span></span>
-			<i></i>
-			<i></i>
-			<i></i>
-			<i></i>
-			<i></i>
-			<i></i>
-			<i></i>
-			<i></i>
-			<i></i>
-			<i></i>
 		</div>
 		<span class="ruler-item-num">{{dateFormat(props.time,'hh:mm:ss.SS')}}</span>
 	</div>
@@ -24,7 +24,7 @@
 	import {
 		ref
 	} from 'vue'
-	
+
 	const props = defineProps({
 		width: String,
 		time: Number
@@ -63,7 +63,7 @@
 		opacity: 0.5;
 	}
 
-	.ruler-item-scale i:last-child {
+	.ruler-item-scale i:first-child {
 		height: 10px;
 		background-color: var(--el-border-color-dark);
 		opacity: 1;

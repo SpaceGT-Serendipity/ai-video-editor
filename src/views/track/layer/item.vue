@@ -71,7 +71,7 @@
 	.timeline.layer {
 		position: relative;
 		background-color: var(--layer-bg);
-		height: var(--track-layer);
+		height: var(--track-layer-height);
 	}
 
 	.timeline.layer.graggle {

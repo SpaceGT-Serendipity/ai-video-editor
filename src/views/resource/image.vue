@@ -119,6 +119,7 @@
 		flex-wrap: wrap;
 		gap: 20px;
 		justify-content: start;
+		padding: 20px;
 	}
 
 	.upload {

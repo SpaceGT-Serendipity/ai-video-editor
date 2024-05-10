@@ -1,6 +1,11 @@
 import {
 	v4 as uuidv4
 } from 'uuid'
+import {
+	useTrackStore
+} from '../store/track.js'
+
+
 
 export class LayerUnit {
 	/* 缩放 */
@@ -10,16 +15,18 @@ export class LayerUnit {
 	/* 宽度 */
 	_w = 0;
 	/* 高度(固定) */
-	h = 50;
+	h = 45;
 	/* 拖拽中状态 */
 	dragging = false;
 	/* 组件实例 */
 	instance = null;
+	/* 轨道配置 */
+	trackStore = useTrackStore()
 
-	constructor(resource, x, w) {
+	constructor(resource, x) {
 		this.id = uuidv4();
 		this._x = x;
-		this._w = w;
+		this._w = resource.duration * this.trackStore.secondWidth;
 		this.resource = resource;
 	}
 
@@ -39,7 +46,7 @@ export class LayerUnit {
 	}
 
 	set x(value) {
-		this._x = value;
+		this._x = value / this.scale;
 	}
 
 	get w() {
@@ -47,6 +54,6 @@ export class LayerUnit {
 	}
 
 	set w(value) {
-		this._w = value;
+		this._w = value / this.scale;
 	}
 }
