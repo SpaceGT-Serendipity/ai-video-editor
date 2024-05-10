@@ -1,13 +1,16 @@
 <template>
-	<div class="resource-sample" ref="resourceSampleRef">
+	<div class="resource-sample" ref="resourceSampleRef" v-loading="!data.loaded">
 		<div class="card">
-			<el-image :src="data.cover"></el-image>
+			<el-image :src="data.cover">
+				<template #error>
+					<div class="image-slot">
+						<el-icon size="40">
+							<Picture />
+						</el-icon>
+					</div>
+				</template>
+			</el-image>
 			<div class="shade"></div>
-			<el-button link>
-				<el-icon size="26">
-					<CirclePlusFilled />
-				</el-icon>
-			</el-button>
 			<a class="glightbox video" :href="data.url">
 				<el-button link>
 					<el-icon size="26">
@@ -27,6 +30,7 @@
 	} from '../store/resource-drag.js'
 	import {
 		ref,
+		reactive,
 		onMounted
 	} from 'vue'
 
@@ -37,7 +41,12 @@
 	const resourceSampleRef = ref()
 
 	onMounted(() => {
-		GLightbox();
+		if (!props.data.loaded) {
+			props.data.load()
+		}
+		GLightbox({
+			type: props.data.type
+		});
 
 		let drop = false
 		resourceSampleRef.value.addEventListener('mousedown', (event) => {
@@ -96,12 +105,12 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		width: 105%;
-		height: 105%;
+		width: 110%;
+		height: 110%;
 		opacity: 0;
 		background: radial-gradient(#0006, #000a);
 		border-radius: 5px;
-		transition: height 0.3s, width 0.3s, opacity 0.3s;
+		transition: height 0.2s, width 0.2s, opacity 0.2s;
 	}
 
 	.card .el-button {
@@ -114,15 +123,23 @@
 	}
 
 	.card:hover .shade {
-		opacity: 1;
+		opacity: 0.7;
 	}
 
 	.card:hover .el-image {
-		width: 105%;
-		height: 105%;
+		width: 110%;
+		height: 110%;
 	}
 
 	.card a {
 		-webkit-user-drag: none;
+	}
+
+	.card .image-slot {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 </style>

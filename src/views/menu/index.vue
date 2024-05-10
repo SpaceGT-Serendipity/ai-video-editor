@@ -32,11 +32,11 @@
 		label: 'image',
 		title: '图片'
 	}, {
-		label: 'bgm',
-		title: '背景音乐'
-	}, {
 		label: 'video',
 		title: '视频'
+	}, {
+		label: 'bgm',
+		title: '背景音乐'
 	}]
 	const active = ref('template')
 
@@ -46,7 +46,7 @@
 	}
 
 	onMounted(() => {
-		onClick(menuList[4])
+		onClick(menuList[5])
 	})
 </script>
 

@@ -3,8 +3,8 @@
 		<toolbar v-if="haveResources" ref="toolbarRef" @change-scale="handleToolberChangeScale"></toolbar>
 		<div class="view" ref="dropZoneRef"
 			:style="{'position':isOverDropZone||resourceDragStore.data?'relative':'initial'}">
-			<div class="controller-group" v-if="haveResources">
-				<controller-layer v-for="i in 2"></controller-layer>
+			<div v-if="haveResources" class="controller-group" ref="controllerGroupRef">
+				<controller-layer v-for="item in layers"></controller-layer>
 			</div>
 			<div v-if="haveResources" class="scrollbar" ref="scrollbarRef">
 				<div class="timeline-group">
@@ -52,6 +52,7 @@
 	const timelineRulerRef = ref()
 	const timelineLayersRef = ref()
 	const dropZoneRef = ref()
+	const controllerGroupRef = ref()
 	const uploadDragTipRef = ref()
 	const scrollbarRef = ref()
 	const haveResources = ref(true)
@@ -63,12 +64,117 @@
 			new LayerUnit(new TextResource('梦想是一盏明灯，照亮我们前行的路，无论风雨多大，我们都要坚持不懈。'), 500, 200),
 		],
 		[
-			new LayerUnit(new ImageResource('Image',
-				'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'), 200, 300),
-			new LayerUnit(new VideoResource('Video', 'https://xxxx',
-					'https://mobvoi-digitalhuman-public.weta365.com/d6936343496645138d2f525685fed91e.png'),
-				600, 400),
-		]
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+		[
+			new LayerUnit(new ImageResource({
+				name: 'Image',
+				url: 'https://oss.file.yigee.cn/video/cover/690715a2-002e-4049-88b5-47c37cdf7bf2.png'
+			}), 200, 300),
+
+		],
+
 	])
 
 	/* 本地文件拖拽 */
@@ -77,9 +183,10 @@
 	} = useDropZone(dropZoneRef, {
 		onDrop(files) {
 			files.forEach(file => {
-				layers.value.push([new LayerUnit(new ImageResource(file.name, URL.createObjectURL(file)),
-					0,
-					300)])
+				layers.value.push([new LayerUnit(new ImageResource({
+					name: file.name,
+					url: URL.createObjectURL(file)
+				}), 0, 300)])
 			})
 		},
 		dataTypes: ['image/jpeg', 'image/png']
@@ -92,11 +199,13 @@
 		timelineRulerRef.value.resize(last_position)
 	}
 
+	/**
+	 * 拖拽资源到面板添加元素
+	 */
 	const dragResourceToUploadDragTip = () => {
 		uploadDragTipRef.value.addEventListener('mouseenter', (event) => {
 			if (resourceDragStore.data) {
-				const resource =
-					new ImageResource(resourceDragStore.data.name, resourceDragStore.data.cover)
+				const resource = resourceDragStore.data
 				resourceDragStore.data = null
 				nextTick(() => {
 					const unit_w = 300;
@@ -112,9 +221,21 @@
 			}
 		})
 	}
+	/**
+	 * 轨道图层管理和图层编辑滚动条同步
+	 */
+	const scrollbarSynchronization = () => {
+		const syncScroll = (event) => {
+			timelineLayersRef.value.$el.scrollTop = event.target.scrollTop
+			controllerGroupRef.value.scrollTop = event.target.scrollTop
+		}
+		controllerGroupRef.value.addEventListener('scroll', syncScroll)
+		timelineLayersRef.value.$el.addEventListener('scroll', syncScroll)
+	}
 
 	onMounted(() => {
 		dragResourceToUploadDragTip()
+		scrollbarSynchronization()
 	})
 </script>
 
@@ -128,7 +249,8 @@
 
 	.track .view {
 		display: flex;
-		height: 100%;
+		flex: 1 1 0%;
+		overflow: hidden;
 	}
 
 	.track .view .upload-drag_tip {
@@ -158,12 +280,16 @@
 	}
 
 	.controller-group {
-		flex: 0 0 100px;
-		display: flex;
-		flex-direction: column;
-		padding-top: var(--track-timeline-ruler-height);
+		flex: 0 0 150px;
+		margin-top: var(--track-timeline-ruler-height);
 		border-right: 1px solid var(--el-border-color-lighter);
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-bottom: 8px;
+	}
 
+	.controller-group::-webkit-scrollbar {
+		width: 1px;
 	}
 
 	.controller-group .controller.layer {
@@ -176,18 +302,26 @@
 		flex-direction: column;
 		width: max-content;
 		min-width: 200vw;
+		height: 100%;
 	}
 
 	.timeline-group .timeline.ruler {
-		height: var(--track-timeline-ruler-height);
+		flex: 0 0 var(--track-timeline-ruler-height);
 	}
 
 	.timeline-group .timeline-layers {
 		flex: 1 1 0%;
+		overflow-y: auto;
+	}
+
+	.timeline-group .timeline-layers::-webkit-scrollbar {
+		width: 1px;
 	}
 
 	.scrollbar {
-		overflow: auto;
+		height: 100%;
+		overflow-y: hidden;
+		overflow-x: auto;
 	}
 
 	.scrollbar::-webkit-scrollbar-track {
@@ -210,7 +344,7 @@
 	}
 
 	.scrollbar::-webkit-scrollbar {
-		height: 2px;
+		height: 8px;
 	}
 
 	.scrollbar:hover::-webkit-scrollbar {

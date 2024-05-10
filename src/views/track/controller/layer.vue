@@ -24,12 +24,11 @@
 <style scoped>
 	.controller.layer {
 		display: flex;
-		margin-top: 10px;
+		margin-bottom: 10px;
+		justify-content: center;
 	}
-	
+
 	.controller.layer:first-child {
 		margin-top: 0px;
 	}
-	
-	
 </style>

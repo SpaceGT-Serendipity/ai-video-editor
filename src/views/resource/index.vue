@@ -33,5 +33,26 @@
 		padding: 20px;
 		box-sizing: border-box;
 		height: 100%;
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+	
+	.tabs {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+	
+	.tabs .el-tabs__header {
+		flex: 0 0 0%;
+	}
+	
+	.tabs .el-tabs__content {
+		flex: 1 1 0%
+	}
+	
+	.tabs .el-tab-pane {
+		height: 100%;
 	}
 </style>
