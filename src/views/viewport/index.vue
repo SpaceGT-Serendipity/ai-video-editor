@@ -38,12 +38,6 @@
 						</el-button>
 					</div>
 				</div>
-				<!-- <div style=" bottom: 0; width: 100%; padding: 20px; box-sizing: border-box;">
-					<el-button @click="load">加载</el-button>
-					<el-button @click="run">运行</el-button>
-					<el-button @click="playVideo">播放</el-button>
-					<el-button @click="pauseVideo">暂停</el-button>
-				</div> -->
 			</div>
 		</div>
 		<el-alert title="轨道中的数字人仅支持预览动态形象，合成后可查看口型效果" type="info" show-icon />

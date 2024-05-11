@@ -89,7 +89,8 @@
 		paddingLeft: 5,
 		scrollbarMouseX: 0,
 		scrollbarMouse: useMouse({
-			target: scrollbarRef
+			target: scrollbarRef,
+			type: (event) => [event.x, event.y]
 		})
 	})
 	watch(() => scrollbar.scrollbarMouse.x, (value) => {
@@ -156,8 +157,11 @@
 	}
 	/* 点击 scrollbar 设置 seeker 位置*/
 	const scrollbarMouseDownUpdateSeeker = () => {
-		scrollbarRef.value.addEventListener('mousedown', () => {
-			editorDataStore.setTrackSeeker(scrollbar.scrollbarMouseX)
+		scrollbarRef.value.addEventListener('mousedown', (event) => {
+			const unit = editorDataStore.getMouseDownUnit(event)
+			if (unit == null) {
+				editorDataStore.setTrackSeeker(scrollbar.scrollbarMouseX)
+			}
 		})
 	}
 
