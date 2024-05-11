@@ -40,7 +40,6 @@
 	<BoundaryTips :right="boundaryTipsRight" :bottom="boundaryTipsBottom"></BoundaryTips>
 	<ScreenSizeTips v-if="screenSizeTips"></ScreenSizeTips>
 	<router-view v-else></router-view>
-
 </template>
 
 <style>
@@ -62,5 +61,17 @@
 		min-width: 1200px;
 		min-height: 700px;
 		user-select: none;
+	}
+
+	.debug {
+		display: none;
+		position: absolute;
+		width: max-content;
+		font-size: 12px;
+		padding: 2px 6px;
+	}
+
+	.debug-open .debug {
+		display: initial;
 	}
 </style>

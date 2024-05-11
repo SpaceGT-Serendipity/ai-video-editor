@@ -53,8 +53,8 @@
 	}
 	const addition = () => {
 		scale.value = scale.value + 0.1
-		if (scale.value > 1) {
-			scale.value = 1
+		if (scale.value > 2) {
+			scale.value = 2
 		}
 		emits('changeScale', scale.value)
 	}

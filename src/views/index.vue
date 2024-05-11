@@ -21,7 +21,7 @@
 						<Viewport ref="viewportRef" />
 						<WindowResize direction="row"></WindowResize>
 						<!-- 属性面板 -->
-						<properties-panel ref="propertiesPanelRef"></properties-panel>
+						<properties ref="propertiesPanelRef"></properties>
 					</div>
 				</el-container>
 				<WindowResize direction="column"></WindowResize>
@@ -64,7 +64,7 @@
 	import Resource from './resource/index.vue'
 	import ResourceDragging from '../components/resource-dragging.vue'
 	import Viewport from './viewport/index.vue'
-	import PropertiesPanel from './properties-panel.vue'
+	import Properties from './properties/index.vue'
 	import Track from './track/index.vue'
 	import {
 		ref,

@@ -8,17 +8,23 @@
 		<div class="view" ref="dropZoneRef"
 			:style="{'position':isOverDropZone||resourceDragStore.data?'relative':'initial'}">
 			<div v-show="haveResources" class="controller-group" ref="controllerGroupRef">
-				<controller-layer v-for="item in layers"></controller-layer>
+				<controller-layer v-for="item in editorDataStore.layers"></controller-layer>
 			</div>
 			<div v-show="haveResources" class="scrollbar" ref="scrollbarRef">
+				<div class="debug">
+					Scrollbar Mouse X : {{scrollbar.scrollbarMouseX}}
+				</div>
 				<div class="timeline-group">
 					<timeline-ruler ref="timelineRulerRef" :scale="scale"
 						:time="trackStore.trackTimelineRulerDefultTime"
 						:scale-width="trackStore.trackTimelineRulerScaleWidth"
 						:scale-time="trackStore.trackTimelineRulerScaleTime"></timeline-ruler>
-					<layer-centre ref="timelineLayersRef" v-model="layers" :scale="scale"
+					<layer-centre ref="timelineLayersRef" v-model="editorDataStore.layers" :scale="scale"
 						@on-drag="handleTimelineLayersOnDrag"></layer-centre>
+					<timeline-seeker></timeline-seeker>
+					<layer-unit-virtual-location :drag-data="dragData"></layer-unit-virtual-location>
 				</div>
+
 			</div>
 			<el-empty v-show="!haveResources" :image-size="80" description="暂无内容,请选择左侧资源栏素材到此处" />
 			<div v-show="isOverDropZone||resourceDragStore.data" class="upload-drag_tip" ref="uploadDragTipRef">
@@ -29,6 +35,12 @@
 </template>
 
 <script setup>
+	import Toolbar from './toolbar/index.vue'
+	import ControllerLayer from './controller/layer.vue'
+	import LayerCentre from './layer/index.vue'
+	import LayerUnitVirtualLocation from './layer/unit-virtual-location.vue'
+	import TimelineRuler from './ruler/index.vue'
+	import TimelineSeeker from './seeker/index.vue'
 	import {
 		LayerUnit
 	} from '../../bean/LayerUnit.js'
@@ -37,30 +49,31 @@
 		ImageResource,
 		VideoResource
 	} from '../../bean/Resource.js'
-	import Toolbar from './toolbar/index.vue'
-	import ControllerLayer from './controller/layer.vue'
-	import LayerCentre from './layer/index.vue'
-	import TimelineRuler from './ruler/index.vue'
+
 	import {
-		useDropZone
+		useDropZone,
+		useMouse
 	} from '@vueuse/core'
 	import {
 		ref,
 		reactive,
 		onMounted,
 		nextTick,
-		computed
+		computed,
+		watch
 	} from 'vue'
 	import {
 		useResourceDragStore
 	} from '../../store/resource.js'
 	import {
-		useTrackStore,
-		useTrackDataStore
+		useTrackStore
 	} from '../../store/track.js'
+	import {
+		useEditorDataStore
+	} from '../../store/editor.js'
 
 	const trackStore = useTrackStore()
-	const trackDataStore = useTrackDataStore()
+	const editorDataStore = useEditorDataStore()
 	const resourceDragStore = useResourceDragStore()
 	const toolbarRef = ref()
 	const timelineRulerRef = ref()
@@ -68,10 +81,21 @@
 	const dropZoneRef = ref()
 	const controllerGroupRef = ref()
 	const uploadDragTipRef = ref()
-	const scrollbarRef = ref()
 	const scale = ref(1)
-	const layers = reactive([])
-	const haveResources = computed(() => layers.length > 0)
+	const dragData = ref(null)
+	const haveResources = computed(() => editorDataStore.layers.length > 0)
+	const scrollbarRef = ref()
+	const scrollbar = reactive({
+		paddingLeft: 5,
+		scrollbarMouseX: 0,
+		scrollbarMouse: useMouse({
+			target: scrollbarRef
+		})
+	})
+	watch(() => scrollbar.scrollbarMouse.x, (value) => {
+		scrollbar.scrollbarMouseX = value - scrollbarRef.value.offsetLeft - scrollbar.paddingLeft + scrollbarRef
+			.value.scrollLeft
+	})
 
 	/* 本地文件拖拽 */
 	const {
@@ -79,7 +103,7 @@
 	} = useDropZone(dropZoneRef, {
 		onDrop(files) {
 			files.forEach(file => {
-				layers.push([new LayerUnit(new ImageResource({
+				editorDataStore.layers.push([new LayerUnit(new ImageResource({
 					name: file.name,
 					url: URL.createObjectURL(file)
 				}), 0, 300)])
@@ -91,12 +115,11 @@
 		scale.value = data.toFixed(2) * 1
 	}
 	const handleTimelineLayersOnDrag = (event) => {
+		dragData.value = event
 		const last_position = event.x + event.w
 		timelineRulerRef.value.resize(last_position)
 	}
-	/**
-	 * 拖拽资源到面板添加元素
-	 */
+	/* 拖拽资源到面板添加元素  */
 	const dragResourceToUploadDragTip = () => {
 		uploadDragTipRef.value.addEventListener('mouseenter', (event) => {
 			if (resourceDragStore.data) {
@@ -115,16 +138,14 @@
 						// 单元宽度的一半，指针指向中间
 						(unit.w / 2)
 					unit.x = x;
-					layers.push([unit])
+					editorDataStore.layers.push([unit])
 					// 主动触发单元点击事件
 					nextTick(() => unit.instance.exposed.onMousedown(event))
 				})
 			}
 		})
 	}
-	/**
-	 * 轨道图层管理和图层编辑滚动条同步
-	 */
+	/*  轨道图层管理和图层编辑滚动条同步 */
 	const scrollbarSynchronization = () => {
 		const syncScroll = (event) => {
 			timelineLayersRef.value.$el.scrollTop = event.target.scrollTop
@@ -133,10 +154,17 @@
 		controllerGroupRef.value.addEventListener('scroll', syncScroll)
 		timelineLayersRef.value.$el.addEventListener('scroll', syncScroll)
 	}
+	/* 点击 scrollbar 设置 seeker 位置*/
+	const scrollbarMouseDownUpdateSeeker = () => {
+		scrollbarRef.value.addEventListener('mousedown', () => {
+			editorDataStore.setTrackSeeker(scrollbar.scrollbarMouseX)
+		})
+	}
 
 	onMounted(() => {
 		dragResourceToUploadDragTip()
 		scrollbarSynchronization()
+		scrollbarMouseDownUpdateSeeker()
 	})
 </script>
 
@@ -202,6 +230,7 @@
 
 
 	.timeline-group {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		width: max-content;
@@ -226,6 +255,7 @@
 		height: 100%;
 		overflow-y: hidden;
 		overflow-x: auto;
+		padding-left: 5px;
 	}
 
 	.scrollbar::-webkit-scrollbar-track {
@@ -255,5 +285,29 @@
 		height: 8px;
 		background-color: var(--scrollbar-background-color);
 		cursor: pointer;
+	}
+</style>
+<style scoped>
+	.virtual-location {
+		position: absolute;
+		display: none;
+		width: 200px;
+		height: 50px;
+		top: 50%;
+		background-color: #8885;
+		opacity: 0.7;
+		border-radius: 5px;
+		pointer-events: none;
+		font-size: 14px;
+		align-items: center;
+		z-index: 2;
+	}
+
+	.virtual-location * {
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 </style>

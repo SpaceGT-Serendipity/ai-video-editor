@@ -3,16 +3,25 @@
 		<ruler-item :width="configOptions.scaleWidth+'px'" v-for="i in scaleCount"
 			:time="(i-1)*configOptions.scaleTime"></ruler-item>
 	</div>
+
 </template>
 <script setup>
 	import RulerItem from './item.vue'
 	import {
+		ref,
 		reactive,
 		computed,
 		onMounted,
 		watch
 	} from 'vue'
+	import {
+		refThrottled
+	} from '@vueuse/core'
+	import {
+		useTrackRulerConfigStore
+	} from '../../../store/track.js'
 
+	const trackRulerConfigStore = useTrackRulerConfigStore()
 	const props = defineProps({
 		scale: {
 			type: Number,
@@ -28,8 +37,14 @@
 		scaleTime: props.scaleTime
 	})
 	const scaleCount = computed(() => parseInt(configOptions.totalTime / configOptions.scaleTime) + 1)
+	const scale = ref(props.scale)
+	const scaleThrottled = refThrottled(scale, trackRulerConfigStore.scaleThrottledTime)
 
 	watch(() => props.scale, (value) => {
+		scale.value = props.scale
+	})
+
+	watch(() => scaleThrottled.value, (value) => {
 		configOptions.scaleTime = parseInt(props.scaleTime / value)
 		resize()
 	})
@@ -47,9 +62,11 @@
 			window.dispatchEvent(new Event('resize'));
 		}
 	}
+
 	onMounted(() => {
 		resize()
 	})
+
 	defineExpose({
 		resize
 	})

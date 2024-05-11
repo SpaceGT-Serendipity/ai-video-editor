@@ -58,8 +58,8 @@
 </template>
 
 <script setup>
-	import ElSliderPlus from '../components/panel/el-slider-plus.vue'
-	import ElPosition from '../components/panel/el-position.vue'
+	import ElSliderPlus from '../../components/panel/el-slider-plus.vue'
+	import ElPosition from '../../components/panel/el-position.vue'
 	import {
 		ref,
 		reactive

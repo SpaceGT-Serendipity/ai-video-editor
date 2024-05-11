@@ -154,5 +154,5 @@ const ImageResourceStyle = `
     height: 100%;
     background-repeat: repeat-x;
     background-size: contain;
-	background-position: center;
+	background-position: left;
 `

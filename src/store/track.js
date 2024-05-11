@@ -15,7 +15,7 @@ export const useTrackStore = defineStore('track', {
 		// 时间尺每个范围时长（毫秒）
 		trackTimelineRulerScaleTime: 1000 * 10,
 		// 时间尺默认时长（毫秒）
-		trackTimelineRulerDefultTime: 1000 * 60 * 20
+		trackTimelineRulerDefultTime: 1000 * 60 * 20,
 	}),
 	getters: {
 		// 每秒宽度（px）
@@ -23,8 +23,10 @@ export const useTrackStore = defineStore('track', {
 	},
 })
 
-export const useTrackDataStore = defineStore('track-data', {
+
+export const useTrackRulerConfigStore = defineStore('track-ruler-config', {
 	state: () => ({
-		list: []
+		// 对缩放值进行节流，减少尺子长度和时间标识的渲染次数。避免拖动缩放进度条的卡顿现象。 默认渲染延迟50毫秒，如果你的配置还卡顿可增加延迟。
+		scaleThrottledTime: 50
 	}),
 })
