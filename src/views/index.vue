@@ -7,7 +7,7 @@
 			</Header>
 		</el-header>
 		<el-container>
-			<el-aside>
+			<el-aside ref="menuRef">
 				<!-- 资源库菜单 -->
 				<Menu @click="resourceRef.load($event)" />
 			</el-aside>
@@ -30,7 +30,7 @@
 				</Track>
 			</el-container>
 		</el-container>
-		<el-footer>
+		<el-footer ref="footerRef">
 			<!-- 底部信息 -->
 			<Footer></Footer>
 		</el-footer>
@@ -40,6 +40,9 @@
 	<el-tour v-model="openTour">
 		<el-tour-step :target="headerRef?.$el" title="头部导航栏">
 			可以设置项目名称，切换主题和语言，合成视频。
+		</el-tour-step>
+		<el-tour-step :target="menuRef?.$el" title="菜单栏" placement="right">
+			可以在此处切换资源列表。
 		</el-tour-step>
 		<el-tour-step :target="resourceRef?.$el" title="资源列表">
 			选择需要的素材拖入时间线中，可上传本地文件。
@@ -52,6 +55,9 @@
 		</el-tour-step>
 		<el-tour-step :target="trackRef?.$el" title="时间线编辑器">
 			将素材拖入时间线，开始编辑。
+		</el-tour-step>
+		<el-tour-step :target="footerRef?.$el" title="时间线编辑器">
+			此处会显示操作提示，并且提供一些视频信息。
 		</el-tour-step>
 	</el-tour>
 </template>
@@ -72,11 +78,13 @@
 	} from 'vue'
 
 	const headerRef = ref()
+	const menuRef = ref()
 	const resourceRef = ref()
 	const resourceDraggingRef = ref()
 	const viewportRef = ref()
-	const trackRef = ref()
 	const propertiesPanelRef = ref()
+	const trackRef = ref()
+	const footerRef = ref()
 	const openTour = ref(false)
 </script>
 

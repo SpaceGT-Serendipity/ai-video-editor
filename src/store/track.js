@@ -16,6 +16,8 @@ export const useTrackStore = defineStore('track', {
 		trackTimelineRulerScaleTime: 1000 * 10,
 		// 时间尺默认时长（毫秒）
 		trackTimelineRulerDefultTime: 1000 * 60 * 20,
+		// 时间线滚动区域左侧内边距 (px)
+		trackTimelineScrollbarPaddingLeft: 5
 	}),
 	getters: {
 		// 每秒宽度（px）

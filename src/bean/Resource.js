@@ -37,7 +37,6 @@ export class TextResource extends Resource {
 	}
 }
 
-
 export class ImageResource extends Resource {
 
 	_type = 'image';

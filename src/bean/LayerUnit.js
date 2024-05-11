@@ -5,8 +5,6 @@ import {
 	useTrackStore
 } from '../store/track.js'
 
-
-
 export class LayerUnit {
 	/* 缩放 */
 	scale = 1;

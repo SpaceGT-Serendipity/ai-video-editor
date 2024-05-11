@@ -58,8 +58,11 @@
 	import {
 		dateFormat
 	} from '../../utils/time.js'
+	import {
+		useEditorDataStore
+	} from '../../store/editor.js'
 
-
+	const editorDataStore = useEditorDataStore()
 	const playState = ref(false)
 	const currentTime = ref(0)
 	const totalTime = ref(0)

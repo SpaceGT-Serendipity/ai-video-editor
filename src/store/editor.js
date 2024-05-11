@@ -12,7 +12,6 @@ export const useEditorDataStore = defineStore('editor-data', {
 		videoTotalDuration() {
 			return 50
 		},
-
 	},
 	actions: {
 		setTrackSeeker(x) {

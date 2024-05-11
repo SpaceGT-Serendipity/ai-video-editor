@@ -16,7 +16,8 @@
 	import {
 		ref,
 		watch,
-		onMounted
+		onMounted,
+		computed
 	} from 'vue'
 
 	const emits = defineEmits(['onDrag', 'onDrop'])

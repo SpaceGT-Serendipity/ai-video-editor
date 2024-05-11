@@ -86,7 +86,7 @@
 	const haveResources = computed(() => editorDataStore.layers.length > 0)
 	const scrollbarRef = ref()
 	const scrollbar = reactive({
-		paddingLeft: 5,
+		paddingLeft: useTrackStore.trackTimelineScrollbarPaddingLeft,
 		scrollbarMouseX: 0,
 		scrollbarMouse: useMouse({
 			target: scrollbarRef,

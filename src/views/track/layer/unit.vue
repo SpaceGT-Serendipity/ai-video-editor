@@ -20,7 +20,7 @@
 	const unitRef = ref()
 	const emits = defineEmits(['onDrag', 'onResize'])
 	const props = defineProps({
-		data: Object
+		data: Object 
 	})
 	const config = reactive({
 		className: 'layer-unit',
@@ -36,7 +36,7 @@
 		minWidth: 30,
 		handles: ['mr', 'ml'], // 拖动手柄只保留左右
 	})
-	
+
 	watch(() => props.data.x, (value) => {
 		config.x = value
 	})
@@ -46,15 +46,13 @@
 
 	// 拖拽事件
 	const onDrag = (x, y) => {
-		props.data.x = x
-		props.data.y = y
+		props.data.x = parseInt(x)
 		emits('onDrag', props.data)
-		// 碰撞检测
 		return true
 	}
 	// 修改大小事件
 	const onResize = (handle, x, y, width, height) => {
-		props.data.x = x
+		props.data.x = parseInt(x)
 		props.data.w = width;
 	}
 	// 拖拽中事件
