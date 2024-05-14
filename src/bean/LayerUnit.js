@@ -40,7 +40,7 @@ export class LayerUnit {
 	}
 
 	get x() {
-		return this._x * this.scale;
+		return parseInt(this._x * this.scale);
 	}
 
 	set x(value) {
@@ -48,7 +48,7 @@ export class LayerUnit {
 	}
 
 	get w() {
-		return this._w * this.scale;
+		return parseInt(this._w * this.scale);
 	}
 
 	set w(value) {

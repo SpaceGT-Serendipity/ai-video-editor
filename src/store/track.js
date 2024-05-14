@@ -7,21 +7,25 @@ export const useTrackStore = defineStore('track', {
 		// 控制区域宽度
 		controllerGroupWidth: 150,
 		// 图层高度
-		trackLayerHeight: 45,
+		layerHeight: 45,
 		// 时间尺高度
-		trackTimelineRulerHeight: 40,
+		rulerHeight: 40,
 		// 时间尺每个范围宽度（px）
-		trackTimelineRulerScaleWidth: 150,
+		rulerScaleWidth: 150,
 		// 时间尺每个范围时长（毫秒）
-		trackTimelineRulerScaleTime: 1000 * 10,
+		rulerScaleTime: 1000 * 10,
 		// 时间尺默认时长（毫秒）
-		trackTimelineRulerDefultTime: 1000 * 60 * 20,
+		rulerDefultTime: 1000 * 60 * 20,
 		// 时间线滚动区域左侧内边距 (px)
-		trackTimelineScrollbarPaddingLeft: 5
+		trackTimelineScrollbarPaddingLeft: 5,
+		// 元素虚拟位置于元素启动吸附
+		unitAdsorption: true,
+		// 吸附判定范围(px)
+		unitAdsorptionDecisionRange: 10
 	}),
 	getters: {
 		// 每秒宽度（px）
-		secondWidth: (state) => state.trackTimelineRulerScaleWidth / (state.trackTimelineRulerScaleTime / 1000),
+		secondWidth: (state) => state.rulerScaleWidth / (state.rulerScaleTime / 1000),
 	},
 })
 

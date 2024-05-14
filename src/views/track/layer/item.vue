@@ -1,7 +1,7 @@
 <template>
 	<!-- 图层 -->
 	<div class="timeline layer container" ref="containerRef">
-		<layer-unit v-for="(item,index) in modelValue" :key="item.id" :data="item" @on-drag="emits('onDrag', $event)">
+		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item" @on-drag="onDrag">
 			<div class="view" v-html="item.view"></div>
 		</layer-unit>
 	</div>
@@ -17,19 +17,28 @@
 		ref,
 		watch,
 		onMounted,
-		computed
+		computed,
+		getCurrentInstance
 	} from 'vue'
 
+	const instance = getCurrentInstance()
 	const emits = defineEmits(['onDrag', 'onDrop'])
 	const props = defineProps({
-		modelValue: Array,
+		modelValue: Object,
 		dropData: Object,
 		last: Boolean
 	})
 	const containerRef = ref()
 	const layerGapRef = ref()
 
+	const onDrag = (event) => {
+		emits('onDrag', event)
+		const unit = props.modelValue.units.find(item => item.id == event.id)
+		// console.log(unit)
+	}
+
 	onMounted(() => {
+		props.modelValue.instance = instance
 		// 拖拽至追加位置
 		containerRef.value.addEventListener('mouseenter', (event) => {
 			if (props.dropData && props.dropData.dragging) {

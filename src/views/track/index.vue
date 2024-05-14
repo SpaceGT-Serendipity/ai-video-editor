@@ -1,8 +1,8 @@
 <template>
 	<div class="track" :style="{
 		'--controller-group-width':`${trackStore.controllerGroupWidth}px`,
-		'--track-layer-height':`${trackStore.trackLayerHeight}px`,
-		'--track-timeline-ruler-height':`${trackStore.trackTimelineRulerHeight}px`
+		'--track-layer-height':`${trackStore.layerHeight}px`,
+		'--track-timeline-ruler-height':`${trackStore.rulerHeight}px`
 	}">
 		<toolbar v-show="haveResources" ref="toolbarRef" @change-scale="handleToolberChangeScale"></toolbar>
 		<div class="view" ref="dropZoneRef"
@@ -16,9 +16,9 @@
 				</div>
 				<div class="timeline-group">
 					<timeline-ruler ref="timelineRulerRef" :scale="scale"
-						:time="trackStore.trackTimelineRulerDefultTime"
-						:scale-width="trackStore.trackTimelineRulerScaleWidth"
-						:scale-time="trackStore.trackTimelineRulerScaleTime"></timeline-ruler>
+						:time="trackStore.rulerDefultTime"
+						:scale-width="trackStore.rulerScaleWidth"
+						:scale-time="trackStore.rulerScaleTime"></timeline-ruler>
 					<layer-centre ref="timelineLayersRef" v-model="editorDataStore.layers" :scale="scale"
 						@on-drag="handleTimelineLayersOnDrag"></layer-centre>
 					<timeline-seeker></timeline-seeker>
@@ -44,6 +44,9 @@
 	import {
 		LayerUnit
 	} from '../../bean/LayerUnit.js'
+	import {
+		Layer
+	} from '../../bean/Layer.js'
 	import {
 		TextResource,
 		ImageResource,
@@ -86,7 +89,7 @@
 	const haveResources = computed(() => editorDataStore.layers.length > 0)
 	const scrollbarRef = ref()
 	const scrollbar = reactive({
-		paddingLeft: useTrackStore.trackTimelineScrollbarPaddingLeft,
+		paddingLeft: trackStore.trackTimelineScrollbarPaddingLeft,
 		scrollbarMouseX: 0,
 		scrollbarMouse: useMouse({
 			target: scrollbarRef,
@@ -94,8 +97,10 @@
 		})
 	})
 	watch(() => scrollbar.scrollbarMouse.x, (value) => {
-		scrollbar.scrollbarMouseX = value - scrollbarRef.value.offsetLeft - scrollbar.paddingLeft + scrollbarRef
-			.value.scrollLeft
+		scrollbar.scrollbarMouseX = value -
+			scrollbarRef.value.offsetLeft -
+			scrollbar.paddingLeft +
+			scrollbarRef.value.scrollLeft
 	})
 
 	/* 本地文件拖拽 */
@@ -104,10 +109,12 @@
 	} = useDropZone(dropZoneRef, {
 		onDrop(files) {
 			files.forEach(file => {
-				editorDataStore.layers.push([new LayerUnit(new ImageResource({
-					name: file.name,
-					url: URL.createObjectURL(file)
-				}), 0, 300)])
+				editorDataStore.layers.push(
+					Layer.list(new LayerUnit(new ImageResource({
+						name: file.name,
+						url: URL.createObjectURL(file)
+					}), 0))
+				)
 			})
 		},
 		dataTypes: ['image/jpeg', 'image/png']
@@ -139,7 +146,7 @@
 						// 单元宽度的一半，指针指向中间
 						(unit.w / 2)
 					unit.x = x;
-					editorDataStore.layers.push([unit])
+					editorDataStore.layers.push(Layer.list(unit))
 					// 主动触发单元点击事件
 					nextTick(() => unit.instance.exposed.onMousedown(event))
 				})
@@ -158,7 +165,7 @@
 	/* 点击 scrollbar 设置 seeker 位置*/
 	const scrollbarMouseDownUpdateSeeker = () => {
 		scrollbarRef.value.addEventListener('mousedown', (event) => {
-			const unit = editorDataStore.getMouseDownUnit(event)
+			const unit = editorDataStore.getUnitUnderMouse(event)
 			if (unit == null) {
 				editorDataStore.setTrackSeeker(scrollbar.scrollbarMouseX)
 			}

@@ -2,7 +2,8 @@
 	<vue-draggable-resizable ref="unitRef" :class-name="config.className" :class-name-active="config.classNameActive"
 		:parent="config.parent" :prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x"
 		:y="config.y" :w="config.w" :h="config.h" :z="config.z" :min-width="config.minWidth" :handles="config.handles"
-		:on-drag="onDrag" :on-resize="onResize" @dragging="onDragging" @drag-stop="onDragStop">
+		:on-drag="onDrag" :on-resize="onResize" @dragging="onDragging" @drag-stop="onDragStop" :snap="true"
+		:grid="config.grid">
 		<slot></slot>
 	</vue-draggable-resizable>
 </template>
@@ -15,12 +16,20 @@
 		watch,
 		getCurrentInstance
 	} from 'vue'
+	import {
+		useTrackStore
+	} from '../../../store/track.js'
+	import {
+		useEditorDataStore
+	} from '../../../store/editor.js'
 
 	const instance = getCurrentInstance()
+	const trackStore = useTrackStore()
+	const editorDataStore = useEditorDataStore()
 	const unitRef = ref()
 	const emits = defineEmits(['onDrag', 'onResize'])
 	const props = defineProps({
-		data: Object 
+		data: Object
 	})
 	const config = reactive({
 		className: 'layer-unit',
@@ -35,6 +44,7 @@
 		z: 1, //z-index索引
 		minWidth: 30,
 		handles: ['mr', 'ml'], // 拖动手柄只保留左右
+		grid: [1, 1] // 对齐网格
 	})
 
 	watch(() => props.data.x, (value) => {
@@ -46,9 +56,12 @@
 
 	// 拖拽事件
 	const onDrag = (x, y) => {
+		let allowed = true
 		props.data.x = parseInt(x)
+		// 开启吸附
+		if (trackStore.unitAdsorption) adsorption(x)
 		emits('onDrag', props.data)
-		return true
+		return false
 	}
 	// 修改大小事件
 	const onResize = (handle, x, y, width, height) => {
@@ -56,7 +69,7 @@
 		props.data.w = width;
 	}
 	// 拖拽中事件
-	const onDragging = () => {
+	const onDragging = (x, y) => {
 		props.data.dragging = true
 		emits('onDrag', props.data)
 	}
@@ -76,9 +89,42 @@
 		});
 		unitRef.value.$el.dispatchEvent(mouseEvent)
 	}
+	// 吸附判定
+	const adsorption = (x) => {
+		let headLines = []
+		let tailLines = []
+		const layer = editorDataStore.getLayerByUnitId(props.data.id)
+		layer.units.forEach(item => {
+			if (item.id != props.data.id) {
+				headLines.push(parseInt(item.x))
+				tailLines.push(parseInt(item.x + item.w))
+			}
+		})
+		for (let i = 0; i < headLines.length; i++) {
+			// 头-尾对齐
+			if (x > (tailLines[i] - trackStore.unitAdsorptionDecisionRange * 2) &&
+				x < (tailLines[i] + trackStore.unitAdsorptionDecisionRange)) {
+				props.data.x = tailLines[i]
+			}
+			// 尾-头对齐
+			if ((x + config.w) > (headLines[i] - trackStore.unitAdsorptionDecisionRange) &&
+				(x + config.w) < (headLines[i] + trackStore.unitAdsorptionDecisionRange * 2)) {
+				props.data.x = headLines[i] - config.w
+			}
+		}
+	}
 
 	onMounted(() => {
 		props.data.instance = instance
+		// 元素点击更新拖拽状态
+		unitRef.value.$el.addEventListener('mousedown', (event) => {
+			props.data.dragging = true
+			emits('onDrag', props.data)
+		});
+		document.addEventListener('mouseup', (event) => {
+			props.data.dragging = false
+			emits('onDrag', props.data)
+		});
 	})
 
 	defineExpose({

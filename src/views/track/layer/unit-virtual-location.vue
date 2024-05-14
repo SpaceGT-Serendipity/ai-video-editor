@@ -12,12 +12,15 @@
 	import {
 		useTrackStore
 	} from '../../../store/track.js'
+	import {
+		useEditorDataStore
+	} from '../../../store/editor.js'
 
 	const props = defineProps({
 		dragData: Object
 	})
-
 	const trackStore = useTrackStore()
+	const editorDataStore = useEditorDataStore()
 	const virtualLocationRef = ref()
 
 	/* 拖拽元素事件虚拟位置显示 */
@@ -27,12 +30,12 @@
 		const renderDrag = (event) => {
 			if (drop && props.dragData && props.dragData.dragging) {
 				const mouseY = event.pageY;
-				const parentX = parentElement.offsetLeft + trackStore.trackTimelineScrollbarPaddingLeft;
-				const parentY = parentElement.offsetTop;
-				const parentScrollX = parentElement.scrollLeft;
 				const unitRef = props.dragData.instance.setupState.unitRef
 				const rect = unitRef.$el.getBoundingClientRect()
 				if (mouseY > (rect.top + props.dragData.h) || mouseY < (rect.top)) {
+					const parentX = parentElement.offsetLeft + trackStore.trackTimelineScrollbarPaddingLeft;
+					const parentY = parentElement.offsetTop;
+					const parentScrollX = parentElement.scrollLeft;
 					virtualLocationRef.value.style.display = 'flex';
 					virtualLocationRef.value.style.width = rect.width + 'px';
 					virtualLocationRef.value.style.height = rect.width.height + 'px';
