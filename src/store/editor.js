@@ -57,6 +57,10 @@ export const useEditorDataStore = defineStore('editor-data', {
 		},
 		getLayerByUnitId(unitId) {
 			return this.layers.find(layer => layer.units.find(unit => unit.id == unitId))
+		},
+		delLayerById(layerId) {
+			const index = this.layers.findIndex(layer => layer.id == layerId)
+			this.layers.splice(index, 1)
 		}
 	}
 })

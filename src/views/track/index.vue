@@ -8,15 +8,14 @@
 		<div class="view" ref="dropZoneRef"
 			:style="{'position':isOverDropZone||resourceDragStore.data?'relative':'initial'}">
 			<div v-show="haveResources" class="controller-group" ref="controllerGroupRef">
-				<controller-layer v-for="item in editorDataStore.layers"></controller-layer>
+				<controller-layer v-for="item in editorDataStore.layers" :key="item.id" :data="item"></controller-layer>
 			</div>
 			<div v-show="haveResources" class="scrollbar" ref="scrollbarRef">
 				<div class="debug">
 					Scrollbar Mouse X : {{scrollbar.scrollbarMouseX}}
 				</div>
 				<div class="timeline-group">
-					<timeline-ruler ref="timelineRulerRef" :scale="scale"
-						:time="trackStore.rulerDefultTime"
+					<timeline-ruler ref="timelineRulerRef" :scale="scale" :time="trackStore.rulerDefultTime"
 						:scale-width="trackStore.rulerScaleWidth"
 						:scale-time="trackStore.rulerScaleTime"></timeline-ruler>
 					<layer-centre ref="timelineLayersRef" v-model="editorDataStore.layers" :scale="scale"

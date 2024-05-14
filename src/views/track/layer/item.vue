@@ -1,7 +1,7 @@
 <template>
 	<!-- 图层 -->
 	<div class="timeline layer container" ref="containerRef">
-		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item" @on-drag="onDrag">
+		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item" @on-drag="emits('onDrag', $event)">
 			<div class="view" v-html="item.view"></div>
 		</layer-unit>
 	</div>
@@ -30,12 +30,6 @@
 	})
 	const containerRef = ref()
 	const layerGapRef = ref()
-
-	const onDrag = (event) => {
-		emits('onDrag', event)
-		const unit = props.modelValue.units.find(item => item.id == event.id)
-		// console.log(unit)
-	}
 
 	onMounted(() => {
 		props.modelValue.instance = instance
