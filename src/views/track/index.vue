@@ -138,6 +138,7 @@
 					const unit = new LayerUnit({
 						resource
 					})
+					unit.track.scale = scale.value
 					// 元素坐标
 					const x =
 						// 鼠标位置
@@ -149,6 +150,7 @@
 						// 单元宽度的一半，指针指向中间
 						(unit.track.w / 2)
 					unit.track.x = x;
+					console.log(unit.track)
 					editorDataStore.layers.push(Layer.list(unit))
 					// 主动触发单元点击事件
 					nextTick(() => unit.track.instance.exposed.onMousedown(event))

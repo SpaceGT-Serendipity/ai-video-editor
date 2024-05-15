@@ -30,8 +30,8 @@ export default class Track {
 
 	clone() {
 		return new Track({
-			x: this.x,
-			w: this.w,
+			x: this._x,
+			w: this._w,
 			scale: this.scale
 		})
 	}

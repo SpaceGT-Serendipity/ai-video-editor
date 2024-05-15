@@ -36,7 +36,7 @@
 
 	watch(() => props.scale, (value) => {
 		layers.value.forEach(layer => {
-			layer.units.forEach(unit => unit.scale = value)
+			layer.units.forEach(unit => unit.track.scale = value)
 		})
 	})
 

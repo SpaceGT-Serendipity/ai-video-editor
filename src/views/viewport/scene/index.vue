@@ -54,7 +54,7 @@
 				const unit = layer.units[j]
 				if (!unit.scene.loaded) {
 					await unit.scene.load(unit.resource)
-					console.log(unit.scene)
+					// console.log(unit.scene)
 					app.stage.addChild(unit.scene.container);
 					// loadVideo(app, unit.scene.sprite)
 				}
