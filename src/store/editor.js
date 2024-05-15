@@ -13,9 +13,10 @@ export const useEditorDataStore = defineStore('editor-data', {
 			return 50
 		},
 		layersSimplify() {
-			return this.layers.map(layer => {
-				return layer;
-			})
+			return this.layers.map(layer => layer.simplify)
+		},
+		layersScenes() {
+			return this.layers.map(layer => layer.scenes)
 		}
 	},
 	actions: {

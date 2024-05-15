@@ -66,6 +66,7 @@ function mountMoveDecisionRange(app, sprite, decision_range) {
 	graphics.interactive = true
 	graphics.on('mousemove', (event) => app.view.style.cursor = 'move');
 	graphics.on('mouseout', (event) => app.view.style.cursor = 'move');
+	console.log(sprite)
 	sprite.addChild(graphics);
 }
 

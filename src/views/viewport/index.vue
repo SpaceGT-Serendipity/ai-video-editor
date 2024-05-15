@@ -1,6 +1,6 @@
 <template>
 	<div class="viewport" ref="viewportRef">
-		<div class="adaptive-size">
+		<div class="adaptive-size" ref="adaptiveSizeRef">
 			<Scene ref="sceneRef" @load="handleSceneLoad"></Scene>
 		</div>
 		<div class="options">
@@ -48,12 +48,14 @@
 	import SelectSceneSize from '../../components/select-scene-size.vue'
 	import SelectSceneSpeed from '../../components/select-scene-speed.vue'
 	import {
-		useFullscreen
+		useFullscreen,
+		useElementSize
 	} from '@vueuse/core'
 	import Scene from './scene/index.vue'
 	import {
 		ref,
-		onMounted
+		onMounted,
+		watch
 	} from 'vue'
 	import {
 		dateFormat
@@ -61,9 +63,14 @@
 	import {
 		useEditorDataStore
 	} from '../../store/editor.js'
+	import {
+		useSceneStore
+	} from '../../store/scene.js'
 
 	const editorDataStore = useEditorDataStore()
+	const sceneStore = useSceneStore()
 	const playState = ref(false)
+	const adaptiveSizeRef = ref()
 	const currentTime = ref(0)
 	const totalTime = ref(0)
 	const sceneRef = ref()
@@ -74,6 +81,20 @@
 		exit,
 		toggle
 	} = useFullscreen(viewportRef)
+	const adaptiveSize = useElementSize(adaptiveSizeRef)
+
+	watch(() => ({
+		width: adaptiveSize.width.value,
+		height: adaptiveSize.height.value
+	}), ({
+		width,
+		height
+	}) => {
+		const widthScale = width / sceneStore.width
+		const heightScale = height / sceneStore.height
+		if (widthScale < heightScale) sceneStore.scale = widthScale
+		else sceneStore.scale = heightScale
+	})
 
 	const speed = ref()
 
@@ -88,11 +109,9 @@
 
 	}
 	const handleSceneLoad = () => {
-		
+
 	}
-	onMounted(() => {
-		
-	})
+	onMounted(() => {})
 </script>
 
 <style scoped>
@@ -107,10 +126,12 @@
 	.adaptive-size {
 		overflow: hidden;
 		flex: 1 1 0%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	.scene {
-		height: 100%;
 		display: flex;
 		text-align: center;
 		justify-content: center;

@@ -52,4 +52,15 @@ export default class Track {
 	set w(value) {
 		this._w = value / this.scale;
 	}
+
+
+	get simplify() {
+		return {
+			scale: this.scale,
+			x: this.x,
+			w: this.w,
+			h: this.h,
+			dragging: this.dragging
+		}
+	}
 }

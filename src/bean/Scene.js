@@ -3,10 +3,10 @@ import {
 } from 'uuid'
 const {
 	Assets,
+	Container,
 	Sprite,
 	Text,
-	TextStyle,
-	Loader
+	TextStyle
 } = PIXI;
 import {
 	mountMove,
@@ -18,31 +18,25 @@ import {
 } from './SceneSpriteScale.js'
 
 export default class Scene {
-	sprite = null
 	loaded = false
+	sprite = null
+	container = null
 
 	constructor({
 		resource
 	}) {
 		this.id = uuidv4()
-		this.load({
+	}
+
+	async load(resource) {
+		this.container = new Container()
+		await loadAssets({
 			alias: this.id,
 			src: resource.url,
 			loadParser: getLoadParserName(resource.type)
 		})
-	}
-
-	async load({
-		alias,
-		src,
-		loadParser
-	}) {
-		await loadAssets({
-			alias,
-			src,
-			loadParser
-		})
 		this.sprite = Sprite.from(this.id);
+		this.container.addChild(this.sprite)
 		this.loaded = true
 	}
 }
@@ -94,16 +88,15 @@ const loadImg = async (app) => {
 	sprite.y = app.screen.height / 2;
 	app.stage.addChild(sprite);
 }
-const loadVideo = async (app, assetPath = '/assets/video/xgplayer.mp4') => {
-	const video = await Assets.load(assetPath);
-	console.log(video)
-	// const sprite = new Sprite(video);
-	// sprite.x = app.screen.width / 2;
-	// sprite.y = app.screen.height / 2;
-	// sprite.anchor.set(0.5);
-	// sprite.interactive = true
-	// app.stage.addChild(sprite);
-	// mountMove(app, sprite)
+const loadVideo = async (app, sprite) => {
+	sprite.x = app.screen.width / 2;
+	sprite.y = app.screen.height / 2;
+	sprite.anchor.set(0.5);
+	sprite.interactive = true
+	app.stage.addChild(sprite);
+	setTimeout(() => {
+		// mountMove(app, sprite)
+	}, 1000)
 	// mountScale(app, sprite)
 }
 const loadBackground = async (app) => {

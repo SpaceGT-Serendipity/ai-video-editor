@@ -1,5 +1,5 @@
 <template>
-	<div class="scene"></div>
+	<div class="scene" :style="{'transform':`scale(${sceneStore.scale})`}"></div>
 </template>
 
 <script setup>
@@ -21,12 +21,15 @@
 		reactifyObject,
 		watchArray
 	} from '@vueuse/core'
-	import {
-		Sound
-	} from '@pixi/sound'
+	// import {
+	// 	Sound
+	// } from '@pixi/sound'
 	import {
 		useEditorDataStore
 	} from '../../../store/editor.js'
+	import {
+		useSceneStore
+	} from '../../../store/scene.js'
 	import {
 		loadAssets,
 		loadImg,
@@ -38,18 +41,27 @@
 	const app = new Application();
 	const emit = defineEmits(['load'])
 	const editorDataStore = useEditorDataStore()
+	const sceneStore = useSceneStore()
 
-	watch(() => editorDataStore.layersSimplify, (newList, oldList, added, removed) => {
-		Render()
+	watch(() => editorDataStore.layersScenes, (layers) => {
+		Render(layers)
 	})
 
-	const Render = () => {
-		editorDataStore.layersSimplify.forEach(layer => {
-			layer.units.forEach(unit => {
-				console.log(unit.scene.sprite)
-			})
-		})
+	const Render = async (layers) => {
+		for (let i = 0; i < layers.length; i++) {
+			const layer = layers[i]
+			for (let j = 0; j < layer.length; j++) {
+				const unit = layer.units[j]
+				if (!unit.scene.loaded) {
+					await unit.scene.load(unit.resource)
+					console.log(unit.scene)
+					app.stage.addChild(unit.scene.container);
+					// loadVideo(app, unit.scene.sprite)
+				}
+			}
+		}
 	}
+
 
 	// const playScene = () => {
 	// 	playState.value = true
@@ -71,14 +83,13 @@
 	// 		start: currentTime.value
 	// 	});
 	// }
-
 	onMounted(async () => {
 		const scene = document.querySelector('.scene')
 		await app.init({
 			// resizeTo: scene,
-			width: 1920,
-			height: 1080,
-			background: '#000000'
+			width: sceneStore.width,
+			height: sceneStore.height,
+			background: sceneStore.background
 		});
 		app.stage.interactive = true
 		scene.appendChild(app.canvas);

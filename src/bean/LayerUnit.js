@@ -48,4 +48,21 @@ export class LayerUnit {
 			return '<没有绑定资源>'
 	}
 
+	get simplify() {
+		return {
+			id: this.id,
+			resource: this.resource,
+			track: this.track.simplify,
+			scene: this.scene
+		}
+	}
+
+	get scenes() {
+		return {
+			id: this.id,
+			resource: this.resource,
+			scene: this.scene
+		}
+	}
+
 }
