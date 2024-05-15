@@ -28,11 +28,11 @@
 		const parentElement = virtualLocationRef.value.parentElement.parentElement;
 		let drop = false
 		const renderDrag = (event) => {
-			if (drop && props.dragData && props.dragData.dragging) {
+			if (drop && props.dragData && props.dragData.track.dragging) {
 				const mouseY = event.pageY;
-				const unitRef = props.dragData.instance.setupState.unitRef
+				const unitRef = props.dragData.track.instance.setupState.unitRef
 				const rect = unitRef.$el.getBoundingClientRect()
-				if (mouseY > (rect.top + props.dragData.h) || mouseY < (rect.top)) {
+				if (mouseY > (rect.top + props.dragData.track.h) || mouseY < (rect.top)) {
 					const parentX = parentElement.offsetLeft + trackStore.trackTimelineScrollbarPaddingLeft;
 					const parentY = parentElement.offsetTop;
 					const parentScrollX = parentElement.scrollLeft;
@@ -40,7 +40,7 @@
 					virtualLocationRef.value.style.width = rect.width + 'px';
 					virtualLocationRef.value.style.height = rect.width.height + 'px';
 					virtualLocationRef.value.style.left = (rect.left - parentX + parentScrollX) + 'px';
-					virtualLocationRef.value.style.top = (mouseY - parentY - props.dragData.h / 2) + 'px';
+					virtualLocationRef.value.style.top = (mouseY - parentY - props.dragData.track.h / 2) + 'px';
 					return;
 				} else {
 					virtualLocationRef.value.style.display = 'none'

@@ -35,7 +35,7 @@
 		props.modelValue.instance = instance
 		// 拖拽至追加位置
 		containerRef.value.addEventListener('mouseenter', (event) => {
-			if (props.dropData && props.dropData.dragging) {
+			if (props.dropData && props.dropData.track.dragging) {
 				containerRef.value.classList.add('graggle')
 			} else {
 				containerRef.value.classList.remove('graggle')
@@ -55,7 +55,7 @@
 		});
 		// 拖拽至新增位置
 		layerGapRef.value.addEventListener('mouseenter', (event) => {
-			if (props.dropData && props.dropData.dragging) {
+			if (props.dropData && props.dropData.track.dragging) {
 				layerGapRef.value.classList.add('graggle')
 			} else {
 				layerGapRef.value.classList.remove('graggle')

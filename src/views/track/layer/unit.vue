@@ -2,8 +2,7 @@
 	<vue-draggable-resizable ref="unitRef" :class-name="config.className" :class-name-active="config.classNameActive"
 		:parent="config.parent" :prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x"
 		:y="config.y" :w="config.w" :h="config.h" :z="config.z" :min-width="config.minWidth" :handles="config.handles"
-		:on-drag="onDrag" :on-resize="onResize" @dragging="onDragging" @drag-stop="onDragStop" :snap="true"
-		:grid="config.grid">
+		:on-drag="onDrag" :on-resize="onResize" :snap="true" :grid="config.grid">
 		<slot></slot>
 	</vue-draggable-resizable>
 </template>
@@ -37,27 +36,26 @@
 		parent: true, //移动范围限制到父标签中
 		preventDeactivation: false, //防止失去激活状态
 		axis: 'x', //固定移动轴向
-		x: props.data.x || 0, //初始x坐标
+		x: props.data.track.x || 0, //初始x坐标
 		y: 0, //初始y坐标
-		w: props.data.w || 0, //初始宽度
-		h: props.data.h, //初始高度
+		w: props.data.track.w || 0, //初始宽度
+		h: props.data.track.h, //初始高度
 		z: 1, //z-index索引
 		minWidth: 30,
 		handles: ['mr', 'ml'], // 拖动手柄只保留左右
 		grid: [1, 1] // 对齐网格
 	})
 
-	watch(() => props.data.x, (value) => {
+	watch(() => props.data.track.x, (value) => {
 		config.x = value
 	})
-	watch(() => props.data.w, (value) => {
+	watch(() => props.data.track.w, (value) => {
 		config.w = value
 	})
 
 	// 拖拽事件
 	const onDrag = (x, y) => {
-		let allowed = true
-		props.data.x = parseInt(x)
+		props.data.track.x = parseInt(x)
 		// 开启吸附
 		if (trackStore.unitAdsorption) adsorption(x)
 		emits('onDrag', props.data)
@@ -65,18 +63,8 @@
 	}
 	// 修改大小事件
 	const onResize = (handle, x, y, width, height) => {
-		props.data.x = parseInt(x)
-		props.data.w = width;
-	}
-	// 拖拽中事件
-	const onDragging = (x, y) => {
-		props.data.dragging = true
-		emits('onDrag', props.data)
-	}
-	// 拖拽停止事件
-	const onDragStop = () => {
-		props.data.dragging = false
-		emits('onDrag', props.data)
+		props.data.track.x = parseInt(x)
+		props.data.track.w = parseInt(width);
 	}
 	// 主动触发鼠标事件
 	const onMousedown = (event) => {
@@ -96,34 +84,36 @@
 		const layer = editorDataStore.getLayerByUnitId(props.data.id)
 		layer.units.forEach(item => {
 			if (item.id != props.data.id) {
-				headLines.push(parseInt(item.x))
-				tailLines.push(parseInt(item.x + item.w))
+				headLines.push(parseInt(item.track.x))
+				tailLines.push(parseInt(item.track.x + item.track.w))
 			}
 		})
 		for (let i = 0; i < headLines.length; i++) {
 			// 头-尾对齐
 			if (x > (tailLines[i] - trackStore.unitAdsorptionDecisionRange * 2) &&
 				x < (tailLines[i] + trackStore.unitAdsorptionDecisionRange)) {
-				props.data.x = tailLines[i]
+				props.data.track.x = tailLines[i]
 			}
 			// 尾-头对齐
 			if ((x + config.w) > (headLines[i] - trackStore.unitAdsorptionDecisionRange) &&
 				(x + config.w) < (headLines[i] + trackStore.unitAdsorptionDecisionRange * 2)) {
-				props.data.x = headLines[i] - config.w
+				props.data.track.x = headLines[i] - config.w
 			}
 		}
 	}
 
 	onMounted(() => {
-		props.data.instance = instance
+		props.data.track.instance = instance
 		// 元素点击更新拖拽状态
 		unitRef.value.$el.addEventListener('mousedown', (event) => {
-			props.data.dragging = true
+			props.data.track.dragging = true
 			emits('onDrag', props.data)
 		});
 		document.addEventListener('mouseup', (event) => {
-			props.data.dragging = false
-			emits('onDrag', props.data)
+			if (props.data.track.dragging) {
+				props.data.track.dragging = false
+				emits('onDrag', props.data)
+			}
 		});
 	})
 

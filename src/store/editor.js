@@ -12,6 +12,11 @@ export const useEditorDataStore = defineStore('editor-data', {
 		videoTotalDuration() {
 			return 50
 		},
+		layersSimplify() {
+			return this.layers.map(layer => {
+				return layer;
+			})
+		}
 	},
 	actions: {
 		setTrackSeeker(x) {
@@ -27,7 +32,7 @@ export const useEditorDataStore = defineStore('editor-data', {
 				const layer = this.layers[i]
 				for (let j = 0; j < layer.length; j++) {
 					const unit = layer.units[j]
-					const el = unit.instance.setupState.unitRef.$el;
+					const el = unit.track.instance.setupState.unitRef.$el;
 					const rect = el.getBoundingClientRect();
 					if (mouseX >= rect.left &&
 						mouseX <= rect.right &&

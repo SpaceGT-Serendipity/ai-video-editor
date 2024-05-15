@@ -4,7 +4,7 @@ import {
 
 export class Layer {
 
-	_units = null
+	units = null
 	display = true
 	instance = null
 
@@ -19,6 +19,11 @@ export class Layer {
 		return layer;
 	}
 
+	clone() {
+		const newUnits = this.units.map(unit => unit.clone())
+		return Layer.list(...newUnits)
+	}
+
 	show() {
 		this.display = true
 	}
@@ -28,27 +33,21 @@ export class Layer {
 	}
 
 	remove(index) {
-		this._units.splice(index, 1)
+		this.units.splice(index, 1)
 	}
 
 	sort() {
-		this._units.sort((a, b) => a.x - b.x)
-		for (let j = 0; j < this._units.length - 1; j++) {
-			const current = this._units[j];
-			const next = this._units[j + 1];
-			if (current.x + current.w > next.x) next.x = current.x + current.w
+		this.units.sort((a, b) => a.track.x - b.track.x)
+		for (let j = 0; j < this.units.length - 1; j++) {
+			const current = this.units[j];
+			const next = this.units[j + 1];
+			if (current.track.x + current.track.w > next.track.x)
+				next.track.x = current.track.x + current.track.w
 		}
 	}
 
-	get units() {
-		return this._units;
-	}
-
-	set units(list) {
-		this._units = list
-	}
-
 	get length() {
-		return this._units.length
+		return this.units.length
 	}
+
 }

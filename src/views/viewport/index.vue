@@ -50,7 +50,7 @@
 	import {
 		useFullscreen
 	} from '@vueuse/core'
-	import Scene from './scene.vue'
+	import Scene from './scene/index.vue'
 	import {
 		ref,
 		onMounted
@@ -74,7 +74,7 @@
 		exit,
 		toggle
 	} = useFullscreen(viewportRef)
-	
+
 	const speed = ref()
 
 
@@ -88,8 +88,11 @@
 
 	}
 	const handleSceneLoad = () => {
-		sceneRef.value.loadVideo()
+		
 	}
+	onMounted(() => {
+		
+	})
 </script>
 
 <style scoped>

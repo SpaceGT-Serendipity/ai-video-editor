@@ -4,32 +4,41 @@ import {
 import {
 	useTrackStore
 } from '../store/track.js'
+import Scene from './Scene.js'
+import Track from './Track.js'
 
 export class LayerUnit {
-	/* 缩放 */
-	scale = 1;
-	/* 坐标 */
-	_x = 0;
-	/* 宽度 */
-	_w = 0;
-	/* 高度(固定) */
-	h = 45;
-	/* 拖拽中状态 */
-	dragging = false;
-	/* 组件实例 */
-	instance = null;
 	/* 轨道配置 */
 	trackStore = useTrackStore()
+	/* 资源信息 */
+	resource = null
+	/* 轨道信息 */
+	track = null
+	/* 场景信息 */
+	scene = null
 
-	constructor(resource, x) {
+	constructor({
+		resource,
+		scene,
+		track
+	}) {
 		this.id = uuidv4();
-		this._x = x;
-		this._w = resource.duration * this.trackStore.secondWidth;
 		this.resource = resource;
+		this.scene = scene || new Scene({
+			resource
+		})
+		this.track = track || new Track({
+			x: 0,
+			w: resource.duration * this.trackStore.secondWidth
+		})
 	}
 
 	clone() {
-		return new LayerUnit(this.resource, this._x, this._w)
+		const unit = new LayerUnit({
+			resource: this.resource,
+			track: this.track.clone()
+		})
+		return unit;
 	}
 
 	get view() {
@@ -39,19 +48,4 @@ export class LayerUnit {
 			return '<没有绑定资源>'
 	}
 
-	get x() {
-		return parseInt(this._x * this.scale);
-	}
-
-	set x(value) {
-		this._x = value / this.scale;
-	}
-
-	get w() {
-		return parseInt(this._w * this.scale);
-	}
-
-	set w(value) {
-		this._w = value / this.scale;
-	}
 }

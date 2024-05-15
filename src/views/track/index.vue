@@ -109,10 +109,12 @@
 		onDrop(files) {
 			files.forEach(file => {
 				editorDataStore.layers.push(
-					Layer.list(new LayerUnit(new ImageResource({
-						name: file.name,
-						url: URL.createObjectURL(file)
-					}), 0))
+					Layer.list(new LayerUnit({
+						resource: new ImageResource({
+							name: file.name,
+							url: URL.createObjectURL(file)
+						})
+					}))
 				)
 			})
 		},
@@ -133,7 +135,9 @@
 				const resource = resourceDragStore.data
 				resourceDragStore.data = null
 				nextTick(() => {
-					const unit = new LayerUnit(resource, 0)
+					const unit = new LayerUnit({
+						resource
+					})
 					// 元素坐标
 					const x =
 						// 鼠标位置
@@ -143,11 +147,11 @@
 						// 图层区域左侧距离（轨道区左侧距离+控制区域宽度）
 						(dropZoneRef.value.offsetLeft + trackStore.controllerGroupWidth) -
 						// 单元宽度的一半，指针指向中间
-						(unit.w / 2)
-					unit.x = x;
+						(unit.track.w / 2)
+					unit.track.x = x;
 					editorDataStore.layers.push(Layer.list(unit))
 					// 主动触发单元点击事件
-					nextTick(() => unit.instance.exposed.onMousedown(event))
+					nextTick(() => unit.track.instance.exposed.onMousedown(event))
 				})
 			}
 		})
