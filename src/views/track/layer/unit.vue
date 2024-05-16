@@ -1,8 +1,9 @@
 <template>
 	<vue-draggable-resizable ref="unitRef" :class-name="config.className" :class-name-active="config.classNameActive"
 		:parent="config.parent" :prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x"
-		:y="config.y" :w="config.w" :h="config.h" :z="config.z" :min-width="config.minWidth" :handles="config.handles"
-		:on-drag="onDrag" :on-resize="onResize" :snap="true" :grid="config.grid">
+		:y="config.y" :w="config.w" :h="config.h" :z="config.z" :min-width="config.minWidth"
+		:max-width="config.maxWidth" :handles="config.handles" :on-drag="onDrag" :on-resize="onResize" :snap="true"
+		@activated="onActivated" @deactivated="onDeactivated">
 		<slot></slot>
 	</vue-draggable-resizable>
 </template>
@@ -12,6 +13,7 @@
 		ref,
 		reactive,
 		onMounted,
+		onBeforeUnmount,
 		watch,
 		getCurrentInstance
 	} from 'vue'
@@ -26,7 +28,7 @@
 	const trackStore = useTrackStore()
 	const editorDataStore = useEditorDataStore()
 	const unitRef = ref()
-	const emits = defineEmits(['onDrag', 'onResize'])
+	const emits = defineEmits(['onDrag'])
 	const props = defineProps({
 		data: Object
 	})
@@ -42,8 +44,8 @@
 		h: props.data.track.h, //初始高度
 		z: 1, //z-index索引
 		minWidth: 30,
+		maxWidth: props.data.track.maxW || 0,
 		handles: ['mr', 'ml'], // 拖动手柄只保留左右
-		grid: [1, 1] // 对齐网格
 	})
 
 	watch(() => props.data.track.x, (value) => {
@@ -58,7 +60,7 @@
 		props.data.track.x = parseInt(x)
 		// 开启吸附
 		if (trackStore.unitAdsorption) adsorption(x)
-		emits('onDrag', props.data)
+		emitsDrag()
 		return false
 	}
 	// 修改大小事件
@@ -76,6 +78,14 @@
 			'clientY': event.clientY
 		});
 		unitRef.value.$el.dispatchEvent(mouseEvent)
+	}
+	/* 触发活跃状态 */
+	const onActivated = () => {
+		editorDataStore.activeUnit = props.data
+	}
+	/* 触发失去活跃状态,使其失去活力慢一点,可在激活状态做一些事件如分割 */
+	const onDeactivated = () => {
+		setTimeout(() => editorDataStore.activeUnit = null, 100)
 	}
 	// 吸附判定
 	const adsorption = (x) => {
@@ -102,19 +112,31 @@
 		}
 	}
 
+	const emitsDrag = () => {
+		emits('onDrag', props.data)
+	}
+
+	function mousedown123(event) {
+		props.data.track.dragging = true
+		emitsDrag()
+	}
+
+	function mouseup123(event) {
+		if (props.data.track.dragging) {
+			props.data.track.dragging = false
+			emitsDrag()
+		}
+	}
 	onMounted(() => {
 		props.data.track.instance = instance
 		// 元素点击更新拖拽状态
-		unitRef.value.$el.addEventListener('mousedown', (event) => {
-			props.data.track.dragging = true
-			emits('onDrag', props.data)
-		});
-		document.addEventListener('mouseup', (event) => {
-			if (props.data.track.dragging) {
-				props.data.track.dragging = false
-				emits('onDrag', props.data)
-			}
-		});
+		unitRef.value.$el.addEventListener('mousedown', mousedown123);
+		document.addEventListener('mouseup', mouseup123);
+	})
+
+	onBeforeUnmount(() => {
+		unitRef.value.$el.removeEventListener('mousedown', mousedown123);
+		document.removeEventListener('mouseup', mouseup123)
 	})
 
 	defineExpose({
@@ -135,7 +157,7 @@
 
 	.layer-unit-active {
 		border: 2px solid var(--layer-unit-boder-color);
-		z-index: 99 !important;
+		z-index: 2 !important;
 	}
 
 	.layer-unit-active:deep(.handle-ml) {

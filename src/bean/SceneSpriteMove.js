@@ -1,93 +1,82 @@
 const {
-	Sprite,
 	Graphics,
 	Point
 } = PIXI;
 
-export function mountMove(app, sprite) {
+const decision_range = 15; // 从里到外判定范文 边距像素
+
+export function mountMove(app, container) {
 	let dragging = false;
-	const decision_range = 15; // 从里到外判定范文 边距像素
-	const range = getRange(sprite, decision_range)
-	mountMoveDecisionRange(app, sprite, decision_range)
-	sprite.on('mousedown', (event) => {
-		const point = event.data.getLocalPosition(sprite)
-		if (Math.abs(point.x) < range.width / 2 && Math.abs(point.y) < range.height / 2) {
-			const currentDistance =
-				Math.sqrt(Math.sqrt(Math.pow(point.x, 2)) + Math.sqrt(Math.pow(point.y, 2)));
+	let position = null
+	const range = getRange(container)
+	const graphics = mountMoveDecisionRange(app, range)
+	container.addChild(graphics)
+	graphics.onmousedown = (event) => {
+		const point = event.getLocalPosition(container)
+		if (point.x > range.bounds.left && point.x < range.bounds.right &&
+			point.y > range.bounds.top && point.y < range.bounds.bottom) {
 			dragging = true;
-			sprite.alpha = 0.7;
-			sprite.data = {
-				x: event.data.global.x - sprite.x,
-				y: event.data.global.y - sprite.y
+			position = {
+				x: event.data.global.x - container.x,
+				y: event.data.global.y - container.y
 			};
+			container.alpha = 0.7;
 		}
-	})
-	sprite.on('mousemove', (event) => {
+	}
+	app.stage.on('mousemove', (event) => {
 		if (dragging) {
-			sprite.position.set(
-				event.data.global.x - sprite.data.x,
-				event.data.global.y - sprite.data.y
+			container.position.set(
+				event.data.global.x - position.x,
+				event.data.global.y - position.y
 			);
 		}
-	})
-	sprite.on('mouseup', () => {
+	});
+	app.stage.on('mouseup', (event) => {
 		dragging = false;
-		sprite.alpha = 1;
-		sprite.data = null;
-	})
-	sprite.on('mouseout', (event) => {
-		const point = event.data.getLocalPosition(sprite)
-		if (!sprite.containsPoint(point)) {
-			dragging = false;
-			sprite.alpha = 1;
-			sprite.data = null;
-		}
+		position = null;
+		container.alpha = 1;
 	});
 }
-export function unmountMove(sprite) {
-	sprite.off('mousedown')
-	sprite.off('mousemove')
-	sprite.off('mouseup')
-	sprite.off('mouseout')
-	sprite.alpha = 1;
-	sprite.data = null;
-	unmountMoveDecisionRange(sprite)
+export function unmountMove(container) {
+	container.off('mousedown')
+	container.off('mousemove')
+	container.off('mouseup')
+	container.off('mouseout')
+	container.alpha = 1;
+	unmountMoveDecisionRange(container)
 }
 
 /**
  * 添加鼠标样式
  */
-function mountMoveDecisionRange(app, sprite, decision_range) {
-	const range = getRange(sprite, decision_range)
+function mountMoveDecisionRange(app, range) {
 	const graphics = new Graphics();
-	graphics.rect(range.bounds.minX, range.bounds.minY, range.width, range.height);
+	graphics.rect(range.bounds.left, range.bounds.top, range.width, range.height);
 	graphics.fill('#0000')
-	// graphics.stroke({width: 2,color: '#00000011'});
 	graphics.interactive = true
-	graphics.on('mousemove', (event) => app.view.style.cursor = 'move');
-	graphics.on('mouseout', (event) => app.view.style.cursor = 'move');
-	console.log(sprite)
-	sprite.addChild(graphics);
+	graphics.on('mouseenter', (event) => app.canvas.style.cursor = 'move');
+	graphics.on('mouseleave', (event) => app.canvas.style.cursor = 'initial');
+	return graphics;
 }
 
-function unmountMoveDecisionRange(sprite) {
-	sprite.children.forEach(item => {
-		sprite.removeChild(item);
-	})
+function unmountMoveDecisionRange(container) {
+	// container.children.forEach(item => {
+	// 	container.removeChild(item);
+	// })
 }
 
 /**
  * @param decision_range 边缘距离
  */
-function getRange(sprite, decision_range) {
+function getRange(container) {
 	return {
-		width: sprite.width - decision_range * 2,
-		height: sprite.height - decision_range * 2,
+		width: container.width - decision_range * 2,
+		height: container.height - decision_range * 2,
 		bounds: {
-			maxX: sprite.bounds.maxX - decision_range,
-			maxY: sprite.bounds.maxY - decision_range,
-			minX: sprite.bounds.minX + decision_range,
-			minY: sprite.bounds.minY + decision_range
+			left: decision_range,
+			right: container.width - decision_range,
+			top: decision_range,
+			bottom: container.height - decision_range,
 		}
 	}
 }

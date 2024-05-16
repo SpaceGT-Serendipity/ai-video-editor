@@ -62,16 +62,21 @@
 		min-height: 700px;
 		user-select: none;
 	}
+	
+	.debug-open .debug {
+		display: flex !important;
+	}
 
 	.debug {
-		display: none;
-		position: absolute;
+		display: none !important;
 		width: max-content;
 		font-size: 12px;
 		padding: 2px 6px;
 	}
 
-	.debug-open .debug {
-		display: initial;
+	.debug.float {
+		position: absolute;
 	}
+
+	
 </style>

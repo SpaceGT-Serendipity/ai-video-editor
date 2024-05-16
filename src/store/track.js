@@ -21,12 +21,27 @@ export const useTrackStore = defineStore('track', {
 		// 元素虚拟位置于元素启动吸附
 		unitAdsorption: true,
 		// 吸附判定范围(px)
-		unitAdsorptionDecisionRange: 10
+		unitAdsorptionDecisionRange: 10,
+		// 时间引导线位置
+		seekerLocation: 0,
+		// 时间引导线时间(毫秒ms)
+		seekerTime: 0,
 	}),
 	getters: {
 		// 每秒宽度（px）
 		secondWidth: (state) => state.rulerScaleWidth / (state.rulerScaleTime / 1000),
 	},
+	actions: {
+		setSeeker(x) {
+			if (x < 0) {
+				this.seekerLocation = 0;
+				this.seekerTime = 0
+			} else {
+				this.seekerLocation = x;
+				this.seekerTime = parseInt(x / this.rulerScaleWidth * this.rulerScaleTime)
+			}
+		},
+	}
 })
 
 

@@ -29,8 +29,13 @@ export class LayerUnit {
 		})
 		this.track = track || new Track({
 			x: 0,
-			w: resource.duration * this.trackStore.secondWidth
+			w: resource.duration * this.trackStore.secondWidth,
+			maxW: this.resource.type == 'video' ? resource.duration * this.trackStore.secondWidth : 0
 		})
+	}
+
+	destroy() {
+		this.scene.destroy()
 	}
 
 	clone() {
@@ -62,6 +67,14 @@ export class LayerUnit {
 			id: this.id,
 			resource: this.resource,
 			scene: this.scene
+		}
+	}
+
+	get duration() {
+		return {
+			leftTime: 0,
+			rightTime: 0,
+			duration: this.resource.duration
 		}
 	}
 

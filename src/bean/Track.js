@@ -10,6 +10,8 @@ export default class Track {
 	_x = 0;
 	/* 宽度 */
 	_w = 0;
+	/* 最大长度 */
+	maxW = 0;
 	/* 高度(固定) */
 	h = 45;
 	/* 拖拽中状态 */
@@ -20,12 +22,14 @@ export default class Track {
 	constructor({
 		x,
 		w,
-		scale = 1
+		scale = 1,
+		maxW = 0
 	}) {
 		this.id = uuidv4()
+		this.scale = scale
 		this._x = x
 		this._w = w
-		this.scale = scale
+		this.maxW = maxW
 	}
 
 	clone() {
@@ -53,7 +57,6 @@ export default class Track {
 		this._w = value / this.scale;
 	}
 
-
 	get simplify() {
 		return {
 			scale: this.scale,
@@ -61,6 +64,13 @@ export default class Track {
 			w: this.w,
 			h: this.h,
 			dragging: this.dragging
+		}
+	}
+
+	get location() {
+		return {
+			left: this.x,
+			right: this.x + this.w
 		}
 	}
 }

@@ -6,7 +6,8 @@ const {
 	Container,
 	Sprite,
 	Text,
-	TextStyle
+	TextStyle,
+	Graphics
 } = PIXI;
 import {
 	mountMove,
@@ -19,6 +20,7 @@ import {
 
 export default class Scene {
 	loaded = false
+	texture = null
 	sprite = null
 	container = null
 
@@ -28,15 +30,16 @@ export default class Scene {
 		this.id = uuidv4()
 	}
 
+	destroy() {
+		this.container.destroy()
+	}
+
 	async load(resource) {
-		this.container = new Container()
-		await loadAssets({
+		this.texture = await loadAsset({
 			alias: this.id,
 			src: resource.url,
 			loadParser: getLoadParserName(resource.type)
 		})
-		this.sprite = Sprite.from(this.id);
-		this.container.addChild(this.sprite)
 		this.loaded = true
 	}
 }
@@ -66,41 +69,45 @@ const getLoadParserName = (type) => {
 	loadVideo
 	loadWebFont or a custom parser name.
  */
-const loadAssets = async (...assets) => {
-	for (let i = 0; i < assets.length; i++) {
-		const asset = assets[i]
-		await Assets.load({
-			alias: asset.alias,
-			src: {
-				src: asset.src,
-				loadParser: asset.loadParser
-			}
-		});
-	}
+const loadAsset = async (asset) => {
+	return await Assets.load({
+		alias: asset.alias,
+		src: {
+			src: asset.src,
+			loadParser: asset.loadParser
+		}
+	});
 }
+const loadAssets = async (...assets) => {
+	const result = []
+	for (let i = 0; i < assets.length; i++) {
+		result.push(await loadAsset(assets[i]))
+	}
+	return result;
+}
+
 
 const loadImg = async (app) => {
 	const image = await Assets.load('/assets/image/1.png');
 	const sprite = new Sprite(image);
 	sprite.interactive = true
-	sprite.anchor.set(0.5);
 	sprite.x = app.screen.width / 2;
 	sprite.y = app.screen.height / 2;
 	app.stage.addChild(sprite);
 }
-const loadVideo = async (app, sprite) => {
-	sprite.x = app.screen.width / 2;
-	sprite.y = app.screen.height / 2;
-	sprite.anchor.set(0.5);
-	sprite.interactive = true
-	app.stage.addChild(sprite);
-	setTimeout(() => {
-		// mountMove(app, sprite)
-	}, 1000)
-	// mountScale(app, sprite)
+const loadVideo = async (app, scene) => {
+	const container = new Container()
+	container.interactive = true
+	const sprite = Sprite.from(scene.texture);
+	container.addChild(sprite)
+	mountMove(app, container)
+	mountScale(app, container)
+	center(app, container)
+	app.stage.addChild(container);
+	scene.container = container
+	scene.sprite = sprite
 }
 const loadBackground = async (app) => {
-
 	const background = await Assets.load('/assets/image/background.jpg');
 	const backgroundSprite = new Sprite(background);
 	backgroundSprite.width = app.screen.width
@@ -125,6 +132,11 @@ const loadBackgroundText = async (app) => {
 	app.stage.addChild(basicText);
 }
 
+
+const center = (app, container) => {
+	container.x = app.screen.width / 2 - (container.width / 2);
+	container.y = app.screen.height / 2 - (container.height / 2);
+}
 
 export {
 	loadAssets,

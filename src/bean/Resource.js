@@ -4,31 +4,40 @@ import {
 import axios from '../axios/index.js'
 
 export class Resource {
+	/* 文件类型 */
+	type = null;
+	/* 原始时长 */
+	duration = 6
+	/* 资源大小 */
+	size = 0
+	/* 资源加载完成 */
+	loaded = false
+	/* 文件地址 */
+	url = null
+	/* 封面 */
+	cover = null
 
-	_type = null;
-
-	constructor(name) {
+	constructor({
+		name,
+		type
+	}) {
 		this.id = uuidv4();
 		this.name = name;
-		this.duration = 6;
-		this.size = 0;
-		this.loaded = false
+		this.type = type
 	}
 
 	get view() {
 		return '';
 	}
-	get type() {
-		return this._type;
-	}
+
 }
 
 export class TextResource extends Resource {
-
-	_type = 'text';
-
 	constructor(name) {
-		super(name)
+		super({
+			name,
+			type: 'text'
+		})
 		this.loaded = true
 	}
 
@@ -38,14 +47,14 @@ export class TextResource extends Resource {
 }
 
 export class ImageResource extends Resource {
-
-	_type = 'image';
-
 	constructor({
 		name,
 		url
 	}) {
-		super(name)
+		super({
+			name,
+			type: 'image'
+		})
 		this.url = url;
 		this.cover = url;
 		this.loaded = true
@@ -64,7 +73,6 @@ export class ImageResource extends Resource {
 }
 
 export class VideoResource extends Resource {
-	_type = 'video';
 	_video = null;
 
 	constructor({
@@ -75,7 +83,10 @@ export class VideoResource extends Resource {
 		duration = 0,
 		loaded = false
 	}) {
-		super(name)
+		super({
+			name,
+			type: 'video'
+		})
 		this.size = size;
 		this.url = url
 		this.cover = cover

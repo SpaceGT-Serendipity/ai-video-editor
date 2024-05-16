@@ -8,8 +8,9 @@ html {
 	--layer-unit-bg: #86edff33;
 	--layer-unit-boder-color: rgb(17, 17, 17, 0.3);
 	--layer-unit-handle-bg: #96969680;
-	--scrollbar-background-color: #cbcbe1;
-	--scrollbar-foreground-color: #aaafbc;
+	--scrollbar-background-color: #e3e3fa;
+	--scrollbar-foreground-color: #c4cad8;
+	--seeker-color: #868686;
 }
 
 html.dark {
@@ -28,6 +29,7 @@ html.dark {
 	--layer-unit-handle-bg: #fafafa80;
 	--scrollbar-background-color: #2d2d32;
 	--scrollbar-foreground-color: #404247;
+	--seeker-color: #fafafa;
 }
 
 html.dark .el-input {

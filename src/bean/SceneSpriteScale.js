@@ -1,154 +1,175 @@
 const {
-	Sprite,
+	Container,
 	Graphics,
 	Point
 } = PIXI;
 
-export function mountScale(app, sprite) {
+const decision_range = 15; // 从外到里判定范文 边距像素
+
+export function mountScale(app, container) {
 	let isResizing = false;
+	// 距离容器中心点的长度
 	let startDistance = 0;
-	const decision_range = 15; // 从外到里判定范文 边距像素
-	const range = getRange(sprite, decision_range)
-	mountScaleDecisionRange(app, sprite, decision_range)
-	app.stage.on('mousedown', (event) => {
-		const point = event.data.getLocalPosition(sprite)
-		if (sprite.containsPoint(point) &&
-			(Math.abs(point.x) > range.width / 2 || Math.abs(point.y) > range.height / 2)) {
+	const range = getRange(container)
+	const graphics = mountScaleDecisionRange(app, range)
+	container.addChild(graphics);
+	graphics.onmousedown = (event) => {
+		// 获取容器中心点在世界中的坐标
+		const point = event.getLocalPosition(container)
+		if (point.y < range.bounds.top ||
+			point.x > range.bounds.right ||
+			point.y > range.bounds.bottom ||
+			point.x < range.bounds.left) {
+			//使用全局坐标,因为容器修改宽高会有过渡动画，导致数据刷新不及时影响造成抖动。
+			const globePoint = event.getLocalPosition(app.stage)
+			const globeContainerCenter = {
+				x: container.x + container.width / 2,
+				y: container.y + container.height / 2
+			}
+			const x_distanceCenter = Math.abs(globePoint.x - globeContainerCenter.x) / container.scale.x
+			const y_distanceCenter = Math.abs(globePoint.y - globeContainerCenter.y) / container.scale.x
+			// 基于原始大小到中心距离
+			startDistance = Math.sqrt(Math.pow(x_distanceCenter, 2) + Math.pow(y_distanceCenter, 2));
 			isResizing = true;
-			const x = point.x * sprite.scale.x
-			const y = point.y * sprite.scale.y
-			startDistance = Math.sqrt(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
-			startDistance = startDistance / (sprite.scale.x)
 		}
-	});
+	}
 	app.stage.on('mousemove', (event) => {
 		if (isResizing) {
-			const point = event.data.getLocalPosition(sprite)
-			const x = point.x * sprite.scale.x
-			const y = point.y * sprite.scale.y
-			let currentDistance = Math.sqrt(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
+			//使用全局坐标,因为容器修改宽高会有过渡动画，导致数据刷新不及时影响造成抖动。
+			const globePoint = event.getLocalPosition(app.stage)
+			const globeContainerCenter = {
+				x: container.x + container.width / 2,
+				y: container.y + container.height / 2
+			}
+			const x_distanceCenter = Math.abs(globePoint.x - globeContainerCenter.x)
+			const y_distanceCenter = Math.abs(globePoint.y - globeContainerCenter.y)
+			const currentDistance = Math.sqrt(Math.pow(x_distanceCenter, 2) + Math.pow(y_distanceCenter, 2));
 			const scale = currentDistance / startDistance;
-			if (scale > 0.3) {
-				sprite.scale.x = scale;
-				sprite.scale.y = scale;
-				sprite.alpha = 0.7;
+			if (scale > 0.5) {
+				container.scale.x = scale;
+				container.scale.y = scale;
+				container.alpha = 0.7;
+				container.x = globeContainerCenter.x - (container.width / 2);
+				container.y = globeContainerCenter.y - (container.height / 2);
 			}
 		}
 	});
 	app.stage.on('mouseup', (event) => {
 		isResizing = false;
 		startDistance = 0;
-		sprite.alpha = 1;
+		container.alpha = 1;
 	});
-	app.view.addEventListener('mouseout', () => {
+	app.canvas.addEventListener('mouseout', () => {
 		isResizing = false;
 		startDistance = 0;
-		sprite.alpha = 1;
+		container.alpha = 1;
 	})
 }
 
-export function unmountScale(app, sprite) {
-	sprite.off('mousedown')
-	sprite.off('mousemove')
-	sprite.off('mouseup')
-	sprite.alpha = 1;
-	unmountScaleDecisionRange(sprite)
+export function unmountScale(app, container) {
+	container.off('mousedown')
+	container.off('mousemove')
+	container.off('mouseup')
+	container.alpha = 1;
+	unmountScaleDecisionRange(container)
 }
 
 /**
  * 添加鼠标样式
  */
-function mountScaleDecisionRange(app, sprite, decision_range) {
-	const range = getRange(sprite, decision_range)
+function mountScaleDecisionRange(app, range) {
 	const areas = [{
 		label: 'left-top',
-		x: range.maxBounds.minX,
-		y: range.maxBounds.minY,
+		x: 0,
+		y: 0,
 		width: decision_range,
 		height: decision_range,
 		cursor: 'nw-resize'
 	}, {
 		label: 'top',
-		x: range.minBounds.minX,
-		y: range.maxBounds.minY,
+		x: decision_range,
+		y: 0,
 		width: range.width,
 		height: decision_range,
 		cursor: 'n-resize'
 	}, {
 		label: 'right-top',
-		x: range.minBounds.maxX,
-		y: range.maxBounds.minY,
+		x: range.bounds.right,
+		y: 0,
 		width: decision_range,
 		height: decision_range,
 		cursor: 'ne-resize'
 	}, {
 		label: 'right',
-		x: range.minBounds.maxX,
-		y: range.minBounds.minY,
+		x: range.bounds.right,
+		y: decision_range,
 		width: decision_range,
 		height: range.height,
 		cursor: 'e-resize'
 	}, {
 		label: 'right-bottom',
-		x: range.minBounds.maxX,
-		y: range.minBounds.maxY,
+		x: range.bounds.right,
+		y: range.bounds.bottom,
 		width: decision_range,
 		height: decision_range,
 		cursor: 'nw-resize'
 	}, {
 		label: 'bottom',
-		x: range.minBounds.minX,
-		y: range.minBounds.maxY,
+		x: decision_range,
+		y: range.bounds.bottom,
 		width: range.width,
 		height: decision_range,
 		cursor: 'n-resize'
 	}, {
 		label: 'left-bottom',
-		x: range.maxBounds.minX,
-		y: range.minBounds.maxY,
+		x: 0,
+		y: range.bounds.bottom,
 		width: decision_range,
 		height: decision_range,
 		cursor: 'ne-resize'
 	}, {
 		label: 'left',
-		x: range.maxBounds.minX,
-		y: range.minBounds.minY,
+		x: 0,
+		y: decision_range,
 		width: decision_range,
 		height: range.height,
 		cursor: 'e-resize'
 	}]
+	const container = new Container()
 	areas.forEach(area => {
 		const graphics = new Graphics();
 		graphics.interactive = true
 		graphics.rect(area.x, area.y, area.width, area.height);
 		graphics.fill('#0000')
-		// graphics.stroke({width: 2,color: '#00000011'});
-		graphics.on('mousemove', (event) => app.view.style.cursor = area.cursor);
-		graphics.on('mouseout', (event) => app.view.style.cursor = '');
-		sprite.addChild(graphics);
+		graphics.on('mousemove', (event) => app.canvas.style.cursor = area.cursor);
+		graphics.on('mouseout', (event) => app.canvas.style.cursor = '');
+		container.addChild(graphics)
 	})
-
+	return container;
 }
 
-function unmountScaleDecisionRange(sprite) {
-	sprite.children.forEach(item => {
-		sprite.removeChild(item);
+function unmountScaleDecisionRange(container) {
+	container.children.forEach(item => {
+		container.removeChild(item);
 	})
 }
 
 /**
  * @param decision_range 边缘距离
  */
-function getRange(sprite, decision_range) {
+function getRange(container) {
 	return {
-		width: sprite.width - decision_range * 2,
-		height: sprite.height - decision_range * 2,
-		minBounds: {
-			maxX: sprite.bounds.maxX - decision_range,
-			maxY: sprite.bounds.maxY - decision_range,
-			minX: sprite.bounds.minX + decision_range,
-			minY: sprite.bounds.minY + decision_range
+		width: container.width - decision_range * 2,
+		height: container.height - decision_range * 2,
+		bounds: {
+			left: decision_range,
+			right: container.width - decision_range,
+			top: decision_range,
+			bottom: container.height - decision_range,
 		},
-		maxBounds: sprite.bounds
+		center: {
+			x: container.width / 2 * container.scale.x,
+			y: container.height / 2 * container.scale.y
+		}
 	}
 }

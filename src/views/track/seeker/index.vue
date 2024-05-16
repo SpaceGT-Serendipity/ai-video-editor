@@ -56,7 +56,7 @@
 		top: 0px;
 		transform: translateX(0px);
 		pointer-events: auto;
-		z-index: 1;
+		z-index: 3;
 		cursor: ew-resize;
 	}
 
@@ -64,11 +64,10 @@
 		position: absolute;
 		width: 9px;
 		height: 12px;
-		z-index: 3;
 		border-bottom-left-radius: 4px;
 		border-bottom-right-radius: 4px;
 		box-sizing: border-box;
-		background-color: #fafafa;
+		background-color: var(--seeker-color);
 		transform: translateX(-4.5px);
 	}
 
@@ -78,7 +77,6 @@
 		width: 9px;
 		top: 10px;
 		bottom: 0;
-		z-index: 2;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -88,6 +86,6 @@
 	.seeker-body-inner {
 		flex: 1;
 		width: 1px;
-		background-color: #fafafa;
+		background-color: var(--seeker-color);
 	}
 </style>

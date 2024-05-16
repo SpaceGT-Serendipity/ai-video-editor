@@ -32,7 +32,13 @@ export class Layer {
 		this.display = false
 	}
 
-	remove(index) {
+	destroy() {
+		this.units.forEach(unit => unit.destroy())
+	}
+
+	remove(id) {
+		const index = this.units.findIndex(unit => unit.id == id)
+		this.units[index].destroy()
 		this.units.splice(index, 1)
 	}
 
@@ -64,7 +70,8 @@ export class Layer {
 			id: this.id,
 			units: this.units.map(item => item.scenes),
 			display: this.display,
-			length: this.length
+			length: this.length,
+			remove: this.remove
 		}
 	}
 

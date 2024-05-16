@@ -15,7 +15,7 @@
 					</el-icon>
 				</el-tooltip>
 			</el-button>
-			<el-button link size="small" disabled>
+			<el-button link size="small" :disabled="editorDataStore.activeUnit==null" @click="onSplit">
 				<el-tooltip class="box-item" effect="dark" content="切割" placement="top">
 					<el-icon>
 						<font-awesome-icon icon="i-cursor" />
@@ -42,12 +42,40 @@
 
 <script setup>
 	import {
+		ElNotification
+	} from 'element-plus'
+	import {
 		ref
 	} from 'vue'
+	import {
+		useEditorDataStore
+	} from '../../../store/editor.js'
+	import {
+		useTrackStore
+	} from '../../../store/track.js'
 
+	const editorDataStore = useEditorDataStore()
+	const trackStore = useTrackStore()
 	const emits = defineEmits(['changeScale'])
 	const scale = ref(1)
 
+
+	const onSplit = () => {
+		if (trackStore.seekerLocation > editorDataStore.activeUnit.track.location.left &&
+			trackStore.seekerLocation < editorDataStore.activeUnit.track.location.right) {
+			const width = trackStore.seekerLocation - editorDataStore.activeUnit.track.location.left
+			const ratio = width / editorDataStore.activeUnit.track.w
+			// editorDataStore.activeUnit.split(ratio)
+			console.log(ratio)
+		} else {
+			ElNotification({
+				title: '提示',
+				message: '当前位置无法分割',
+				type: 'warning',
+			})
+		}
+
+	}
 	const formatTooltip = (number) => {
 		return parseInt(number * 100.00) + '%'
 	}
