@@ -11,7 +11,7 @@
 				<controller-layer v-for="item in editorDataStore.layers" :key="item.id" :data="item"></controller-layer>
 			</div>
 			<div v-show="haveResources" class="scrollbar" ref="scrollbarRef">
-				<div class="debug">
+				<div class="debug float">
 					Scrollbar Mouse X : {{scrollbar.scrollbarMouseX}}
 				</div>
 				<div class="timeline-group">
@@ -150,7 +150,6 @@
 						// 单元宽度的一半，指针指向中间
 						(unit.track.w / 2)
 					unit.track.x = x;
-					console.log(unit.track)
 					editorDataStore.layers.push(Layer.list(unit))
 					// 主动触发单元点击事件
 					nextTick(() => unit.track.instance.exposed.onMousedown(event))
@@ -171,9 +170,8 @@
 	const scrollbarMouseDownUpdateSeeker = () => {
 		scrollbarRef.value.addEventListener('mousedown', (event) => {
 			const unit = editorDataStore.getUnitUnderMouse(event)
-			if (unit == null) {
-				editorDataStore.setTrackSeeker(scrollbar.scrollbarMouseX)
-			}
+			if (unit == null)
+				trackStore.setSeeker(scrollbar.scrollbarMouseX)
 		})
 	}
 

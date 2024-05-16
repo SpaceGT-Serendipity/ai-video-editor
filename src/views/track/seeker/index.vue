@@ -2,8 +2,8 @@
 	<div class="track-seeker-root" ref="trackSeekerRootRef">
 		<div class="seeker-head"></div>
 		<div class="seeker-body"><span class="seeker-body-inner"></span></div>
-		<span class="debug">
-			Seeker X: {{editorDataStore.trackSeeker}}
+		<span class="debug float">
+			Seeker X: {{trackStore.seekerLocation}}
 		</span>
 	</div>
 </template>
@@ -19,10 +19,10 @@
 		useParentElement
 	} from '@vueuse/core'
 	import {
-		useEditorDataStore
-	} from '../../../store/editor.js'
+		useTrackStore
+	} from '../../../store/track.js'
 
-	const editorDataStore = useEditorDataStore()
+	const trackStore = useTrackStore()
 	const parentEl = useParentElement()
 	const trackSeekerRootRef = ref()
 	const mouse = useMouse({
@@ -33,12 +33,12 @@
 	watch(mouse.x, (value) => {
 		if (drag.value) {
 			const x = mouse.x.value - parentEl.value.offsetLeft;
-			editorDataStore.setTrackSeeker(x)
+			trackStore.setSeeker(x)
 		}
 	})
 
-	watch(() => editorDataStore.trackSeeker, () => {
-		trackSeekerRootRef.value.style.left = editorDataStore.trackSeeker + "px";
+	watch(() => trackStore.seekerLocation, () => {
+		trackSeekerRootRef.value.style.left = trackStore.seekerLocation + "px";
 	})
 
 	onMounted(() => {

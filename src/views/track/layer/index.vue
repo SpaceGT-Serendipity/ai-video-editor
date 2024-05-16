@@ -51,28 +51,34 @@
 		}
 	}
 	const onDrop = (event, newIndex) => {
-		// 元素放置到新图层
-		if (event.dropMode == 'newLayer')
-			layers.value.splice(newIndex + 1, 0, Layer.list(event.dropData.clone()));
-		// 元素追加到现有图层
-		if (event.dropMode == 'appendUnit')
-			layers.value[newIndex].units.push(event.dropData.clone())
-		// 删除之前位置的元素
+		// 找出当前位置
+		let layerIndex, unitIndex;
 		for (let i = 0; i < layers.value.length; i++) {
 			const layer = layers.value[i];
 			for (let j = 0; j < layer.length; j++) {
-				// 删除元素
-				if (layer.units[j].id == event.dropData.id) layer.remove(j)
+				if (layer.units[j].id == event.dropData.id) {
+					layerIndex = i;
+					unitIndex = j;
+				}
 			}
-			// 清除空图层
-			if (layer.length == 0) layers.value.splice(i, 1)
 		}
+		// 删除当前元素位置但不销毁，删除后加入到新的位置
+		layers.value[layerIndex].units.splice(unitIndex, 1)
+		// 元素放置到新图层
+		if (event.dropMode == 'newLayer')
+			layers.value.splice(newIndex + 1, 0, Layer.list(event.dropData));
+		// 元素追加到现有图层
+		if (event.dropMode == 'appendUnit')
+			layers.value[newIndex].units.push(event.dropData)
 		// 拖拽结束后(不选择拖拽中进行节省性能,所以拖拽中可以重合,用户体验良好)进行一个x坐标的排序，并且如果有重合调整坐标，保证友好的顺序以及不重合。
 		sortLayers()
 	}
 	const sortLayers = () => {
 		for (let i = 0; i < layers.value.length; i++) {
-			layers.value[i].sort()
+			// 清除空图层
+			if (layers.value[i].length == 0) layers.value.splice(i, 1)
+			// 图层排序
+			else layers.value[i].sort()
 		}
 	}
 </script>

@@ -4,6 +4,9 @@
 		<div class="short-message">
 			<el-tag type="info">自动保存时间 90s</el-tag>
 			<el-tag type="info">视频总时长 00:{{editorDataStore.videoTotalDuration}}</el-tag>
+			<el-tag type="info" class="debug">时间引导线
+				Location : {{trackStore.seekerLocation}}
+				Time : {{trackStore.seekerTime}}ms</el-tag>
 			<el-tag type="info" :class="{'open-debug':editorDataStore.debug}"
 				@click="openDebug(!editorDataStore.debug)">Debug</el-tag>
 		</div>
@@ -18,8 +21,12 @@
 	import {
 		useEditorDataStore
 	} from '../store/editor.js'
+	import {
+		useTrackStore
+	} from '../store/track.js'
 
 	const editorDataStore = useEditorDataStore()
+	const trackStore = useTrackStore()
 
 	const openDebug = (state) => {
 		editorDataStore.debug = state
