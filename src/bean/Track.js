@@ -1,11 +1,13 @@
 import {
 	v4 as uuidv4
 } from 'uuid'
-
+import {
+	useTrackStore
+} from '../store/track.js'
 
 export default class Track {
-	/* 缩放 */
-	scale = 1;
+	/* 轨道配置 */
+	trackStore = useTrackStore()
 	/* 坐标 */
 	_x = 0;
 	/* 宽度 */
@@ -19,43 +21,39 @@ export default class Track {
 
 	constructor({
 		x,
-		w,
-		scale = 1 
+		w
 	}) {
 		this.id = uuidv4()
-		this.scale = scale
 		this._x = x
-		this._w = w 
+		this._w = w
 	}
 
 	clone() {
 		return new Track({
 			x: this._x,
-			w: this._w,
-			scale: this.scale
+			w: this._w
 		})
 	}
 
 	get x() {
-		return parseInt(this._x * this.scale);
+		return parseInt(this._x * this.trackStore.controllerScale);
 	}
 
 	set x(value) {
 		if (value < 0) this._x = 0
-		this._x = value / this.scale;
+		this._x = value / this.trackStore.controllerScale;
 	}
 
 	get w() {
-		return parseInt(this._w * this.scale);
+		return parseInt(this._w * this.trackStore.controllerScale);
 	}
 
 	set w(value) {
-		this._w = value / this.scale;
+		this._w = value / this.trackStore.controllerScale;
 	}
 
 	get simplify() {
 		return {
-			scale: this.scale,
 			x: this.x,
 			w: this.w,
 			h: this.h,

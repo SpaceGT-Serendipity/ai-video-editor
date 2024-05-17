@@ -64,9 +64,9 @@
 			trackStore.seekerLocation < editorDataStore.activeUnit.track.location.right) {
 			const width = trackStore.seekerLocation - editorDataStore.activeUnit.track.location.left
 			const ratio = width / editorDataStore.activeUnit.track.w
-			console.log(ratio)
-			// editorDataStore.activeUnit.split(ratio)
-			console.log(ratio)
+			const newUnit = editorDataStore.activeUnit.split(ratio)
+			const layer = editorDataStore.getLayerByUnitId(editorDataStore.activeUnit.id)
+			layer.units.push(newUnit)
 		} else {
 			ElNotification({
 				title: '提示',

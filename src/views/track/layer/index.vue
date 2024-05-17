@@ -34,12 +34,6 @@
 	const layersRef = ref()
 	const dragData = ref(null)
 
-	watch(() => trackStore.controllerScale, (value) => {
-		layers.value.forEach(layer => {
-			layer.units.forEach(unit => unit.track.scale = value)
-		})
-	})
-
 	const onDrag = (event, index) => {
 		dragData.value = event
 		// 告知上级有元素移动，更新时间轴长度

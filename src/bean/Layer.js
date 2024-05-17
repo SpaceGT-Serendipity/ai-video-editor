@@ -74,5 +74,4 @@ export class Layer {
 			remove: this.remove
 		}
 	}
-
 }

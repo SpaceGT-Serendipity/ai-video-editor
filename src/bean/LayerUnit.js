@@ -30,9 +30,7 @@ export class LayerUnit {
 		this.resource = resource;
 		this._durationStart = 0
 		this._durationEnd = resource.duration
-		this.scene = scene || new Scene({
-			resource
-		})
+		this.scene = scene || new Scene()
 		this.track = track || new Track({
 			x: 0,
 			w: resource.duration / 1000 * this.trackStore.secondWidth,
@@ -44,27 +42,27 @@ export class LayerUnit {
 	}
 
 	clone() {
+		console.log('clone')
 		const unit = new LayerUnit({
 			resource: this.resource,
+			scene: this.scene.clone(),
 			track: this.track.clone()
 		})
 		return unit;
 	}
 
-	set durationStart(value) {
-		this._durationStart = value
-	}
-
-	get durationStart() {
-		return this._durationStart
-	}
-
-	set durationEnd(value) {
-		this._durationEnd = value
-	}
-
-	get durationEnd() {
-		return this._durationEnd
+	split(ratio) {
+		const start = this._durationStart
+		const end = this._durationEnd
+		const splitLine = parseInt((end - start) * ratio);
+		this._durationEnd = start + splitLine;
+		this.track.w = (this._durationEnd - this._durationStart) / 1000 * this.trackStore.secondWidth;
+		const unit = this.clone();
+		unit._durationStart = start + splitLine;
+		unit._durationEnd = end;
+		unit.track.x = this.track.x + this.track.w
+		unit.track.w = (unit._durationEnd - unit._durationStart) / 1000 * this.trackStore.secondWidth;
+		return unit;
 	}
 
 	get view() {
@@ -93,15 +91,15 @@ export class LayerUnit {
 
 	get duration() {
 		return {
-			start: this.durationStart,
-			end: this.durationEnd,
-			duration: this.durationEnd - this.durationStart
+			start: this._durationStart,
+			end: this._durationEnd,
+			duration: this._durationEnd - this._durationStart
 		}
 	}
 
 	get trackMaxWidth() {
 		if (this.resource.type == 'video')
-			return parseInt((this.durationEnd - this.durationStart) / 1000 *
+			return parseInt((this._durationEnd - this._durationStart) / 1000 *
 				this.trackStore.secondWidth *
 				this.trackStore.controllerScale)
 		else

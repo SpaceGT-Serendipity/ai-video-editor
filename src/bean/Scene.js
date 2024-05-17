@@ -24,10 +24,14 @@ export default class Scene {
 	sprite = null
 	container = null
 
-	constructor({
-		resource
-	}) {
+	constructor() {
 		this.id = uuidv4()
+	}
+
+	clone() {
+		const scene = new Scene()
+		scene.texture = this.texture;
+		return scene;
 	}
 
 	destroy() {
@@ -35,11 +39,13 @@ export default class Scene {
 	}
 
 	async load(resource) {
-		this.texture = await loadAsset({
-			alias: this.id,
-			src: resource.url,
-			loadParser: getLoadParserName(resource.type)
-		})
+		if (this.texture == null) {
+			this.texture = await loadAsset({
+				alias: this.id,
+				src: resource.url,
+				loadParser: getLoadParserName(resource.type)
+			})
+		}
 		this.loaded = true
 	}
 }

@@ -91,12 +91,12 @@
 	}
 	/* 触发失去活跃状态,使其失去活力慢一点,可在激活状态做一些事件如分割 */
 	const onDeactivated = () => {
-		setTimeout(() => editorDataStore.activeUnit = null, 100)
+		setTimeout(() => editorDataStore.activeUnit = null, 200)
 	}
 	// 吸附判定
 	const adsorption = (x) => {
-		let headLines = []
-		let tailLines = []
+		const headLines = []
+		const tailLines = []
 		const layer = editorDataStore.getLayerByUnitId(props.data.id)
 		layer.units.forEach(item => {
 			if (item.id != props.data.id) {
@@ -104,6 +104,9 @@
 				tailLines.push(parseInt(item.track.x + item.track.w))
 			}
 		})
+		// 将引导线加入判定
+		headLines.push(trackStore.seekerLocation)
+		tailLines.push(trackStore.seekerLocation)
 		for (let i = 0; i < headLines.length; i++) {
 			// 头-尾对齐
 			if (x > (tailLines[i] - trackStore.unitAdsorptionDecisionRange * 2) &&
