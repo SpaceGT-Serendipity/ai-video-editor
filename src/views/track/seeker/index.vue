@@ -3,7 +3,7 @@
 		<div class="seeker-head"></div>
 		<div class="seeker-body"><span class="seeker-body-inner"></span></div>
 		<span class="debug float">
-			Seeker X: {{trackStore.seekerLocation}}
+			Seeker X: {{trackStore.seekerLocation}} Time: {{trackStore.seekerTime}}ms
 		</span>
 	</div>
 </template>
@@ -36,9 +36,14 @@
 			trackStore.setSeeker(x)
 		}
 	})
-
 	watch(() => trackStore.seekerLocation, () => {
 		trackSeekerRootRef.value.style.left = trackStore.seekerLocation + "px";
+	})
+	watch(() => trackStore.seekerTime, (value) => {
+		trackStore.seekerLocation = parseInt(trackStore.seekerTime * trackStore.milliscondWidth)
+	})
+	watch(() => trackStore.controllerScale, (value, oldValue) => {
+		trackStore.seekerLocation = parseInt(trackStore.seekerTime * trackStore.milliscondWidth)
 	})
 
 	onMounted(() => {

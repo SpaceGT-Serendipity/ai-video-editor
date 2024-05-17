@@ -5,6 +5,9 @@
 		:max-width="config.maxWidth" :handles="config.handles" :on-drag="onDrag" :on-resize="onResize" :snap="true"
 		@activated="onActivated" @deactivated="onDeactivated" @resizeStop="onResizeStop">
 		<slot></slot>
+		<div class="debug float">
+			X: {{data.track.x}} W: {{data.track.w}}
+		</div>
 	</vue-draggable-resizable>
 </template>
 
@@ -200,5 +203,11 @@
 		background-repeat: no-repeat;
 		background-position: center center;
 		background-size: 3px 14px;
+	}
+
+	.debug {
+		background-color: #0008;
+		border-radius: 4px;
+		margin-left: 10px;
 	}
 </style>
