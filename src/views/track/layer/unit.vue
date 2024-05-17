@@ -58,6 +58,7 @@
 		config.maxWidth = value
 	})
 
+
 	// 拖拽事件
 	const onDrag = (x, y) => {
 		props.data.track.x = parseInt(x)
@@ -125,12 +126,12 @@
 		emits('onDrag', props.data)
 	}
 
-	function mousedown123(event) {
+	function mousedown(event) {
 		props.data.track.dragging = true
 		emitsDrag()
 	}
 
-	function mouseup123(event) {
+	function mouseup(event) {
 		if (props.data.track.dragging) {
 			props.data.track.dragging = false
 			emitsDrag()
@@ -139,13 +140,13 @@
 	onMounted(() => {
 		props.data.track.instance = instance
 		// 元素点击更新拖拽状态
-		unitRef.value.$el.addEventListener('mousedown', mousedown123);
-		document.addEventListener('mouseup', mouseup123);
+		unitRef.value.$el.addEventListener('mousedown', mousedown);
+		document.addEventListener('mouseup', mouseup);
 	})
 
 	onBeforeUnmount(() => {
-		unitRef.value.$el.removeEventListener('mousedown', mousedown123);
-		document.removeEventListener('mouseup', mouseup123)
+		unitRef.value.$el.removeEventListener('mousedown', mousedown);
+		document.removeEventListener('mouseup', mouseup)
 	})
 
 	defineExpose({

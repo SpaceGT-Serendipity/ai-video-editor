@@ -8,9 +8,9 @@ import {
 export default class Track {
 	/* 轨道配置 */
 	trackStore = useTrackStore()
-	/* 坐标 */
+	/* 原始坐标 */
 	_x = 0;
-	/* 宽度 */
+	/* 原始宽度 */
 	_w = 0;
 	/* 高度(固定) */
 	h = 45;
@@ -41,7 +41,7 @@ export default class Track {
 
 	set x(value) {
 		if (value < 0) this._x = 0
-		this._x = value / this.trackStore.controllerScale;
+		else this._x = value / this.trackStore.controllerScale
 	}
 
 	get w() {
@@ -49,7 +49,8 @@ export default class Track {
 	}
 
 	set w(value) {
-		this._w = value / this.trackStore.controllerScale;
+		if (value < 0) this._w = 0
+		else this._w = value / this.trackStore.controllerScale
 	}
 
 	get simplify() {

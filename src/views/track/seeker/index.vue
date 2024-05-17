@@ -32,7 +32,7 @@
 
 	watch(mouse.x, (value) => {
 		if (drag.value) {
-			const x = mouse.x.value - parentEl.value.offsetLeft;
+			const x = mouse.x.value - parentEl.value.offsetLeft + parentEl.value.parentElement.scrollLeft;
 			trackStore.setSeeker(x)
 		}
 	})

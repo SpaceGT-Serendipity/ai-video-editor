@@ -16,9 +16,9 @@ export class LayerUnit {
 	track = null
 	/* 场景信息 */
 	scene = null
-	/* 开始时间,并不是真实事件,仅为显示的开始时间(ms) */
+	/* 开始时间,并不是真实时间,仅为显示的开始时间(ms) */
 	_durationStart = 0
-	/* 结束时间,并不是真实事件,仅为显示的结束时间(ms) */
+	/* 结束时间,并不是真实时间,仅为显示的结束时间(ms) */
 	_durationEnd = 0
 
 	constructor({
@@ -33,7 +33,8 @@ export class LayerUnit {
 		this.scene = scene || new Scene()
 		this.track = track || new Track({
 			x: 0,
-			w: resource.duration / 1000 * this.trackStore.secondWidth,
+			// 原始宽度不进行缩放计算
+			w: resource.duration / this.trackStore.rulerScaleTime * this.trackStore.rulerScaleWidth,
 		})
 	}
 
@@ -42,7 +43,6 @@ export class LayerUnit {
 	}
 
 	clone() {
-		console.log('clone')
 		const unit = new LayerUnit({
 			resource: this.resource,
 			scene: this.scene.clone(),
@@ -56,12 +56,12 @@ export class LayerUnit {
 		const end = this._durationEnd
 		const splitLine = parseInt((end - start) * ratio);
 		this._durationEnd = start + splitLine;
-		this.track.w = (this._durationEnd - this._durationStart) / 1000 * this.trackStore.secondWidth;
+		this.track.w = (this._durationEnd - this._durationStart) * this.trackStore.milliscondWidth;
 		const unit = this.clone();
 		unit._durationStart = start + splitLine;
 		unit._durationEnd = end;
 		unit.track.x = this.track.x + this.track.w
-		unit.track.w = (unit._durationEnd - unit._durationStart) / 1000 * this.trackStore.secondWidth;
+		unit.track.w = (unit._durationEnd - unit._durationStart) * this.trackStore.milliscondWidth;
 		return unit;
 	}
 
@@ -99,9 +99,7 @@ export class LayerUnit {
 
 	get trackMaxWidth() {
 		if (this.resource.type == 'video')
-			return parseInt((this._durationEnd - this._durationStart) / 1000 *
-				this.trackStore.secondWidth *
-				this.trackStore.controllerScale)
+			return parseInt((this._durationEnd - this._durationStart) * this.trackStore.milliscondWidth)
 		else
 			return 0
 	}

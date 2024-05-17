@@ -1,6 +1,11 @@
 import {
 	defineStore
 } from 'pinia'
+import {
+	useTrackStore
+} from './track.js'
+
+
 
 export const useEditorDataStore = defineStore('editor-data', {
 	state: () => ({
@@ -10,7 +15,20 @@ export const useEditorDataStore = defineStore('editor-data', {
 	}),
 	getters: {
 		videoTotalDuration() {
-			return 50
+			const trackStore = useTrackStore()
+			const atUnits = this.layers.filter(layer => layer.length > 0).map(layer => layer.units.at(-1))
+			const furthestUnit = atUnits.reduce((previous, current) => {
+				if (previous == null) return current;
+				if (previous.track.x + previous.track.w > current.track.x + current.track.w)
+					return previous;
+				else
+					return current;
+			}, null)
+			if (furthestUnit) {
+				const totalWidth = furthestUnit.track.x + furthestUnit.track.w
+				return parseInt(totalWidth / trackStore.milliscondWidth)
+			}
+			return 0;
 		},
 		layersSimplify() {
 			return this.layers.map(layer => layer.simplify)

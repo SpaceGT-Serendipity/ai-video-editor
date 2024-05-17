@@ -135,7 +135,6 @@
 					const unit = new LayerUnit({
 						resource
 					})
-					unit.track.scale = trackStore.controllerScale
 					// 元素坐标
 					const x =
 						// 鼠标位置

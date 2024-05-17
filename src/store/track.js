@@ -31,7 +31,9 @@ export const useTrackStore = defineStore('track', {
 	}),
 	getters: {
 		// 每秒宽度（px）
-		secondWidth: (state) => state.rulerScaleWidth / (state.rulerScaleTime / 1000),
+		secondWidth: (state) => state.rulerScaleWidth / state.rulerScaleTime / 1000 * state.controllerScale,
+		// 每毫秒宽度（px）
+		milliscondWidth: (state) => state.rulerScaleWidth / state.rulerScaleTime * state.controllerScale,
 	},
 	actions: {
 		setSeeker(x) {

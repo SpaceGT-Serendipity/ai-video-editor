@@ -31,6 +31,9 @@
 		useSceneStore
 	} from '../../../store/scene.js'
 	import {
+		useTrackStore
+	} from '../../../store/track.js'
+	import {
 		loadAssets,
 		loadImg,
 		loadVideo,
@@ -42,6 +45,7 @@
 	const emit = defineEmits(['load'])
 	const editorDataStore = useEditorDataStore()
 	const sceneStore = useSceneStore()
+	const trackStore = useTrackStore()
 
 	watch(() => editorDataStore.layersScenes, (layers) => {
 		Render(layers)
@@ -54,33 +58,37 @@
 				const unit = layer.units[j]
 				if (!unit.scene.loaded) {
 					await unit.scene.load(unit.resource)
-					loadVideo(app, unit.scene)
+					await loadVideo(app, unit.scene)
+					pause(unit)
 				}
 			}
 		}
 	}
 
+	const play = (unit) => {
+		unit.scene.texture.source.resource.play()
+	}
 
-	// const playScene = () => {
-	// 	playState.value = true
-	// 	video.source.resource.play()
-	// }
+	const pause = (unit) => {
+		unit.scene.texture.source.resource.pause()
+	}
 
-	// const pauseScene = () => {
-	// 	playState.value = false
-	// 	video.source.resource.pause()
-	// }
+	const load = (unit, currentTime) => {
+		unit.scene.texture.source.resource.currentTime = currentTime.value
+	}
 
-	// const load = () => {
-	// 	video.source.resource.currentTime = currentTime.value
-	// }
-
-	// const run = () => {
+	// const runAudio = () => {
 	// 	const sound = Sound.from('/assets/audio/jin.mp3')
 	// 	sound.play({
 	// 		start: currentTime.value
 	// 	});
 	// }
+	const handleTicker = () => {
+		app.ticker.add((ticker) => {
+			// console.log(trackStore.seekerTime)
+		});
+	}
+
 	onMounted(async () => {
 		const scene = document.querySelector('.scene')
 		await app.init({
@@ -94,6 +102,7 @@
 		await loadBackground(app)
 		await loadBackgroundText(app)
 		emit('load')
+		handleTicker()
 	})
 </script>
 

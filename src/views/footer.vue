@@ -3,7 +3,7 @@
 		<el-alert title="状态栏 记录一些自动保存信息等等,一些信息提示" type="info" show-icon :closable="false" />
 		<div class="short-message">
 			<el-tag type="info">自动保存时间 90s</el-tag>
-			<el-tag type="info">视频总时长 00:{{editorDataStore.videoTotalDuration}}</el-tag>
+			<el-tag type="info">视频总时长 {{dateFormat(editorDataStore.videoTotalDuration,'hh:mm:ss')}}</el-tag>
 			<el-tag type="info" class="debug">时间引导线
 				Location : {{trackStore.seekerLocation}}
 				Time : {{trackStore.seekerTime}}ms</el-tag>
@@ -24,6 +24,9 @@
 	import {
 		useTrackStore
 	} from '../store/track.js'
+	import {
+		dateFormat
+	} from '../utils/time.js'
 
 	const editorDataStore = useEditorDataStore()
 	const trackStore = useTrackStore()
