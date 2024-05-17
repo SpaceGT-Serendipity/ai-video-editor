@@ -4,7 +4,7 @@
 		'--track-layer-height':`${trackStore.layerHeight}px`,
 		'--track-timeline-ruler-height':`${trackStore.rulerHeight}px`
 	}">
-		<toolbar v-show="haveResources" ref="toolbarRef" @change-scale="handleToolberChangeScale"></toolbar>
+		<toolbar v-show="haveResources" ref="toolbarRef"></toolbar>
 		<div class="view" ref="dropZoneRef"
 			:style="{'position':isOverDropZone||resourceDragStore.data?'relative':'initial'}">
 			<div v-show="haveResources" class="controller-group" ref="controllerGroupRef">
@@ -15,10 +15,10 @@
 					Scrollbar Mouse X : {{scrollbar.scrollbarMouseX}}
 				</div>
 				<div class="timeline-group">
-					<timeline-ruler ref="timelineRulerRef" :scale="scale" :time="trackStore.rulerDefultTime"
+					<timeline-ruler ref="timelineRulerRef" :time="trackStore.rulerDefultTime"
 						:scale-width="trackStore.rulerScaleWidth"
 						:scale-time="trackStore.rulerScaleTime"></timeline-ruler>
-					<layer-centre ref="timelineLayersRef" v-model="editorDataStore.layers" :scale="scale"
+					<layer-centre ref="timelineLayersRef" v-model="editorDataStore.layers" 
 						@on-drag="handleTimelineLayersOnDrag"></layer-centre>
 					<timeline-seeker></timeline-seeker>
 					<layer-unit-virtual-location :drag-data="dragData"></layer-unit-virtual-location>
@@ -83,7 +83,6 @@
 	const dropZoneRef = ref()
 	const controllerGroupRef = ref()
 	const uploadDragTipRef = ref()
-	const scale = ref(1)
 	const dragData = ref(null)
 	const haveResources = computed(() => editorDataStore.layers.length > 0)
 	const scrollbarRef = ref()
@@ -120,9 +119,7 @@
 		},
 		dataTypes: ['image/jpeg', 'image/png']
 	})
-	const handleToolberChangeScale = (data) => {
-		scale.value = data.toFixed(2) * 1
-	}
+
 	const handleTimelineLayersOnDrag = (event) => {
 		dragData.value = event
 		const last_position = event.x + event.w
@@ -138,7 +135,7 @@
 					const unit = new LayerUnit({
 						resource
 					})
-					unit.track.scale = scale.value
+					unit.track.scale = trackStore.controllerScale
 					// 元素坐标
 					const x =
 						// 鼠标位置

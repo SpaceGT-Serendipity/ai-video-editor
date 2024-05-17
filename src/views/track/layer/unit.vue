@@ -3,7 +3,7 @@
 		:parent="config.parent" :prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x"
 		:y="config.y" :w="config.w" :h="config.h" :z="config.z" :min-width="config.minWidth"
 		:max-width="config.maxWidth" :handles="config.handles" :on-drag="onDrag" :on-resize="onResize" :snap="true"
-		@activated="onActivated" @deactivated="onDeactivated">
+		@activated="onActivated" @deactivated="onDeactivated" @resizeStop="onResizeStop">
 		<slot></slot>
 	</vue-draggable-resizable>
 </template>
@@ -44,7 +44,7 @@
 		h: props.data.track.h, //初始高度
 		z: 1, //z-index索引
 		minWidth: 30,
-		maxWidth: props.data.track.maxW || 0,
+		maxWidth: props.data.trackMaxWidth || 0,
 		handles: ['mr', 'ml'], // 拖动手柄只保留左右
 	})
 
@@ -53,6 +53,9 @@
 	})
 	watch(() => props.data.track.w, (value) => {
 		config.w = value
+	})
+	watch(() => props.data.trackMaxWidth, (value) => {
+		config.maxWidth = value
 	})
 
 	// 拖拽事件
@@ -67,6 +70,9 @@
 	const onResize = (handle, x, y, width, height) => {
 		props.data.track.x = parseInt(x)
 		props.data.track.w = parseInt(width);
+	}
+	const onResizeStop = () => {
+		emitsDrag()
 	}
 	// 主动触发鼠标事件
 	const onMousedown = (event) => {

@@ -10,8 +10,6 @@ export default class Track {
 	_x = 0;
 	/* 宽度 */
 	_w = 0;
-	/* 最大长度 */
-	maxW = 0;
 	/* 高度(固定) */
 	h = 45;
 	/* 拖拽中状态 */
@@ -22,14 +20,12 @@ export default class Track {
 	constructor({
 		x,
 		w,
-		scale = 1,
-		maxW = 0
+		scale = 1 
 	}) {
 		this.id = uuidv4()
 		this.scale = scale
 		this._x = x
-		this._w = w
-		this.maxW = maxW
+		this._w = w 
 	}
 
 	clone() {

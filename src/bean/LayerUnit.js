@@ -16,6 +16,10 @@ export class LayerUnit {
 	track = null
 	/* 场景信息 */
 	scene = null
+	/* 开始时间,并不是真实事件,仅为显示的开始时间(ms) */
+	_durationStart = 0
+	/* 结束时间,并不是真实事件,仅为显示的结束时间(ms) */
+	_durationEnd = 0
 
 	constructor({
 		resource,
@@ -24,13 +28,14 @@ export class LayerUnit {
 	}) {
 		this.id = uuidv4();
 		this.resource = resource;
+		this._durationStart = 0
+		this._durationEnd = resource.duration
 		this.scene = scene || new Scene({
 			resource
 		})
 		this.track = track || new Track({
 			x: 0,
-			w: resource.duration * this.trackStore.secondWidth,
-			maxW: this.resource.type == 'video' ? resource.duration * this.trackStore.secondWidth : 0
+			w: resource.duration / 1000 * this.trackStore.secondWidth,
 		})
 	}
 
@@ -44,6 +49,22 @@ export class LayerUnit {
 			track: this.track.clone()
 		})
 		return unit;
+	}
+
+	set durationStart(value) {
+		this._durationStart = value
+	}
+
+	get durationStart() {
+		return this._durationStart
+	}
+
+	set durationEnd(value) {
+		this._durationEnd = value
+	}
+
+	get durationEnd() {
+		return this._durationEnd
 	}
 
 	get view() {
@@ -72,10 +93,18 @@ export class LayerUnit {
 
 	get duration() {
 		return {
-			leftTime: 0,
-			rightTime: 0,
-			duration: this.resource.duration
+			start: this.durationStart,
+			end: this.durationEnd,
+			duration: this.durationEnd - this.durationStart
 		}
 	}
 
+	get trackMaxWidth() {
+		if (this.resource.type == 'video')
+			return parseInt((this.durationEnd - this.durationStart) / 1000 *
+				this.trackStore.secondWidth *
+				this.trackStore.controllerScale)
+		else
+			return 0
+	}
 }

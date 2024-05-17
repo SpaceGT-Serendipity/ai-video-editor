@@ -18,15 +18,13 @@
 		refThrottled
 	} from '@vueuse/core'
 	import {
+		useTrackStore,
 		useTrackRulerConfigStore
 	} from '../../../store/track.js'
 
+	const trackStore = useTrackStore()
 	const trackRulerConfigStore = useTrackRulerConfigStore()
 	const props = defineProps({
-		scale: {
-			type: Number,
-			default: 1
-		}, // 刻度缩放 defult 1
 		time: Number, // 时间轴总时间
 		scaleWidth: Number, //刻度距离
 		scaleTime: Number, //刻度时间
@@ -37,11 +35,11 @@
 		scaleTime: props.scaleTime
 	})
 	const scaleCount = computed(() => parseInt(configOptions.totalTime / configOptions.scaleTime) + 1)
-	const scale = ref(props.scale)
+	const scale = ref(trackStore.controllerScale)
 	const scaleThrottled = refThrottled(scale, trackRulerConfigStore.scaleThrottledTime)
 
-	watch(() => props.scale, (value) => {
-		scale.value = props.scale
+	watch(() => trackStore.controllerScale, (value) => {
+		scale.value = value
 	})
 
 	watch(() => scaleThrottled.value, (value) => {

@@ -6,8 +6,8 @@ import axios from '../axios/index.js'
 export class Resource {
 	/* 文件类型 */
 	type = null;
-	/* 原始时长 */
-	duration = 6
+	/* 原始时长(ms) */
+	duration = 6000
 	/* 资源大小 */
 	size = 0
 	/* 资源加载完成 */
@@ -121,10 +121,10 @@ export class VideoResource extends Resource {
 		this._video.src = this.url;
 		this._video.load();
 		this._video.addEventListener('loadedmetadata', async () => {
-			this.duration = this._video.duration
+			this.duration = this._video.duration * 1000
 			if (this.cover == null) {
 				this._video.pause();
-				this._video.currentTime = parseInt(this.duration / 3)
+				this._video.currentTime = parseInt(this._video.duration / 3)
 			} else {
 				this.loaded = true
 			}

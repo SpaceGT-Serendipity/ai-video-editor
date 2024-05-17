@@ -19,13 +19,13 @@
 	import {
 		Layer
 	} from '../../../bean/Layer.js'
+	import {
+		useTrackStore
+	} from '../../../store/track.js'
 
+	const trackStore = useTrackStore()
 	const emits = defineEmits(['onDrag'])
 	const props = defineProps({
-		scale: {
-			type: Number,
-			default: 1
-		}, // 刻度缩放 defult 1
 		modelValue: {
 			type: Array
 		}
@@ -34,7 +34,7 @@
 	const layersRef = ref()
 	const dragData = ref(null)
 
-	watch(() => props.scale, (value) => {
+	watch(() => trackStore.controllerScale, (value) => {
 		layers.value.forEach(layer => {
 			layer.units.forEach(unit => unit.track.scale = value)
 		})

@@ -6,6 +6,8 @@ export const useTrackStore = defineStore('track', {
 	state: () => ({
 		// 控制区域宽度
 		controllerGroupWidth: 150,
+		// 控制区域缩放组件
+		controllerScale: 1,
 		// 图层高度
 		layerHeight: 45,
 		// 时间尺高度

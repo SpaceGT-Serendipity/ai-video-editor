@@ -30,7 +30,7 @@
 				</el-icon>
 			</el-button>
 			<el-slider size="small" v-model="scale" :step="0.01" :max="2" :min="0.2" :format-tooltip="formatTooltip"
-				@input="emits('changeScale',$event)" />
+				@input="changeScale" />
 			<el-button link size="small" @click="addition">
 				<el-icon size="20px">
 					<ZoomIn />
@@ -59,12 +59,12 @@
 	const emits = defineEmits(['changeScale'])
 	const scale = ref(1)
 
-
 	const onSplit = () => {
 		if (trackStore.seekerLocation > editorDataStore.activeUnit.track.location.left &&
 			trackStore.seekerLocation < editorDataStore.activeUnit.track.location.right) {
 			const width = trackStore.seekerLocation - editorDataStore.activeUnit.track.location.left
 			const ratio = width / editorDataStore.activeUnit.track.w
+			console.log(ratio)
 			// editorDataStore.activeUnit.split(ratio)
 			console.log(ratio)
 		} else {
@@ -81,17 +81,16 @@
 	}
 	const addition = () => {
 		scale.value = scale.value + 0.1
-		if (scale.value > 2) {
-			scale.value = 2
-		}
-		emits('changeScale', scale.value)
+		if (scale.value > 2) scale.value = 2
+		trackStore.controllerScale = scale.value.toFixed(2) * 1
 	}
 	const subtraction = () => {
 		scale.value = scale.value - 0.1
-		if (scale.value < 0.1) {
-			scale.value = 0.1
-		}
-		emits('changeScale', scale.value)
+		if (scale.value < 0.1) scale.value = 0.1
+		trackStore.controllerScale = scale.value.toFixed(2) * 1
+	}
+	const changeScale = (value) => {
+		trackStore.controllerScale = value.toFixed(2) * 1
 	}
 </script>
 
