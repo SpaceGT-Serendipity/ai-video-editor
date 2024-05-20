@@ -21,8 +21,16 @@
 	import {
 		useTrackStore
 	} from '../../../store/track.js'
+	import {
+		useEditorDataStore
+	} from '../../../store/editor.js'
+	import {
+		useSceneStore
+	} from '../../../store/scene.js'
 
+	const editorDataStore = useEditorDataStore()
 	const trackStore = useTrackStore()
+	const sceneStore = useSceneStore()
 	const parentEl = useParentElement()
 	const trackSeekerRootRef = ref()
 	const mouse = useMouse({
@@ -40,6 +48,9 @@
 		trackSeekerRootRef.value.style.left = trackStore.seekerLocation + "px";
 	})
 	watch(() => trackStore.seekerTime, (value) => {
+		if (trackStore.seekerTime == editorDataStore.videoTotalDuration) {
+			sceneStore.playing = false
+		}
 		trackStore.seekerLocation = parseInt(trackStore.seekerTime * trackStore.milliscondWidth)
 	})
 	watch(() => trackStore.controllerScale, (value, oldValue) => {

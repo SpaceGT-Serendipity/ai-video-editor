@@ -1,6 +1,9 @@
 import {
 	defineStore
 } from 'pinia'
+import {
+	useEditorDataStore
+} from './editor.js'
 
 export const useTrackStore = defineStore('track', {
 	state: () => ({
@@ -40,10 +43,16 @@ export const useTrackStore = defineStore('track', {
 			if (x < 0) {
 				this.seekerLocation = 0;
 				this.seekerTime = 0
-			} else {
-				this.seekerLocation = x;
-				this.seekerTime = parseInt(x / this.rulerScaleWidth * this.rulerScaleTime)
+				return;
 			}
+			const editorDataStore = useEditorDataStore()
+			if (x / this.milliscondWidth > editorDataStore.videoTotalDuration) {
+				this.seekerLocation = parseInt(editorDataStore.videoTotalDuration * this.milliscondWidth);
+				this.seekerTime = parseInt(editorDataStore.videoTotalDuration)
+				return;
+			}
+			this.seekerLocation = x;
+			this.seekerTime = parseInt(x / this.milliscondWidth)
 		},
 	}
 })

@@ -3,7 +3,6 @@ import {
 } from 'uuid'
 
 export class Layer {
-
 	units = null
 	display = true
 	instance = null
@@ -56,19 +55,20 @@ export class Layer {
 		return this.units.length
 	}
 
-	get simplify() {
-		return {
-			id: this.id,
-			units: this.units.map(item => item.simplify),
-			display: this.display,
-			length: this.length
-		}
-	}
-
 	get scenes() {
 		return {
 			id: this.id,
 			units: this.units.map(item => item.scenes),
+			display: this.display,
+			length: this.length,
+			remove: this.remove
+		}
+	}
+
+	get tracks() {
+		return {
+			id: this.id,
+			units: this.units.map(item => item.tracks),
 			display: this.display,
 			length: this.length,
 			remove: this.remove

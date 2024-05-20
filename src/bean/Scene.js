@@ -19,6 +19,7 @@ import {
 } from './SceneSpriteScale.js'
 
 export default class Scene {
+	_loading = false
 	loaded = false
 	texture = null
 	sprite = null
@@ -39,6 +40,8 @@ export default class Scene {
 	}
 
 	async load(resource) {
+		if (this._loading) return;
+		this._loading = true;
 		if (this.texture == null) {
 			this.texture = await loadAsset({
 				alias: this.id,
@@ -47,6 +50,7 @@ export default class Scene {
 			})
 		}
 		this.loaded = true
+		this._loading = false
 	}
 }
 

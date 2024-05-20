@@ -5,11 +5,16 @@
 		</div>
 		<div class="options">
 			<div style="padding: 10px; box-sizing: border-box;">
-				<el-slider v-model="currentTime" :max="totalTime" :step="0.01" @input="onLoadScene" />
+				<el-slider v-model="trackStore.seekerTime" :max="editorDataStore.videoTotalDuration" :step="1"
+					:disabled="editorDataStore.videoTotalDuration==0" :format-tooltip="formatTooltip" />
 				<div class="group-option">
 					<div class="left-option">
-						<span class="current-time"> {{dateFormat(currentTime*1000,'hh:mm:ss.SS')}} </span> |
-						{{dateFormat(totalTime*1000,'hh:mm:ss.SS')}}
+						<span class="current-time">
+							{{dateFormat(trackStore.seekerTime,'hh:mm:ss')}}
+						</span> |
+						<span>
+							{{dateFormat(editorDataStore.videoTotalDuration,'hh:mm:ss')}}
+						</span>
 					</div>
 					<div class="center-option">
 						<el-button v-if="!playState" link @click="onPlayScene">
@@ -49,7 +54,8 @@
 	import SelectSceneSpeed from '../../components/select-scene-speed.vue'
 	import {
 		useFullscreen,
-		useElementSize
+		useElementSize,
+		useMagicKeys
 	} from '@vueuse/core'
 	import Scene from './scene/index.vue'
 	import {
@@ -66,9 +72,13 @@
 	import {
 		useSceneStore
 	} from '../../store/scene.js'
+	import {
+		useTrackStore
+	} from '../../store/track.js'
 
 	const editorDataStore = useEditorDataStore()
 	const sceneStore = useSceneStore()
+	const trackStore = useTrackStore()
 	const playState = ref(false)
 	const adaptiveSizeRef = ref()
 	const currentTime = ref(0)
@@ -82,6 +92,16 @@
 		toggle
 	} = useFullscreen(viewportRef)
 	const adaptiveSize = useElementSize(adaptiveSizeRef)
+	const {
+		space
+	} = useMagicKeys()
+
+	watch(space, (v) => {
+		if (v) {
+			sceneStore.playing = !sceneStore.playing
+		}
+	})
+
 
 	watch(() => ({
 		width: adaptiveSize.width.value,
@@ -105,11 +125,11 @@
 	const onPauseScene = () => {
 
 	}
-	const onLoadScene = () => {
-
-	}
 	const handleSceneLoad = () => {
 
+	}
+	const formatTooltip = (number) => {
+		return dateFormat(number, 'hh:mm:ss')
 	}
 	onMounted(() => {})
 </script>

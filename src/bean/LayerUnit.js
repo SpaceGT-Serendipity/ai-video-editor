@@ -72,20 +72,21 @@ export class LayerUnit {
 			return '<没有绑定资源>'
 	}
 
-	get simplify() {
-		return {
-			id: this.id,
-			resource: this.resource,
-			track: this.track.simplify,
-			scene: this.scene
-		}
-	}
-
 	get scenes() {
 		return {
 			id: this.id,
 			resource: this.resource,
-			scene: this.scene
+			scene: this.scene,
+		}
+	}
+
+	get tracks() {
+		return {
+			id: this.id,
+			resource: this.resource,
+			track: this.track.simplify,
+			duration: this.duration,
+			scene: this.scene,
 		}
 	}
 
@@ -93,7 +94,9 @@ export class LayerUnit {
 		return {
 			start: this._durationStart,
 			end: this._durationEnd,
-			duration: this._durationEnd - this._durationStart
+			duration: this._durationEnd - this._durationStart,
+			left: parseInt(this.track.x / this.trackStore.milliscondWidth),
+			right: parseInt((this.track.x + this.track.w) / this.trackStore.milliscondWidth)
 		}
 	}
 

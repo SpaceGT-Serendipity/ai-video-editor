@@ -5,13 +5,11 @@ import {
 	useTrackStore
 } from './track.js'
 
-
-
 export const useEditorDataStore = defineStore('editor-data', {
 	state: () => ({
 		debug: true, // 测试模式
 		layers: [], // 轨道时间线层级
-		activeUnit: null // 选中激活的元素
+		activeUnit: null, // 选中激活的元素
 	}),
 	getters: {
 		videoTotalDuration() {
@@ -30,12 +28,12 @@ export const useEditorDataStore = defineStore('editor-data', {
 			}
 			return 0;
 		},
-		layersSimplify() {
-			return this.layers.map(layer => layer.simplify)
-		},
 		layersScenes() {
 			return this.layers.map(layer => layer.scenes)
-		}
+		},
+		layersTracks() {
+			return this.layers.map(layer => layer.tracks)
+		},
 	},
 	actions: {
 		/* 获取鼠标下的元素 */

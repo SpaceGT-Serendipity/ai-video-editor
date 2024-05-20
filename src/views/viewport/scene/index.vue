@@ -1,5 +1,5 @@
 <template>
-	<div class="scene" :style="{'transform':`scale(${sceneStore.scale})`}"></div>
+	<div class="scene" :style="{'transform':`scale(${sceneStore.scale})`}" v-loading="loading"></div>
 </template>
 
 <script setup>
@@ -46,12 +46,12 @@
 	const editorDataStore = useEditorDataStore()
 	const sceneStore = useSceneStore()
 	const trackStore = useTrackStore()
+	const loading = ref(true)
 
-	watch(() => editorDataStore.layersScenes, (layers) => {
-		Render(layers)
-	})
-
-	const Render = async (layers) => {
+	let loadSceneLoading = false
+	const loadScene = async (layers) => {
+		if (loadSceneLoading) return;
+		loadSceneLoading = true;
 		for (let i = 0; i < layers.length; i++) {
 			const layer = layers[i]
 			for (let j = 0; j < layer.length; j++) {
@@ -59,11 +59,48 @@
 				if (!unit.scene.loaded) {
 					await unit.scene.load(unit.resource)
 					await loadVideo(app, unit.scene)
-					pause(unit)
+					if (unit.resource.type == 'video') pause(unit)
+					unit.scene.container.visible = false
 				}
 			}
 		}
+		loadSceneLoading = false
 	}
+	const render = () => {
+		const showUnits = []
+		editorDataStore.layersTracks.forEach(layer => {
+			layer.units.forEach(unit => {
+				if (unit.scene.loaded) {
+					if (layer.display) {
+						if (trackStore.seekerTime > unit.duration.left &&
+							trackStore.seekerTime < unit.duration.right) {
+							showUnits.push(unit)
+						} else {
+							unit.scene.container.visible = false
+						}
+					} else {
+						unit.scene.container.visible = false
+					}
+				}
+			})
+		})
+		for (const unit of showUnits) {
+			const currentTime = trackStore.seekerTime - unit.duration.left
+			if (unit.resource.type == 'video') {
+				load(unit, currentTime)
+			}
+			unit.scene.container.visible = true
+		}
+	}
+	watch(() => editorDataStore.layersScenes, (layers) => {
+		loadScene(layers)
+	})
+	watch(() => editorDataStore.layersTracks, (value) => {
+		render()
+	})
+	watch(() => trackStore.seekerTime, (value) => {
+		render()
+	})
 
 	const play = (unit) => {
 		unit.scene.texture.source.resource.play()
@@ -74,7 +111,7 @@
 	}
 
 	const load = (unit, currentTime) => {
-		unit.scene.texture.source.resource.currentTime = currentTime.value
+		unit.scene.texture.source.resource.currentTime = currentTime  / 1000 
 	}
 
 	// const runAudio = () => {
@@ -85,7 +122,10 @@
 	// }
 	const handleTicker = () => {
 		app.ticker.add((ticker) => {
-			// console.log(trackStore.seekerTime)
+			if (sceneStore.playing) {
+				console.log(ticker)
+				trackStore.seekerTime += parseInt(ticker.deltaMS)
+			}
 		});
 	}
 
@@ -101,6 +141,7 @@
 		scene.appendChild(app.canvas);
 		await loadBackground(app)
 		await loadBackgroundText(app)
+		loading.value = false
 		emit('load')
 		handleTicker()
 	})

@@ -53,19 +53,17 @@ export default class Track {
 		else this._w = value / this.trackStore.controllerScale
 	}
 
-	get simplify() {
-		return {
-			x: this.x,
-			w: this.w,
-			h: this.h,
-			dragging: this.dragging
-		}
-	}
-
 	get location() {
 		return {
 			left: this.x,
 			right: this.x + this.w
+		}
+	}
+
+	get simplify() {
+		return {
+			x: this.x,
+			w: this.w
 		}
 	}
 }

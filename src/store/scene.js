@@ -7,6 +7,7 @@ export const useSceneStore = defineStore('scene', {
 		width: 1920,
 		height: 1080,
 		background: '#000000',
-		scale: 1
+		scale: 1,
+		playing: false, // 播放中
 	})
 })
