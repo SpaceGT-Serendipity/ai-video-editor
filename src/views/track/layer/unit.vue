@@ -1,12 +1,13 @@
 <template>
-	<vue-draggable-resizable ref="unitRef" :class-name="config.className" :class-name-active="config.classNameActive"
-		:parent="config.parent" :prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x"
-		:y="config.y" :w="config.w" :h="config.h" :z="config.z" :min-width="config.minWidth"
-		:max-width="config.maxWidth" :handles="config.handles" :on-drag="onDrag" :on-resize="onResize" :snap="true"
-		@activated="onActivated" @deactivated="onDeactivated" @resizeStop="onResizeStop">
+	<vue-draggable-resizable ref="unitRef" :class="{'layer-unit-durable-active':data.track.active}"
+		:class-name="config.className" :class-name-active="config.classNameActive" :parent="config.parent"
+		:prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x" :y="config.y" :w="config.w"
+		:h="config.h" :z="config.z" :min-width="config.minWidth" :max-width="config.maxWidth" :handles="config.handles"
+		:on-drag="onDrag" :on-resize="onResize" :snap="true" @activated="onActivated" @deactivated="onDeactivated"
+		@resizeStop="onResizeStop">
 		<slot></slot>
 		<div class="debug float">
-			X: {{data.track.x}} W: {{data.track.w}}
+			X: {{data.track.x}} W: {{data.track.w}} DurableActive: {{data.track.active}} 
 		</div>
 	</vue-draggable-resizable>
 </template>
@@ -36,6 +37,7 @@
 	const config = reactive({
 		className: 'layer-unit',
 		classNameActive: 'layer-unit-active',
+		classNameDurableActive: 'layer-unit-durable-active',
 		parent: true, //移动范围限制到父标签中
 		preventDeactivation: false, //防止失去激活状态
 		axis: 'x', //固定移动轴向
@@ -78,11 +80,11 @@
 	}
 	/* 触发活跃状态 */
 	const onActivated = () => {
-		editorDataStore.activeUnit = props.data
+		editorDataStore.setUnitActive(props.data.id)
 	}
 	/* 触发失去活跃状态,使其失去活力慢一点,可在激活状态做一些事件如分割 */
 	const onDeactivated = () => {
-		setTimeout(() => editorDataStore.activeUnit = null, 200)
+		// setTimeout(() => editorDataStore.activeUnit = null, 200)
 	}
 	// 吸附判定
 	const adsorption = (x) => {
@@ -138,7 +140,6 @@
 		unitRef.value.$el.removeEventListener('mousedown', mousedown);
 		document.removeEventListener('mouseup', mouseup)
 	})
-
 </script>
 
 <style scoped>
@@ -150,11 +151,13 @@
 		border-radius: 5px;
 		background-color: var(--layer-unit-bg);
 		overflow: hidden;
+		filter: brightness(0.8);
 	}
 
 	.layer-unit-active {
 		border: 2px solid var(--layer-unit-boder-color);
 		z-index: 2 !important;
+		filter: brightness(1);
 	}
 
 	.layer-unit-active:deep(.handle-ml) {
@@ -189,9 +192,15 @@
 		background-size: 3px 14px;
 	}
 
+	.layer-unit-durable-active {
+		border: 2px solid var(--layer-unit-boder-color);
+		filter: brightness(1);
+	}
+
 	.debug {
 		background-color: #0008;
 		border-radius: 4px;
 		margin-left: 10px;
+		color: #fff;
 	}
 </style>

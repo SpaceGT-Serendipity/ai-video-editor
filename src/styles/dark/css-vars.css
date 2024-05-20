@@ -6,7 +6,7 @@ html {
 	--layer-bg: #F5F5F3;
 	--layer-graggle-bg: #e6e6fe;
 	--layer-unit-bg: #86edff33;
-	--layer-unit-boder-color: rgb(17, 17, 17, 0.3);
+	--layer-unit-boder-color: #11111188;
 	--layer-unit-handle-bg: #96969680;
 	--scrollbar-background-color: #e3e3fa;
 	--scrollbar-foreground-color: #c4cad8;
@@ -25,7 +25,7 @@ html.dark {
 	--layer-bg: #28282E;
 	--layer-graggle-bg: #303035;
 	--layer-unit-bg: #2A4A50;
-	--layer-unit-boder-color: rgb(238, 238, 238, 0.3);
+	--layer-unit-boder-color: #eeeeee88;
 	--layer-unit-handle-bg: #fafafa80;
 	--scrollbar-background-color: #2d2d32;
 	--scrollbar-foreground-color: #404247;

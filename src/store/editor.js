@@ -9,7 +9,6 @@ export const useEditorDataStore = defineStore('editor-data', {
 	state: () => ({
 		debug: true, // 测试模式
 		layers: [], // 轨道时间线层级
-		activeUnit: null, // 选中激活的元素
 	}),
 	getters: {
 		videoTotalDuration() {
@@ -34,6 +33,17 @@ export const useEditorDataStore = defineStore('editor-data', {
 		layersTracks() {
 			return this.layers.map(layer => layer.tracks)
 		},
+		// 选中激活的元素
+		activeUnit() {
+			for (let i = 0; i < this.layers.length; i++) {
+				const layer = this.layers[i]
+				for (let j = 0; j < layer.length; j++) {
+					const unit = layer.units[j]
+					if (unit.track.active) return unit;
+				}
+			}
+			return null;
+		}
 	},
 	actions: {
 		/* 获取鼠标下的元素 */
@@ -80,6 +90,15 @@ export const useEditorDataStore = defineStore('editor-data', {
 			const index = this.layers.findIndex(layer => layer.id == layerId)
 			this.layers[index].destroy()
 			this.layers.splice(index, 1)
+		},
+		setUnitActive(unitId) {
+			for (let i = 0; i < this.layers.length; i++) {
+				const layer = this.layers[i]
+				for (let j = 0; j < layer.length; j++) {
+					const unit = layer.units[j]
+					unit.track.active = unit.id == unitId
+				}
+			}
 		}
 	}
 })

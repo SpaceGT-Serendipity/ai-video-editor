@@ -69,23 +69,27 @@
 					if (layer.display) {
 						if (trackStore.seekerTime >= unit.duration.left &&
 							trackStore.seekerTime <= unit.duration.right) {
+							unit.scene.container.zIndex =
+								editorDataStore.layersTracks.length - layerIndex
+							unit.scene.container.visible = true
 							if (unit.resource.type == 'video') {
 								if (sceneStore.playing) {
 									unit.scene.play()
 								} else {
 									const currentTime = trackStore.seekerTime - unit.duration.left
+									console.log(currentTime)
 									unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
 									unit.scene.pause()
 								}
 							}
-							unit.scene.container.zIndex =
-								editorDataStore.layersTracks.length - layerIndex
-							unit.scene.container.visible = true
+
 						} else {
 							unit.scene.container.visible = false
+							if (unit.resource.type == 'video') unit.scene.currentTime(0)
 						}
 					} else {
 						unit.scene.container.visible = false
+						if (unit.resource.type == 'video') unit.scene.currentTime(0)
 					}
 				}
 			})
@@ -103,9 +107,15 @@
 	// 	});
 	// }
 	const handleTicker = () => {
+		let totalDeltaMS = 0
+		let seekerPlayingStartTime = 0
 		app.ticker.add((ticker) => {
 			if (sceneStore.playing) {
-				trackStore.seekerTime += parseInt(ticker.deltaMS)
+				totalDeltaMS += ticker.deltaMS
+				trackStore.seekerTime = parseInt(seekerPlayingStartTime + totalDeltaMS)
+			} else {
+				totalDeltaMS = 0;
+				seekerPlayingStartTime = trackStore.seekerTime;
 			}
 		});
 	}

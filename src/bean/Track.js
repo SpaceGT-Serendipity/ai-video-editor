@@ -18,6 +18,8 @@ export default class Track {
 	dragging = false;
 	/* 组件实例 */
 	instance = null;
+	/* 组件激活状态 */
+	active = false;
 
 	constructor({
 		x,

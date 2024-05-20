@@ -29,9 +29,7 @@ export default class Scene {
 	}
 
 	clone() {
-		const scene = new Scene()
-		scene.texture = this.texture
-		return scene;
+		return new Scene()
 	}
 
 	destroy() {
@@ -39,13 +37,12 @@ export default class Scene {
 	}
 
 	async load(app, resource) {
-		if (this.texture == null) {
-			this.texture = await loadAsset({
-				alias: this.id,
-				src: resource.url,
-				loadParser: getLoadParserName(resource.type)
-			})
-		}
+		this.texture = await loadAsset({
+			alias: this.id,
+			src: resource.url,
+			loadParser: getLoadParserName(resource.type)
+		})
+		console.log([this.texture.source.resource])
 		await loadVideo(app, this)
 		if (resource.type == 'video')
 			this.pause()
@@ -56,13 +53,17 @@ export default class Scene {
 	play() {
 		this.texture.source.resource.play()
 	}
-	
+
 	pause() {
 		this.texture.source.resource.pause()
 	}
-	
+
 	currentTime(value) {
 		this.texture.source.resource.currentTime = value
+	}
+
+	get paused() {
+		return this.texture.source.resource.paused || false
 	}
 }
 
