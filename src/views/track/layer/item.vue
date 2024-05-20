@@ -1,7 +1,8 @@
 <template>
 	<!-- 图层 -->
 	<div class="timeline layer container" ref="containerRef">
-		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item" @on-drag="emits('onDrag', $event)">
+		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item"
+			@on-drag="emits('onDrag', $event)">
 			<div class="view" v-html="item.view"></div>
 		</layer-unit>
 	</div>
@@ -17,11 +18,9 @@
 		ref,
 		watch,
 		onMounted,
-		computed,
-		getCurrentInstance
+		computed 
 	} from 'vue'
 
-	const instance = getCurrentInstance()
 	const emits = defineEmits(['onDrag', 'onDrop'])
 	const props = defineProps({
 		modelValue: Object,
@@ -32,7 +31,7 @@
 	const layerGapRef = ref()
 
 	onMounted(() => {
-		props.modelValue.instance = instance
+		props.modelValue.instance = containerRef.value
 		// 拖拽至追加位置
 		containerRef.value.addEventListener('mouseenter', (event) => {
 			if (props.dropData && props.dropData.track.dragging) {
@@ -130,8 +129,6 @@
 		white-space: nowrap;
 		width: 100%;
 		height: 100%;
-		min-width: calc(var(--track-layer-height) * 16 / 9) ;
+		min-width: calc(var(--track-layer-height) * 16 / 9);
 	}
-	
-	
 </style>

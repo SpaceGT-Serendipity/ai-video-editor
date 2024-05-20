@@ -35,6 +35,18 @@ export default class Track {
 		})
 	}
 
+	/* 主动触发鼠标事件 */
+	onMousedown(event) {
+		var mouseEvent = new MouseEvent('mousedown', {
+			'view': window,
+			'bubbles': true,
+			'cancelable': false,
+			'clientX': event.clientX,
+			'clientY': event.clientY
+		});
+		this.instance.dispatchEvent(mouseEvent)
+	}
+
 	get x() {
 		return parseInt(this._x * this.trackStore.controllerScale);
 	}

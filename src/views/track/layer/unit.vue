@@ -17,8 +17,7 @@
 		reactive,
 		onMounted,
 		onBeforeUnmount,
-		watch,
-		getCurrentInstance
+		watch
 	} from 'vue'
 	import {
 		useTrackStore
@@ -27,7 +26,6 @@
 		useEditorDataStore
 	} from '../../../store/editor.js'
 
-	const instance = getCurrentInstance()
 	const trackStore = useTrackStore()
 	const editorDataStore = useEditorDataStore()
 	const unitRef = ref()
@@ -77,17 +75,6 @@
 	}
 	const onResizeStop = () => {
 		emitsDrag()
-	}
-	// 主动触发鼠标事件
-	const onMousedown = (event) => {
-		var mouseEvent = new MouseEvent('mousedown', {
-			'view': window,
-			'bubbles': true,
-			'cancelable': false,
-			'clientX': event.clientX,
-			'clientY': event.clientY
-		});
-		unitRef.value.$el.dispatchEvent(mouseEvent)
 	}
 	/* 触发活跃状态 */
 	const onActivated = () => {
@@ -141,7 +128,7 @@
 		}
 	}
 	onMounted(() => {
-		props.data.track.instance = instance
+		props.data.track.instance = unitRef.value.$el
 		// 元素点击更新拖拽状态
 		unitRef.value.$el.addEventListener('mousedown', mousedown);
 		document.addEventListener('mouseup', mouseup);
@@ -152,9 +139,6 @@
 		document.removeEventListener('mouseup', mouseup)
 	})
 
-	defineExpose({
-		onMousedown
-	})
 </script>
 
 <style scoped>

@@ -18,7 +18,7 @@
 					<timeline-ruler ref="timelineRulerRef" :time="trackStore.rulerDefultTime"
 						:scale-width="trackStore.rulerScaleWidth"
 						:scale-time="trackStore.rulerScaleTime"></timeline-ruler>
-					<layer-centre ref="timelineLayersRef" v-model="editorDataStore.layers" 
+					<layer-centre ref="timelineLayersRef" v-model="editorDataStore.layers"
 						@on-drag="handleTimelineLayersOnDrag"></layer-centre>
 					<timeline-seeker></timeline-seeker>
 					<layer-unit-virtual-location :drag-data="dragData"></layer-unit-virtual-location>
@@ -148,7 +148,7 @@
 					unit.track.x = x;
 					editorDataStore.layers.push(Layer.list(unit))
 					// 主动触发单元点击事件
-					nextTick(() => unit.track.instance.exposed.onMousedown(event))
+					nextTick(() => unit.track.onMousedown(event))
 				})
 			}
 		})

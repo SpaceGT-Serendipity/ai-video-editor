@@ -30,8 +30,7 @@
 		const renderDrag = (event) => {
 			if (drop && props.dragData && props.dragData.track.dragging) {
 				const mouseY = event.pageY;
-				const unitRef = props.dragData.track.instance.setupState.unitRef
-				const rect = unitRef.$el.getBoundingClientRect()
+				const rect = props.dragData.track.instance.getBoundingClientRect()
 				if (mouseY > (rect.top + props.dragData.track.h) || mouseY < (rect.top)) {
 					const parentX = parentElement.offsetLeft + trackStore.trackTimelineScrollbarPaddingLeft;
 					const parentY = parentElement.offsetTop;
