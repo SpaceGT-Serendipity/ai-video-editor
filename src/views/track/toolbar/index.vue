@@ -45,7 +45,8 @@
 		ElNotification
 	} from 'element-plus'
 	import {
-		ref
+		ref,
+		nextTick
 	} from 'vue'
 	import {
 		useEditorDataStore
@@ -66,7 +67,10 @@
 			const ratio = width / editorDataStore.activeUnit.track.w
 			const newUnit = editorDataStore.activeUnit.split(ratio)
 			const layer = editorDataStore.getLayerByUnitId(editorDataStore.activeUnit.id)
-			layer.units.push(newUnit)
+			nextTick(() => {
+				layer.units.push(newUnit)
+				layer.sort()
+			})
 		} else {
 			ElNotification({
 				title: '提示',
@@ -74,7 +78,6 @@
 				type: 'warning',
 			})
 		}
-
 	}
 	const formatTooltip = (number) => {
 		return parseInt(number * 100.00) + '%'

@@ -1,7 +1,7 @@
 <template>
 	<div class="viewport" ref="viewportRef">
 		<div class="adaptive-size" ref="adaptiveSizeRef">
-			<Scene ref="sceneRef" @load="handleSceneLoad"></Scene>
+			<Scene ref="sceneRef"></Scene>
 		</div>
 		<div class="options">
 			<div style="padding: 10px; box-sizing: border-box;">
@@ -17,20 +17,20 @@
 						</span>
 					</div>
 					<div class="center-option">
-						<el-button v-if="!playState" link @click="onPlayScene">
+						<el-button v-if="!sceneStore.playing" link @click="sceneStore.playing=true">
 							<el-icon size="26">
 								<VideoPlay />
 							</el-icon>
 						</el-button>
-						<el-button v-else link @click="onPauseScene">
+						<el-button v-else link @click="sceneStore.playing=false">
 							<el-icon size="26">
 								<VideoPause />
 							</el-icon>
 						</el-button>
 					</div>
 					<div class="right-option">
-						<select-scene-size></select-scene-size>
-						<select-scene-speed></select-scene-speed>
+						<!-- <select-scene-size></select-scene-size> -->
+						<!-- <select-scene-speed></select-scene-speed> -->
 						<el-button v-if="!isFullscreen" text @click="enter()">
 							<el-icon size="20">
 								<font-awesome-icon icon="expand" />
@@ -79,7 +79,6 @@
 	const editorDataStore = useEditorDataStore()
 	const sceneStore = useSceneStore()
 	const trackStore = useTrackStore()
-	const playState = ref(false)
 	const adaptiveSizeRef = ref()
 	const currentTime = ref(0)
 	const totalTime = ref(0)
@@ -101,8 +100,6 @@
 			sceneStore.playing = !sceneStore.playing
 		}
 	})
-
-
 	watch(() => ({
 		width: adaptiveSize.width.value,
 		height: adaptiveSize.height.value
@@ -118,16 +115,6 @@
 
 	const speed = ref()
 
-
-	const onPlayScene = () => {
-
-	}
-	const onPauseScene = () => {
-
-	}
-	const handleSceneLoad = () => {
-
-	}
 	const formatTooltip = (number) => {
 		return dateFormat(number, 'hh:mm:ss')
 	}
@@ -183,6 +170,7 @@
 		width: 200px;
 		display: flex;
 		gap: 10px;
+		justify-content: right;
 	}
 
 	.el-alert {

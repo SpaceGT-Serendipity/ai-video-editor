@@ -19,7 +19,7 @@
     "element-plus": "^2.7.2",
     "glightbox": "^3.3.0",
     "pinia": "^2.1.7",
-    "pinia-plugin-persist": "^1.0.0",
+    "pinia-plugin-persistedstate": "^3.2.1",
     "uuid": "^9.0.1",
     "vue": "^3.2.8",
     "vue-draggable-plus": "^0.4.0",

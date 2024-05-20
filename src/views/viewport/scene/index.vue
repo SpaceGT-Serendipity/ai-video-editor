@@ -42,7 +42,6 @@
 	} from '../../../bean/Scene.js'
 
 	const app = new Application();
-	const emit = defineEmits(['load'])
 	const editorDataStore = useEditorDataStore()
 	const sceneStore = useSceneStore()
 	const trackStore = useTrackStore()
@@ -56,12 +55,8 @@
 			const layer = layers[i]
 			for (let j = 0; j < layer.length; j++) {
 				const unit = layer.units[j]
-				if (!unit.scene.loaded) {
-					await unit.scene.load(unit.resource)
-					await loadVideo(app, unit.scene)
-					if (unit.resource.type == 'video') pause(unit)
-					unit.scene.container.visible = false
-				}
+				if (!unit.scene.loaded)
+					await unit.scene.load(app, unit.resource)
 			}
 		}
 		loadSceneLoading = false
@@ -76,11 +71,11 @@
 							trackStore.seekerTime <= unit.duration.right) {
 							if (unit.resource.type == 'video') {
 								if (sceneStore.playing) {
-									play(unit)
+									unit.scene.play()
 								} else {
 									const currentTime = trackStore.seekerTime - unit.duration.left
-									load(unit, currentTime)
-									pause(unit)
+									unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
+									unit.scene.pause()
 								}
 							}
 							unit.scene.container.zIndex =
@@ -96,28 +91,10 @@
 			})
 		})
 	}
-	watch(() => editorDataStore.layersScenes, (layers) => {
-		loadScene(layers)
-	})
-	watch(() => editorDataStore.layersTracks, (value) => {
-		render()
-	})
-	watch(() => trackStore.seekerTime, (value) => {
-		render()
-	})
-	watch(() => sceneStore.playing, (value) => {
-		render()
-	})
-
-	const play = (unit) => {
-		unit.scene.texture.source.resource.play()
-	}
-	const pause = (unit) => {
-		unit.scene.texture.source.resource.pause()
-	}
-	const load = (unit, currentTime) => {
-		unit.scene.texture.source.resource.currentTime = (unit.duration.start + currentTime) / 1000
-	}
+	watch(() => editorDataStore.layersScenes, (layers) => loadScene(layers))
+	watch(() => editorDataStore.layersTracks, (value) => render())
+	watch(() => trackStore.seekerTime, (value) => render())
+	watch(() => sceneStore.playing, (value) => render())
 
 	// const runAudio = () => {
 	// 	const sound = Sound.from('/assets/audio/jin.mp3')
@@ -145,7 +122,6 @@
 		await loadBackground(app)
 		await loadBackgroundText(app)
 		loading.value = false
-		emit('load')
 		handleTicker()
 	})
 </script>

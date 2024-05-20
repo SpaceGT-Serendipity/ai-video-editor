@@ -28,7 +28,7 @@ import VueDraggableResizable from 'vue-draggable-resizable'
 import {
 	createPinia
 } from 'pinia'
-import piniaPersist from 'pinia-plugin-persist'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const app = createApp(App)
 app.use(ElementPlus, {
@@ -36,7 +36,7 @@ app.use(ElementPlus, {
 })
 app.use(router)
 const pinia = createPinia()
-pinia.use(piniaPersist)
+pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 
 for (let key in ElIconModules) app.component(key, ElIconModules[key])

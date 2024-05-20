@@ -3,6 +3,7 @@ import {
 } from 'pinia'
 
 export const useSceneStore = defineStore('scene', {
+	persist: true,
 	state: () => ({
 		width: 1920,
 		height: 1080,
