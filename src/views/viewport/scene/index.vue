@@ -68,13 +68,24 @@
 	}
 	const render = () => {
 		const showUnits = []
-		editorDataStore.layersTracks.forEach(layer => {
+		editorDataStore.layersTracks.forEach((layer, layerIndex) => {
 			layer.units.forEach(unit => {
 				if (unit.scene.loaded) {
 					if (layer.display) {
 						if (trackStore.seekerTime >= unit.duration.left &&
 							trackStore.seekerTime <= unit.duration.right) {
-							showUnits.push(unit)
+							if (unit.resource.type == 'video') {
+								if (sceneStore.playing) {
+									play(unit)
+								} else {
+									const currentTime = trackStore.seekerTime - unit.duration.left
+									load(unit, currentTime)
+									pause(unit)
+								}
+							}
+							unit.scene.container.zIndex =
+								editorDataStore.layersTracks.length - layerIndex
+							unit.scene.container.visible = true
 						} else {
 							unit.scene.container.visible = false
 						}
@@ -84,19 +95,6 @@
 				}
 			})
 		})
-		for (const unit of showUnits) {
-			if (unit.resource.type == 'video') {
-				if (sceneStore.playing) {
-					play(unit)
-				} else {
-					const currentTime = trackStore.seekerTime - unit.duration.left
-					load(unit, currentTime)
-					pause(unit)
-				}
-
-			}
-			unit.scene.container.visible = true
-		}
 	}
 	watch(() => editorDataStore.layersScenes, (layers) => {
 		loadScene(layers)
