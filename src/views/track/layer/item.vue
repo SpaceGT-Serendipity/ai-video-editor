@@ -130,5 +130,8 @@
 		white-space: nowrap;
 		width: 100%;
 		height: 100%;
+		min-width: calc(var(--track-layer-height) * 16 / 9) ;
 	}
+	
+	
 </style>

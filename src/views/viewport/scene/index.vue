@@ -72,8 +72,8 @@
 			layer.units.forEach(unit => {
 				if (unit.scene.loaded) {
 					if (layer.display) {
-						if (trackStore.seekerTime > unit.duration.left &&
-							trackStore.seekerTime < unit.duration.right) {
+						if (trackStore.seekerTime >= unit.duration.left &&
+							trackStore.seekerTime <= unit.duration.right) {
 							showUnits.push(unit)
 						} else {
 							unit.scene.container.visible = false
@@ -85,9 +85,15 @@
 			})
 		})
 		for (const unit of showUnits) {
-			const currentTime = trackStore.seekerTime - unit.duration.left
 			if (unit.resource.type == 'video') {
-				load(unit, currentTime)
+				if (sceneStore.playing) {
+					play(unit)
+				} else {
+					const currentTime = trackStore.seekerTime - unit.duration.left
+					load(unit, currentTime)
+					pause(unit)
+				}
+
 			}
 			unit.scene.container.visible = true
 		}
@@ -101,17 +107,18 @@
 	watch(() => trackStore.seekerTime, (value) => {
 		render()
 	})
+	watch(() => sceneStore.playing, (value) => {
+		render()
+	})
 
 	const play = (unit) => {
 		unit.scene.texture.source.resource.play()
 	}
-
 	const pause = (unit) => {
 		unit.scene.texture.source.resource.pause()
 	}
-
 	const load = (unit, currentTime) => {
-		unit.scene.texture.source.resource.currentTime = currentTime  / 1000 
+		unit.scene.texture.source.resource.currentTime = (unit.duration.start + currentTime) / 1000
 	}
 
 	// const runAudio = () => {
@@ -123,7 +130,6 @@
 	const handleTicker = () => {
 		app.ticker.add((ticker) => {
 			if (sceneStore.playing) {
-				console.log(ticker)
 				trackStore.seekerTime += parseInt(ticker.deltaMS)
 			}
 		});
@@ -132,7 +138,6 @@
 	onMounted(async () => {
 		const scene = document.querySelector('.scene')
 		await app.init({
-			// resizeTo: scene,
 			width: sceneStore.width,
 			height: sceneStore.height,
 			background: sceneStore.background
