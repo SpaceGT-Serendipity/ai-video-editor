@@ -2,6 +2,7 @@
 	<div class="footer">
 		<el-alert title="状态栏 记录一些自动保存信息等等,一些信息提示" type="info" show-icon :closable="false" />
 		<div class="short-message">
+			<el-tag type="info">Is Online: {{ isOnline }}</el-tag>
 			<el-tag type="info">画布分辨率 {{sceneStore.width}} x {{sceneStore.height}}</el-tag>
 			<el-tag type="info">视频总时长 {{dateFormat(editorDataStore.videoTotalDuration,'hh:mm:ss')}}</el-tag>
 			<el-tag type="info" class="debug">时间引导线
@@ -30,10 +31,14 @@
 	import {
 		dateFormat
 	} from '../utils/time.js'
+	import {
+		useOnline
+	} from '@vueuse/core'
 
 	const editorDataStore = useEditorDataStore()
 	const trackStore = useTrackStore()
 	const sceneStore = useSceneStore()
+	const online = useOnline()
 
 	const openDebug = (state) => {
 		editorDataStore.debug = state

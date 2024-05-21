@@ -36,17 +36,24 @@
 	} from '@vueuse/core'
 
 	const options = {
-		title: 'Hello, world from VueUse!',
+		title: 'AI 编辑器 开始合成视频!',
+		body: '点击查看详情',
+		icon: '/favicon.ico',
 		dir: 'auto',
 		lang: 'en',
 		renotify: true,
-		tag: 'test',
+		tag: 'spacegt',
 	}
 	const {
 		isSupported,
 		show,
+		onClick
 	} = useWebNotification(options)
-
+	
+	onClick((event) => {
+		window.open('https://ai.yigee.cn')
+	})
+	
 	const editProjectName = ref(false)
 	const projectName = ref('未命名项目')
 
