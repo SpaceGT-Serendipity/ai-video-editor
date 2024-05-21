@@ -22,7 +22,7 @@
 	</div>
 	<div class="button-group">
 		<SwitchTheme></SwitchTheme>
-		<el-button type="primary" icon="Monitor">合成视频</el-button>
+		<el-button type="primary" icon="Monitor" @click="show()">合成视频</el-button>
 	</div>
 </template>
 
@@ -31,6 +31,21 @@
 	import {
 		ref
 	} from 'vue'
+	import {
+		useWebNotification
+	} from '@vueuse/core'
+
+	const options = {
+		title: 'Hello, world from VueUse!',
+		dir: 'auto',
+		lang: 'en',
+		renotify: true,
+		tag: 'test',
+	}
+	const {
+		isSupported,
+		show,
+	} = useWebNotification(options)
 
 	const editProjectName = ref(false)
 	const projectName = ref('未命名项目')
