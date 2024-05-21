@@ -7,7 +7,7 @@
 		@resizeStop="onResizeStop">
 		<slot></slot>
 		<div class="debug float">
-			X: {{data.track.x}} W: {{data.track.w}} DurableActive: {{data.track.active}} 
+			X: {{data.track.x}} W: {{data.track.w}} DurableActive: {{data.track.active}}
 		</div>
 	</vue-draggable-resizable>
 </template>
@@ -60,7 +60,6 @@
 	watch(() => props.data.trackMaxWidth, (value) => {
 		config.maxWidth = value
 	})
-
 
 	// 拖拽事件
 	const onDrag = (x, y) => {
@@ -129,6 +128,7 @@
 			emitsDrag()
 		}
 	}
+
 	onMounted(() => {
 		props.data.track.instance = unitRef.value.$el
 		// 元素点击更新拖拽状态

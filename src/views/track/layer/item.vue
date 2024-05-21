@@ -17,8 +17,9 @@
 	import {
 		ref,
 		watch,
+		computed,
 		onMounted,
-		computed 
+		onBeforeUnmount
 	} from 'vue'
 
 	const emits = defineEmits(['onDrag', 'onDrop'])
@@ -30,48 +31,69 @@
 	const containerRef = ref()
 	const layerGapRef = ref()
 
+	function handleContainerMouseenter(event) {
+		if (props.dropData && props.dropData.track.dragging) {
+			containerRef.value.classList.add('graggle')
+		} else {
+			containerRef.value.classList.remove('graggle')
+		}
+	}
+
+	function handleContainerMouseup(event) {
+		if (containerRef.value.classList.contains('graggle')) {
+			emits('onDrop', {
+				dropData: props.dropData,
+				dropMode: 'appendUnit'
+			})
+		}
+		containerRef.value.classList.remove('graggle')
+	}
+
+	function handleContainerMouseleave(event) {
+		containerRef.value.classList.remove('graggle')
+	}
+
+	function handleLayerGapMouseenter(event) {
+		if (props.dropData && props.dropData.track.dragging) {
+			layerGapRef.value.classList.add('graggle')
+		} else {
+			layerGapRef.value.classList.remove('graggle')
+		}
+	}
+
+	function handleLayerGapMouseup(event) {
+		if (layerGapRef.value.classList.contains('graggle')) {
+			emits('onDrop', {
+				dropData: props.dropData,
+				dropMode: 'newLayer'
+			})
+		}
+		layerGapRef.value.classList.remove('graggle')
+	}
+
+	function handleLayerGapMouseleave(event) {
+		layerGapRef.value.classList.remove('graggle')
+	}
+
 	onMounted(() => {
 		props.modelValue.instance = containerRef.value
 		// 拖拽至追加位置
-		containerRef.value.addEventListener('mouseenter', (event) => {
-			if (props.dropData && props.dropData.track.dragging) {
-				containerRef.value.classList.add('graggle')
-			} else {
-				containerRef.value.classList.remove('graggle')
-			}
-		});
-		containerRef.value.addEventListener('mouseup', (event) => {
-			if (containerRef.value.classList.contains('graggle')) {
-				emits('onDrop', {
-					dropData: props.dropData,
-					dropMode: 'appendUnit'
-				})
-			}
-			containerRef.value.classList.remove('graggle')
-		});
-		containerRef.value.addEventListener('mouseleave', (event) => {
-			containerRef.value.classList.remove('graggle')
-		});
+		containerRef.value.addEventListener('mouseenter', handleContainerMouseenter);
+		containerRef.value.addEventListener('mouseup', handleContainerMouseup);
+		containerRef.value.addEventListener('mouseleave', handleContainerMouseleave);
 		// 拖拽至新增位置
-		layerGapRef.value.addEventListener('mouseenter', (event) => {
-			if (props.dropData && props.dropData.track.dragging) {
-				layerGapRef.value.classList.add('graggle')
-			} else {
-				layerGapRef.value.classList.remove('graggle')
-			}
-		});
-		layerGapRef.value.addEventListener('mouseup', (event) => {
-			if (layerGapRef.value.classList.contains('graggle')) {
-				emits('onDrop', {
-					dropData: props.dropData,
-					dropMode: 'newLayer'
-				})
-			}
-			layerGapRef.value.classList.remove('graggle')
-		});
-		layerGapRef.value.addEventListener('mouseleave', (event) => {
-			layerGapRef.value.classList.remove('graggle')
-		});
+		layerGapRef.value.addEventListener('mouseenter', handleLayerGapMouseenter);
+		layerGapRef.value.addEventListener('mouseup', handleLayerGapMouseup);
+		layerGapRef.value.addEventListener('mouseleave', handleLayerGapMouseleave);
+	})
+
+	onBeforeUnmount(() => {
+		containerRef.value.removeEventListener('mouseenter', handleContainerMouseenter);
+		containerRef.value.removeEventListener('mouseup', handleContainerMouseup);
+		containerRef.value.removeEventListener('mouseleave', handleContainerMouseleave);
+		layerGapRef.value.removeEventListener('mouseenter', handleLayerGapMouseenter);
+		layerGapRef.value.removeEventListener('mouseup', handleLayerGapMouseup);
+		layerGapRef.value.removeEventListener('mouseleave', handleLayerGapMouseleave);
 	})
 </script>
 

@@ -51,7 +51,6 @@
 		ImageResource,
 		VideoResource
 	} from '../../bean/Resource.js'
-
 	import {
 		useDropZone,
 		useMouse
@@ -59,10 +58,11 @@
 	import {
 		ref,
 		reactive,
-		onMounted,
 		nextTick,
 		computed,
-		watch
+		watch,
+		onMounted,
+		onBeforeUnmount
 	} from 'vue'
 	import {
 		useResourceDragStore
@@ -126,55 +126,56 @@
 		timelineRulerRef.value.resize(last_position)
 	}
 	/* 拖拽资源到面板添加元素  */
-	const dragResourceToUploadDragTip = () => {
-		uploadDragTipRef.value.addEventListener('mouseenter', (event) => {
-			if (resourceDragStore.data) {
-				const resource = resourceDragStore.data
-				resourceDragStore.data = null
-				nextTick(() => {
-					const unit = new LayerUnit({
-						resource
-					})
-					// 元素坐标
-					const x =
-						// 鼠标位置
-						event.pageX +
-						// 滚动调位置
-						scrollbarRef.value.scrollLeft -
-						// 图层区域左侧距离（轨道区左侧距离+控制区域宽度）
-						(dropZoneRef.value.offsetLeft + trackStore.controllerGroupWidth) -
-						// 单元宽度的一半，指针指向中间
-						(unit.track.w / 2)
-					unit.track.x = x;
-					editorDataStore.layers.push(Layer.list(unit))
-					// 主动触发单元点击事件
-					nextTick(() => unit.track.onMousedown(event))
+	function handleDragResourceToUploadDragTip(event) {
+		if (resourceDragStore.data) {
+			const resource = resourceDragStore.data
+			resourceDragStore.data = null
+			nextTick(() => {
+				const unit = new LayerUnit({
+					resource
 				})
-			}
-		})
+				// 元素坐标
+				const x =
+					// 鼠标位置
+					event.pageX +
+					// 滚动调位置
+					scrollbarRef.value.scrollLeft -
+					// 图层区域左侧距离（轨道区左侧距离+控制区域宽度）
+					(dropZoneRef.value.offsetLeft + trackStore.controllerGroupWidth) -
+					// 单元宽度的一半，指针指向中间
+					(unit.track.w / 2)
+				unit.track.x = x;
+				editorDataStore.layers.push(Layer.list(unit))
+				// 主动触发单元点击事件
+				nextTick(() => unit.track.onMousedown(event))
+			})
+		}
 	}
 	/*  轨道图层管理和图层编辑滚动条同步 */
-	const scrollbarSynchronization = () => {
-		const syncScroll = (event) => {
-			timelineLayersRef.value.$el.scrollTop = event.target.scrollTop
-			controllerGroupRef.value.scrollTop = event.target.scrollTop
-		}
-		controllerGroupRef.value.addEventListener('scroll', syncScroll)
-		timelineLayersRef.value.$el.addEventListener('scroll', syncScroll)
+	function handleScrollbarSynchronization(event) {
+		timelineLayersRef.value.$el.scrollTop = event.target.scrollTop
+		controllerGroupRef.value.scrollTop = event.target.scrollTop
 	}
-	/* 点击 scrollbar 设置 seeker 位置*/
-	const scrollbarMouseDownUpdateSeeker = () => {
-		scrollbarRef.value.addEventListener('mousedown', (event) => {
-			const unit = editorDataStore.getUnitUnderMouse(event)
-			if (unit == null)
-				trackStore.setSeeker(scrollbar.scrollbarMouseX)
-		})
+	/* 点击 scrollbar 设置 seeker 位置，以及点击空白区域取消元素的激活状态 */
+	function handleScrollbarMouseDown(event) {
+		const unit = editorDataStore.getUnitUnderMouse(event)
+		if (unit == null) {
+			trackStore.setSeeker(scrollbar.scrollbarMouseX)
+			editorDataStore.setUnitActive(null)
+		}
 	}
 
 	onMounted(() => {
-		dragResourceToUploadDragTip()
-		scrollbarSynchronization()
-		scrollbarMouseDownUpdateSeeker()
+		uploadDragTipRef.value.addEventListener('mouseenter', handleDragResourceToUploadDragTip)
+		controllerGroupRef.value.addEventListener('scroll', handleScrollbarSynchronization)
+		timelineLayersRef.value.$el.addEventListener('scroll', handleScrollbarSynchronization)
+		scrollbarRef.value.addEventListener('mousedown', handleScrollbarMouseDown)
+	})
+	onBeforeUnmount(() => {
+		uploadDragTipRef.value.removeEventListener('mouseenter', handleDragResourceToUploadDragTip)
+		controllerGroupRef.value.removeEventListener('scroll', handleScrollbarSynchronization)
+		timelineLayersRef.value.$el.removeEventListener('scroll', handleScrollbarSynchronization)
+		scrollbarRef.value.removeEventListener('mousedown', handleScrollbarMouseDown)
 	})
 </script>
 

@@ -3,7 +3,8 @@
 	import BoundaryTips from './components/boundary-tips.vue'
 	import {
 		ref,
-		onMounted
+		onMounted,
+		onBeforeUnmount
 	} from 'vue'
 	import {
 		useResourceDragStore
@@ -25,14 +26,25 @@
 		if (app.clientHeight > window.innerHeight + 20) boundaryTipsBottom.value = true
 		else boundaryTipsBottom.value = false
 	}
-	updateScreenSizeTips()
-	updateBoundaryTips()
-	window.addEventListener('resize', updateScreenSizeTips)
-	window.addEventListener('resize', updateBoundaryTips)
+
+	function clearResourceDragData() {
+		resourceDragstore.data = null
+	}
 
 	onMounted(() => {
-		document.addEventListener('mouseup', (event) => resourceDragstore.data = null)
-		document.addEventListener('mouseleave', (event) => resourceDragstore.data = null)
+		window.addEventListener('resize', updateScreenSizeTips)
+		window.addEventListener('resize', updateBoundaryTips)
+		document.addEventListener('mouseup', clearResourceDragData)
+		document.addEventListener('mouseleave', clearResourceDragData)
+		updateScreenSizeTips()
+		updateBoundaryTips()
+	})
+
+	onBeforeUnmount(() => {
+		window.removeEventListener('resize', updateScreenSizeTips)
+		window.removeEventListener('resize', updateBoundaryTips)
+		document.removeEventListener('mouseup', clearResourceDragData)
+		document.removeEventListener('mouseleave', clearResourceDragData)
 	})
 </script>
 

@@ -109,8 +109,8 @@
 	}) => {
 		const widthScale = width / sceneStore.width
 		const heightScale = height / sceneStore.height
-		if (widthScale < heightScale) sceneStore.scale = widthScale
-		else sceneStore.scale = heightScale
+		if (widthScale < heightScale) sceneStore.canvasScale = widthScale
+		else sceneStore.canvasScale = heightScale
 	})
 
 	const speed = ref()

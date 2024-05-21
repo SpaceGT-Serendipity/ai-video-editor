@@ -49,16 +49,16 @@
 		show,
 		onClick
 	} = useWebNotification(options)
-	
+
 	onClick((event) => {
-		window.open('https://ai.yigee.cn')
+		window.open(import.meta.env.VITE_APP_WEB_NOTIFICATION)
 	})
-	
+
 	const editProjectName = ref(false)
 	const projectName = ref('未命名项目')
 
 	const onBack = () => {
-		window.location.href = 'https://ai.yigee.cn'
+		window.location.href = import.meta.env.VITE_APP_BACK_PATH
 	}
 	const onChangeProjectName = () => {
 		console.log(projectName.value)

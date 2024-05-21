@@ -11,8 +11,9 @@
 <script setup>
 	import {
 		ref,
+		watch,
 		onMounted,
-		watch
+		onBeforeUnmount
 	} from 'vue'
 	import {
 		useMouse,
@@ -57,10 +58,24 @@
 		trackStore.seekerLocation = parseInt(trackStore.seekerTime * trackStore.milliscondWidth)
 	})
 
+	function startDrag() {
+		drag.value = true
+	}
+
+	function endDrag() {
+		drag.value = false
+	}
+
 	onMounted(() => {
-		trackSeekerRootRef.value.addEventListener('mousedown', (event) => drag.value = true)
-		document.addEventListener('mouseup', (event) => drag.value = false)
-		document.addEventListener('mouseleave', (event) => drag.value = false)
+		trackSeekerRootRef.value.addEventListener('mousedown', startDrag)
+		document.addEventListener('mouseup', endDrag)
+		document.addEventListener('mouseleave', endDrag)
+	})
+
+	onBeforeUnmount(() => {
+		trackSeekerRootRef.value.removeEventListener('mousedown', startDrag)
+		document.removeEventListener('mouseup', endDrag)
+		document.removeEventListener('mouseleave', endDrag)
 	})
 </script>
 

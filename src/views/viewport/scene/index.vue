@@ -1,5 +1,5 @@
 <template>
-	<div class="scene" :style="{'transform':`scale(${sceneStore.scale})`}" v-loading="loading"></div>
+	<div class="scene" :style="{'transform':`scale(${sceneStore.canvasScale})`}" v-loading="loading"></div>
 </template>
 
 <script setup>
