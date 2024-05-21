@@ -77,7 +77,6 @@
 									unit.scene.play()
 								} else {
 									const currentTime = trackStore.seekerTime - unit.duration.left
-									console.log(currentTime)
 									unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
 									unit.scene.pause()
 								}

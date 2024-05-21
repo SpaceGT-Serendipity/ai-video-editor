@@ -63,14 +63,22 @@
 	const onSplit = () => {
 		if (trackStore.seekerLocation > editorDataStore.activeUnit.track.location.left &&
 			trackStore.seekerLocation < editorDataStore.activeUnit.track.location.right) {
-			const width = trackStore.seekerLocation - editorDataStore.activeUnit.track.location.left
-			const ratio = width / editorDataStore.activeUnit.track.w
-			const newUnit = editorDataStore.activeUnit.split(ratio)
-			const layer = editorDataStore.getLayerByUnitId(editorDataStore.activeUnit.id)
-			nextTick(() => {
-				layer.units.push(newUnit)
-				layer.sort()
-			})
+			if (editorDataStore.activeUnit.resource.type == 'video') {
+				const width = trackStore.seekerLocation - editorDataStore.activeUnit.track.location.left
+				const ratio = width / editorDataStore.activeUnit.track.w
+				const newUnit = editorDataStore.activeUnit.split(ratio)
+				const layer = editorDataStore.getLayerByUnitId(editorDataStore.activeUnit.id)
+				nextTick(() => {
+					layer.units.push(newUnit)
+					layer.sort()
+				})
+			} else {
+				ElNotification({
+					title: '提示',
+					message: '仅限于视频资源分割',
+					type: 'warning',
+				})
+			}
 		} else {
 			ElNotification({
 				title: '提示',

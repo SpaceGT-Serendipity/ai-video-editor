@@ -42,7 +42,6 @@ export default class Scene {
 			src: resource.url,
 			loadParser: getLoadParserName(resource.type)
 		})
-		console.log([this.texture.source.resource])
 		await loadVideo(app, this)
 		if (resource.type == 'video')
 			this.pause()
