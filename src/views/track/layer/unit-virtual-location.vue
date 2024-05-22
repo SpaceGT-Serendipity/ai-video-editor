@@ -91,6 +91,7 @@
 		font-size: 14px;
 		align-items: center;
 		z-index: 2;
+		overflow: hidden;
 	}
 
 	.virtual-location * {

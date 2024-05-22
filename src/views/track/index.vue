@@ -231,7 +231,11 @@
 	.controller-group .controller.layer {
 		padding: 0 20px;
 		height: var(--track-layer-height);
-		margin-bottom: 10px;
+		margin-bottom: 12px;
+	}
+
+	.controller-group .controller.layer:first-child {
+		margin-top: 12px;
 	}
 
 	.controller-group .controller.layer:last-child {

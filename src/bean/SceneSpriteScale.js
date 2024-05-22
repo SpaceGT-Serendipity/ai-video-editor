@@ -6,7 +6,7 @@ const {
 
 const decision_range = 15; // 从外到里判定范文 边距像素
 
-export function mountScale(app, container) {
+export function mountScale(app, container, callback) {
 	let isResizing = false;
 	// 距离容器中心点的长度
 	let startDistance = 0;
@@ -45,12 +45,13 @@ export function mountScale(app, container) {
 			const y_distanceCenter = Math.abs(globePoint.y - globeContainerCenter.y)
 			const currentDistance = Math.sqrt(Math.pow(x_distanceCenter, 2) + Math.pow(y_distanceCenter, 2));
 			const scale = currentDistance / startDistance;
-			if (scale > 0.5) {
+			if (scale > 0.1) {
 				container.scale.x = scale;
 				container.scale.y = scale;
 				container.alpha = 0.7;
 				container.x = globeContainerCenter.x - (container.width / 2);
 				container.y = globeContainerCenter.y - (container.height / 2);
+				callback()
 			}
 		}
 	});

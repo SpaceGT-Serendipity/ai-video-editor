@@ -19,6 +19,8 @@ import {
 } from './SceneSpriteScale.js'
 
 export default class Scene {
+	/* 最后更新时间 */
+	timestamp = 0
 	loaded = false
 	texture = null
 	sprite = null
@@ -42,9 +44,13 @@ export default class Scene {
 			src: resource.url,
 			loadParser: getLoadParserName(resource.type)
 		})
-		await loadVideo(app, this)
-		if (resource.type == 'video')
+
+		if (resource.type == 'video') {
+			await loadVideo(app, this, () => this.timestamp = new Date().getTime())
 			this.pause()
+		} else {
+			await loadVideo(app, this, () => this.timestamp = new Date().getTime())
+		}
 		this.container.visible = false
 		this.loaded = true
 	}
@@ -117,13 +123,13 @@ const loadImg = async (app) => {
 	sprite.y = app.screen.height / 2;
 	app.stage.addChild(sprite);
 }
-const loadVideo = (app, scene) => {
+const loadVideo = (app, scene, callback) => {
 	const container = new Container()
 	container.interactive = true
 	const sprite = Sprite.from(scene.texture);
 	container.addChild(sprite)
-	mountMove(app, container)
-	mountScale(app, container)
+	mountMove(app, container, callback)
+	mountScale(app, container, callback)
 	center(app, container)
 	app.stage.addChild(container);
 	scene.container = container
@@ -161,9 +167,6 @@ const center = (app, container) => {
 }
 
 export {
-	loadAssets,
-	loadImg,
-	loadVideo,
 	loadBackground,
-	loadBackgroundText
+	loadBackgroundText 
 }

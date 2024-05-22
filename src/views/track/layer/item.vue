@@ -1,4 +1,6 @@
 <template>
+	<!-- 图层顶部 -->
+	<div class="timeline layer-top" ref="topRef"> </div>
 	<!-- 图层 -->
 	<div class="timeline layer container" ref="containerRef">
 		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item"
@@ -28,6 +30,7 @@
 		dropData: Object,
 		last: Boolean
 	})
+	const topRef = ref()
 	const containerRef = ref()
 	const layerGapRef = ref()
 
@@ -75,6 +78,28 @@
 		layerGapRef.value.classList.remove('graggle')
 	}
 
+	function handleTopMouseenter(event) {
+		if (props.dropData && props.dropData.track.dragging) {
+			topRef.value.classList.add('graggle')
+		} else {
+			topRef.value.classList.remove('graggle')
+		}
+	}
+
+	function handleTopMouseup(event) {
+		if (topRef.value.classList.contains('graggle')) {
+			emits('onDrop', {
+				dropData: props.dropData,
+				dropMode: 'topLayer'
+			})
+		}
+		topRef.value.classList.remove('graggle')
+	}
+
+	function handleTopMouseleave(event) {
+		topRef.value.classList.remove('graggle')
+	}
+
 	onMounted(() => {
 		props.modelValue.instance = containerRef.value
 		// 拖拽至追加位置
@@ -85,6 +110,10 @@
 		layerGapRef.value.addEventListener('mouseenter', handleLayerGapMouseenter);
 		layerGapRef.value.addEventListener('mouseup', handleLayerGapMouseup);
 		layerGapRef.value.addEventListener('mouseleave', handleLayerGapMouseleave);
+		// 拖拽至顶部位置
+		topRef.value.addEventListener('mouseenter', handleTopMouseenter);
+		topRef.value.addEventListener('mouseup', handleTopMouseup);
+		topRef.value.addEventListener('mouseleave', handleTopMouseleave);
 	})
 
 	onBeforeUnmount(() => {
@@ -94,6 +123,9 @@
 		layerGapRef.value.removeEventListener('mouseenter', handleLayerGapMouseenter);
 		layerGapRef.value.removeEventListener('mouseup', handleLayerGapMouseup);
 		layerGapRef.value.removeEventListener('mouseleave', handleLayerGapMouseleave);
+		topRef.value.removeEventListener('mouseenter', handleTopMouseenter);
+		topRef.value.removeEventListener('mouseup', handleTopMouseup);
+		topRef.value.removeEventListener('mouseleave', handleTopMouseleave);
 	})
 </script>
 
@@ -109,7 +141,7 @@
 	}
 
 	.timeline.layer-gap {
-		height: 4px;
+		height: 6px;
 		margin: 3px 0;
 	}
 
@@ -122,6 +154,16 @@
 		height: var(--track-layer-height);
 		line-height: var(--track-layer-height);
 		margin: 0;
+	}
+
+	.timeline.layer-top:first-child {
+		height: 6px;
+		margin: 3px 0;
+	}
+
+	.timeline.layer-top.graggle:first-child {
+		background-color: var(--el-color-warning);
+		opacity: 0.6;
 	}
 
 	.timeline.layer-gap.last div {

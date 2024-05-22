@@ -37,9 +37,6 @@
 		useGlobalStore
 	} from '../../../store/global.js'
 	import {
-		loadAssets,
-		loadImg,
-		loadVideo,
 		loadBackground,
 		loadBackgroundText
 	} from '../../../bean/Scene.js'

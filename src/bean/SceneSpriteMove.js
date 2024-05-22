@@ -5,7 +5,7 @@ const {
 
 const decision_range = 15; // 从里到外判定范文 边距像素
 
-export function mountMove(app, container) {
+export function mountMove(app, container, callback) {
 	let dragging = false;
 	let position = null
 	const range = getRange(container)
@@ -29,6 +29,7 @@ export function mountMove(app, container) {
 				event.data.global.x - position.x,
 				event.data.global.y - position.y
 			);
+			callback()
 		}
 	});
 	app.stage.on('mouseup', (event) => {

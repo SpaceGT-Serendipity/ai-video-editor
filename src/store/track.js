@@ -17,7 +17,7 @@ export const useTrackStore = defineStore('track', {
 		// 图层高度
 		layerHeight: 45,
 		// 时间尺高度
-		rulerHeight: 40,
+		rulerHeight: 30,
 		// 时间尺每个范围宽度（px）
 		rulerScaleWidth: 150,
 		// 时间尺每个范围时长（毫秒）

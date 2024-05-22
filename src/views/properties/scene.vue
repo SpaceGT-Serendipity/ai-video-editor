@@ -10,20 +10,21 @@
 			</div>
 			<div class="properties-block">
 				<span class="block-name">等比例缩放</span>
-				<el-switch v-model="options.positionSize.equalScale" size="small" />
+				<el-switch v-model="options.positionSize.syncScale" size="small" />
 			</div>
-			<div class="properties-block" v-show="options.positionSize.equalScale">
+			<div class="properties-block" v-show="options.positionSize.syncScale">
 				<span class="block-name">缩放</span>
-				<el-slider-plus v-model="options.positionSize.scale" :min="0.01" :max="5" :step="0.01"></el-slider-plus>
-			</div>
-			<div class="properties-block" v-show="!options.positionSize.equalScale">
-				<span class="block-name">缩放宽度</span>
-				<el-slider-plus v-model="options.positionSize.scaleWidth" :min="0.01" :max="5"
+				<el-slider-plus v-model="options.positionSize.scale.x" :min="0.1" :max="5"
 					:step="0.01"></el-slider-plus>
 			</div>
-			<div class="properties-block" v-show="!options.positionSize.equalScale">
+			<div class="properties-block" v-show="!options.positionSize.syncScale">
+				<span class="block-name">缩放宽度</span>
+				<el-slider-plus v-model="options.positionSize.scale.x" :min="0.1" :max="5"
+					:step="0.01"></el-slider-plus>
+			</div>
+			<div class="properties-block" v-show="!options.positionSize.syncScale">
 				<span class="block-name">缩放高度</span>
-				<el-slider-plus v-model="options.positionSize.scaleHeight" :min="0.01" :max="5"
+				<el-slider-plus v-model="options.positionSize.scale.y" :min="0.1" :max="5"
 					:step="0.01"></el-slider-plus>
 			</div>
 			<div class="properties-block">
@@ -32,12 +33,12 @@
 			</div>
 			<div class="properties-block">
 				<span class="block-name">旋转 </span>
-				<el-input-number v-model="options.positionSize.rotate" :min="0" :max="360" :step="1"
+				<el-input-number v-model="options.positionSize.rotation" :min="0" :max="360" :step="1"
 					:step-strictly="true" controls-position="right" size="small" />
 			</div>
 		</el-collapse-item>
 		<el-collapse-item title="混合" name="blend">
-			<div class="properties-block">
+			<!-- <div class="properties-block">
 				<span class="block-name">混合模式</span>
 				<el-select v-model="options.blend.mode" placeholder="混合模型">
 					<el-option label="正常" value="normal" />
@@ -52,10 +53,10 @@
 					<el-option label="颜色减淡" value="颜色减淡" />
 					<el-option label="正片叠底" value="正片叠底" />
 				</el-select>
-			</div>
+			</div> -->
 			<div class="properties-block">
 				<span class="block-name">不透明度</span>
-				<el-slider-plus v-model="options.blend.alpha" :min="0.01" :max="1" :step="0.01"></el-slider-plus>
+				<el-slider-plus v-model="options.blend.alpha" :min="0" :max="1" :step="0.01"></el-slider-plus>
 			</div>
 		</el-collapse-item>
 	</el-collapse>
@@ -66,7 +67,8 @@
 	import ElPosition from '../../components/panel/el-position.vue'
 	import {
 		ref,
-		reactive
+		reactive,
+		watch
 	} from 'vue'
 	import {
 		useLayersDataStore
@@ -79,20 +81,74 @@
 	const viewportStore = useViewportStore()
 	const options = reactive({
 		positionSize: {
-			equalScale: true,
-			scale: 1,
-			scaleWidth: 1,
-			scaleHeight: 1,
+			syncScale: true,
+			scale: {
+				x: 1,
+				y: 1
+			},
 			position: {
 				x: 0,
 				y: 0
 			},
-			rotate: 0
+			rotation: 0
 		},
 		blend: {
 			mode: 'normal',
 			alpha: 1
 		}
+	})
+	const container = ref()
+
+	watch(() => {
+		const unit = layersDataStore.activeUnit
+		if (unit) {
+			return {
+				scene: unit.scene,
+				timestamp: unit.scene.timestamp
+			};
+		}
+		return null;
+	}, (value) => {
+		if (value) {
+			const read = () => {
+				if (value.scene.loaded) {
+					container.value = value.scene.container
+					options.positionSize.scale.x = container.value.scale.x
+					options.positionSize.scale.y = container.value.scale.y
+					options.positionSize.position.x = container.value.x
+					options.positionSize.position.y = container.value.y
+					options.positionSize.rotation = parseInt(container.value.rotation / (Math.PI * 2) * 360)
+					options.blend.alpha = container.value.alpha
+				} else setTimeout(() => read(), 100)
+			}
+			read()
+		}
+	})
+	watch(() => options.positionSize.scale.x, (value) => {
+		if (options.positionSize.syncScale) {
+			container.value.scale.x = value
+			container.value.scale.y = value
+			options.positionSize.scale.y = value
+		} else {
+			container.value.scale.x = value
+		}
+		center()
+	})
+	watch(() => options.positionSize.scale.y, (value) => {
+		container.value.scale.y = value
+		center()
+	})
+	watch(() => options.positionSize.position.x, (value) => {
+		container.value.x = value
+	})
+	watch(() => options.positionSize.position.y, (value) => {
+		container.value.y = value
+	})
+	watch(() => options.positionSize.rotation, (value) => {
+		container.value.rotation = (Math.PI * 2) * value / 360
+	})
+	watch(() => options.blend.alpha, (value) => {
+		container.value.alpha = value
 	})
 
 	const formatTooltip = (number) => {
