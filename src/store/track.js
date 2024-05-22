@@ -5,8 +5,8 @@ import {
 	useLayersDataStore
 } from './layers.js'
 import {
-	useSceneStore
-} from './scene.js'
+	useViewportStore
+} from './viewport.js'
 
 export const useTrackStore = defineStore('track', {
 	state: () => ({
@@ -56,8 +56,8 @@ export const useTrackStore = defineStore('track', {
 			}
 			this.seekerLocation = x;
 			this.seekerTime = parseInt(x / this.milliscondWidth)
-			const sceneStore = useSceneStore()
-			sceneStore.playing = false
+			const viewportStore = useViewportStore()
+			viewportStore.playing = false
 		},
 	}
 })

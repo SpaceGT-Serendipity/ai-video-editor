@@ -26,12 +26,12 @@
 		useLayersDataStore
 	} from '../../../store/layers.js'
 	import {
-		useSceneStore
-	} from '../../../store/scene.js'
+		useViewportStore
+	} from '../../../store/viewport.js'
 
 	const layersDataStore = useLayersDataStore()
 	const trackStore = useTrackStore()
-	const sceneStore = useSceneStore()
+	const viewportStore = useViewportStore()
 	const parentEl = useParentElement()
 	const trackSeekerRootRef = ref()
 	const mouse = useMouse({
@@ -50,7 +50,7 @@
 	})
 	watch(() => trackStore.seekerTime, (value) => {
 		if (trackStore.seekerTime == layersDataStore.videoTotalDuration) {
-			sceneStore.playing = false
+			viewportStore.playing = false
 		}
 		trackStore.seekerLocation = parseInt(trackStore.seekerTime * trackStore.milliscondWidth)
 	})

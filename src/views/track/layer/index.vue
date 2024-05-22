@@ -23,11 +23,11 @@
 		useTrackStore
 	} from '../../../store/track.js'
 	import {
-		useSceneStore
-	} from '../../../store/scene.js'
+		useViewportStore
+	} from '../../../store/viewport.js'
 
 	const trackStore = useTrackStore()
-	const sceneStore = useSceneStore()
+	const viewportStore = useViewportStore()
 	const emits = defineEmits(['onDrag'])
 	const props = defineProps({
 		modelValue: {
@@ -47,7 +47,7 @@
 			// 走线程，onDrag 比 onDrop 触发早，防止优先排序后在更换时间线
 			setTimeout(() => sortLayers())
 		}
-		sceneStore.playing = false
+		viewportStore.playing = false
 	}
 	const onDrop = (event, newIndex) => {
 		// 找出当前位置

@@ -9,13 +9,13 @@
 		<div class="properties-block">
 			<span class="block-name">比例</span>
 			<div>
-				{{sceneStore.videoScale}}
+				{{globalStore.scale}}
 			</div>
 		</div>
 		<div class="properties-block">
 			<span class="block-name">分辨率</span>
 			<div>
-				{{sceneStore.width}} x {{sceneStore.height}}
+				{{globalStore.width}} x {{globalStore.height}}
 			</div>
 		</div>
 	</div>
@@ -23,10 +23,10 @@
 
 <script setup>
 	import {
-		useSceneStore
-	} from '../../store/scene.js'
+		useGlobalStore
+	} from '../../store/global.js'
 	
-	const sceneStore = useSceneStore()
+	const globalStore = useGlobalStore()
 </script>
 
 <style>

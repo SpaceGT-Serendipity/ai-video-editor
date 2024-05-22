@@ -6,7 +6,7 @@
 				<el-text v-if="online" type="success" size="small">在线</el-text>
 				<el-text v-else type="danger" size="small">离线</el-text>
 			</el-tag>
-			<el-tag type="info">画布分辨率 {{sceneStore.width}} x {{sceneStore.height}}</el-tag>
+			<el-tag type="info">画布分辨率 {{viewportStore.width}} x {{viewportStore.height}}</el-tag>
 			<el-tag type="info">视频总时长 {{dateFormat(layersDataStore.videoTotalDuration,'hh:mm:ss')}}</el-tag>
 			<el-tag type="info" :class="{'open-debug':globalStore.debug}"
 				@click="openDebug(!globalStore.debug)">Debug</el-tag>
@@ -29,8 +29,8 @@
 		useTrackStore
 	} from '../store/track.js'
 	import {
-		useSceneStore
-	} from '../store/scene.js'
+		useViewportStore
+	} from '../store/viewport.js'
 	import {
 		dateFormat
 	} from '../utils/time.js'
@@ -41,7 +41,7 @@
 	const globalStore = useGlobalStore()
 	const layersDataStore = useLayersDataStore()
 	const trackStore = useTrackStore()
-	const sceneStore = useSceneStore()
+	const viewportStore = useViewportStore()
 	const online = useOnline()
 
 	const openDebug = (state) => {

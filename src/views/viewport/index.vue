@@ -17,12 +17,12 @@
 						</span>
 					</div>
 					<div class="center-option">
-						<el-button v-if="!sceneStore.playing" link @click="sceneStore.playing=true">
+						<el-button v-if="!viewportStore.playing" link @click="viewportStore.playing=true">
 							<el-icon size="26">
 								<VideoPlay />
 							</el-icon>
 						</el-button>
-						<el-button v-else link @click="sceneStore.playing=false">
+						<el-button v-else link @click="viewportStore.playing=false">
 							<el-icon size="26">
 								<VideoPause />
 							</el-icon>
@@ -70,15 +70,19 @@
 		useLayersDataStore
 	} from '../../store/layers.js'
 	import {
-		useSceneStore
-	} from '../../store/scene.js'
+		useViewportStore
+	} from '../../store/viewport.js'
 	import {
 		useTrackStore
 	} from '../../store/track.js'
+	import {
+		useGlobalStore
+	} from '../../store/global.js'
 
 	const layersDataStore = useLayersDataStore()
-	const sceneStore = useSceneStore()
+	const viewportStore = useViewportStore()
 	const trackStore = useTrackStore()
+	const globalStore = useGlobalStore()
 	const adaptiveSizeRef = ref()
 	const currentTime = ref(0)
 	const totalTime = ref(0)
@@ -97,7 +101,7 @@
 
 	watch(space, (v) => {
 		if (v) {
-			sceneStore.playing = !sceneStore.playing
+			viewportStore.playing = !viewportStore.playing
 		}
 	})
 	watch(() => ({
@@ -107,10 +111,10 @@
 		width,
 		height
 	}) => {
-		const widthScale = width / sceneStore.width
-		const heightScale = height / sceneStore.height
-		if (widthScale < heightScale) sceneStore.canvasScale = widthScale
-		else sceneStore.canvasScale = heightScale
+		const widthScale = width / globalStore.width
+		const heightScale = height / globalStore.height
+		if (widthScale < heightScale) viewportStore.scale = widthScale
+		else viewportStore.scale = heightScale
 	})
 
 	const speed = ref()

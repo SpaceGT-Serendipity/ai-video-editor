@@ -1,5 +1,5 @@
 <template>
-	<div class="scene" :style="{'transform':`scale(${sceneStore.canvasScale})`}" v-loading="loading"></div>
+	<div class="scene" :style="{'transform':`scale(${viewportStore.scale})`}" v-loading="loading"></div>
 </template>
 
 <script setup>
@@ -28,11 +28,14 @@
 		useLayersDataStore
 	} from '../../../store/layers.js'
 	import {
-		useSceneStore
-	} from '../../../store/scene.js'
+		useViewportStore
+	} from '../../../store/viewport.js'
 	import {
 		useTrackStore
 	} from '../../../store/track.js'
+	import {
+		useGlobalStore
+	} from '../../../store/global.js'
 	import {
 		loadAssets,
 		loadImg,
@@ -43,8 +46,9 @@
 
 	const app = new Application();
 	const layersDataStore = useLayersDataStore()
-	const sceneStore = useSceneStore()
+	const viewportStore = useViewportStore()
 	const trackStore = useTrackStore()
+	const globalStore = useGlobalStore()
 	const loading = ref(true)
 
 	let loadSceneLoading = false
@@ -73,7 +77,7 @@
 								layersDataStore.layersTracks.length - layerIndex
 							unit.scene.container.visible = true
 							if (unit.resource.type == 'video') {
-								if (sceneStore.playing) {
+								if (viewportStore.playing) {
 									unit.scene.play()
 								} else {
 									const currentTime = trackStore.seekerTime - unit.duration.left
@@ -97,7 +101,7 @@
 	watch(() => layersDataStore.layersScenes, (layers) => loadScene(layers))
 	watch(() => layersDataStore.layersTracks, (value) => render())
 	watch(() => trackStore.seekerTime, (value) => render())
-	watch(() => sceneStore.playing, (value) => render())
+	watch(() => viewportStore.playing, (value) => render())
 
 	// const runAudio = () => {
 	// 	const sound = Sound.from('/assets/audio/jin.mp3')
@@ -109,7 +113,7 @@
 		let totalDeltaMS = 0
 		let seekerPlayingStartTime = 0
 		app.ticker.add((ticker) => {
-			if (sceneStore.playing) {
+			if (viewportStore.playing) {
 				totalDeltaMS += ticker.deltaMS
 				trackStore.seekerTime = parseInt(seekerPlayingStartTime + totalDeltaMS)
 			} else {
@@ -122,9 +126,9 @@
 	onMounted(async () => {
 		const scene = document.querySelector('.scene')
 		await app.init({
-			width: sceneStore.width,
-			height: sceneStore.height,
-			background: sceneStore.background
+			width: globalStore.width,
+			height: globalStore.height,
+			background: viewportStore.background
 		});
 		app.stage.interactive = true
 		scene.appendChild(app.canvas);
