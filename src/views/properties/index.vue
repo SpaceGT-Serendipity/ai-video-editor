@@ -1,7 +1,7 @@
 <template>
 	<div class="properties-panel">
-		<scene v-if="layersDataStore.activeUnit"></scene>
-		<project v-else></project>
+		<project v-show="layersDataStore.activeUnit==null"></project>
+		<scene v-show="layersDataStore.activeUnit!=null"></scene>
 	</div>
 </template>
 
@@ -11,8 +11,9 @@
 	import {
 		useLayersDataStore
 	} from '../../store/layers.js'
-	
+
 	const layersDataStore = useLayersDataStore()
+	 
 </script>
 
 <style>

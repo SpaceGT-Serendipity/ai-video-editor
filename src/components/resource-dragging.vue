@@ -51,7 +51,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background-color: #0006;
+		background-color: #0003;
 		z-index: 2;
 	}
 

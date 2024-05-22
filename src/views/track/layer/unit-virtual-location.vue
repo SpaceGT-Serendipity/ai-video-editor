@@ -77,6 +77,27 @@
 		parentElement.removeEventListener('mouseleave', handleMouseleave)
 	})
 </script>
+<style scoped>
+	.virtual-location {
+		position: absolute;
+		display: none;
+		width: 200px;
+		height: 50px;
+		top: 50%;
+		background-color: #8885;
+		opacity: 0.7;
+		border-radius: 5px;
+		pointer-events: none;
+		font-size: 14px;
+		align-items: center;
+		z-index: 2;
+	}
 
-<style>
+	.virtual-location * {
+		height: 100%;
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 </style>

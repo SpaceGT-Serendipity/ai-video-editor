@@ -4,7 +4,7 @@
 		'--track-layer-height':`${trackStore.layerHeight}px`,
 		'--track-timeline-ruler-height':`${trackStore.rulerHeight}px`
 	}">
-		<toolbar v-show="haveResources" ref="toolbarRef"></toolbar>
+		<toolbar ref="toolbarRef"></toolbar>
 		<div class="view" ref="dropZoneRef"
 			:style="{'position':isOverDropZone||resourceDragStore.data?'relative':'initial'}">
 			<div v-show="haveResources" class="controller-group" ref="controllerGroupRef">
@@ -23,7 +23,6 @@
 					<timeline-seeker></timeline-seeker>
 					<layer-unit-virtual-location :drag-data="dragData"></layer-unit-virtual-location>
 				</div>
-
 			</div>
 			<el-empty v-show="!haveResources" :image-size="80" description="暂无内容,请选择左侧资源栏素材到此处" />
 			<div v-show="isOverDropZone||resourceDragStore.data" class="upload-drag_tip" ref="uploadDragTipRef">
@@ -296,29 +295,5 @@
 		height: 8px;
 		background-color: var(--scrollbar-background-color);
 		cursor: pointer;
-	}
-</style>
-<style scoped>
-	.virtual-location {
-		position: absolute;
-		display: none;
-		width: 200px;
-		height: 50px;
-		top: 50%;
-		background-color: #8885;
-		opacity: 0.7;
-		border-radius: 5px;
-		pointer-events: none;
-		font-size: 14px;
-		align-items: center;
-		z-index: 2;
-	}
-
-	.virtual-location * {
-		height: 100%;
-		width: 100%;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
 	}
 </style>
