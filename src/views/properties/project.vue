@@ -3,7 +3,7 @@
 		<div class="properties-block">
 			<span class="block-name">项目名称</span>
 			<div>
-				测试项目-5月21日
+				{{globalStore.title}}
 			</div>
 		</div>
 		<div class="properties-block">

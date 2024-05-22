@@ -74,4 +74,10 @@ export class Layer {
 			remove: this.remove
 		}
 	}
+
+	/* 获取图册元素类型 */
+	get type() {
+		 const unit = this.units.find(item => true)
+		 return unit.type
+	}
 }

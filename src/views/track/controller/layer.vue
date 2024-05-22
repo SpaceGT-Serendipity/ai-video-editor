@@ -1,5 +1,22 @@
 <template>
 	<div class="controller layer">
+		<el-button link size="small" disabled type="info">
+			<el-tooltip v-if="data.type=='video'" effect="dark" content="视频" placement="top">
+				<el-icon size="16px">
+					<VideoCamera />
+				</el-icon>
+			</el-tooltip>
+			<el-tooltip v-if="data.type=='image'" effect="dark" content="图片" placement="top">
+				<el-icon size="16px">
+					<Picture />
+				</el-icon>
+			</el-tooltip>
+			<el-tooltip v-if="data.type=='text'" effect="dark" content="文本" placement="top">
+				<el-icon size="16px">
+					<ChatLineSquare />
+				</el-icon>
+			</el-tooltip>
+		</el-button>
 		<el-button link size="small" v-if="data.display" @click="data.display=false">
 			<el-icon size="16px">
 				<View />

@@ -106,4 +106,9 @@ export class LayerUnit {
 		else
 			return 0
 	}
+	
+	/* 获取资源类型 */
+	get type(){
+		return this.resource.type
+	}
 }

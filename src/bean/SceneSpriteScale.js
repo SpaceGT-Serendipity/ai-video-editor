@@ -48,7 +48,6 @@ export function mountScale(app, container, callback) {
 			if (scale > 0.1) {
 				container.scale.x = scale;
 				container.scale.y = scale;
-				container.alpha = 0.7;
 				container.x = globeContainerCenter.x - (container.width / 2);
 				container.y = globeContainerCenter.y - (container.height / 2);
 				callback()
@@ -58,12 +57,10 @@ export function mountScale(app, container, callback) {
 	app.stage.on('mouseup', (event) => {
 		isResizing = false;
 		startDistance = 0;
-		container.alpha = 1;
 	});
 	app.canvas.addEventListener('mouseout', () => {
 		isResizing = false;
 		startDistance = 0;
-		container.alpha = 1;
 	})
 }
 
@@ -71,7 +68,6 @@ export function unmountScale(app, container) {
 	container.off('mousedown')
 	container.off('mousemove')
 	container.off('mouseup')
-	container.alpha = 1;
 	unmountScaleDecisionRange(container)
 }
 

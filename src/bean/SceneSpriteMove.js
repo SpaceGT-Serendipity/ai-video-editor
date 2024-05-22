@@ -20,7 +20,6 @@ export function mountMove(app, container, callback) {
 				x: event.data.global.x - container.x,
 				y: event.data.global.y - container.y
 			};
-			container.alpha = 0.7;
 		}
 	}
 	app.stage.on('mousemove', (event) => {
@@ -35,7 +34,6 @@ export function mountMove(app, container, callback) {
 	app.stage.on('mouseup', (event) => {
 		dragging = false;
 		position = null;
-		container.alpha = 1;
 	});
 }
 export function unmountMove(container) {
@@ -43,7 +41,6 @@ export function unmountMove(container) {
 	container.off('mousemove')
 	container.off('mouseup')
 	container.off('mouseout')
-	container.alpha = 1;
 	unmountMoveDecisionRange(container)
 }
 

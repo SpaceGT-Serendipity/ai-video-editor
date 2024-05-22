@@ -151,7 +151,7 @@
 		border-radius: 5px;
 		background-color: var(--layer-unit-bg);
 		overflow: hidden;
-		filter: brightness(0.8);
+		filter: brightness(0.85);
 	}
 
 	.layer-unit-active {

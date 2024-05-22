@@ -23,6 +23,9 @@
 		onMounted,
 		onBeforeUnmount
 	} from 'vue'
+	import {
+		ElNotification
+	} from 'element-plus'
 
 	const emits = defineEmits(['onDrag', 'onDrop'])
 	const props = defineProps({
@@ -36,24 +39,41 @@
 
 	function handleContainerMouseenter(event) {
 		if (props.dropData && props.dropData.track.dragging) {
-			containerRef.value.classList.add('graggle')
+			// 确保图层类型相同
+			if (props.modelValue.type == props.dropData.type) {
+				containerRef.value.classList.add('graggle')
+			} else {
+				containerRef.value.classList.add('disabled')
+			}
 		} else {
 			containerRef.value.classList.remove('graggle')
+			containerRef.value.classList.remove('disabled')
 		}
 	}
 
 	function handleContainerMouseup(event) {
-		if (containerRef.value.classList.contains('graggle')) {
-			emits('onDrop', {
-				dropData: props.dropData,
-				dropMode: 'appendUnit'
+		// 确保图层类型相同
+		if (props.modelValue.type == props.dropData.type) {
+			if (containerRef.value.classList.contains('graggle')) {
+				emits('onDrop', {
+					dropData: props.dropData,
+					dropMode: 'appendUnit'
+				})
+			}
+		} else {
+			ElNotification({
+				title: '提示',
+				message: '该图层与当前元素类型不匹配。',
+				type: 'warning',
 			})
 		}
 		containerRef.value.classList.remove('graggle')
+		containerRef.value.classList.remove('disabled')
 	}
 
 	function handleContainerMouseleave(event) {
 		containerRef.value.classList.remove('graggle')
+		containerRef.value.classList.remove('disabled')
 	}
 
 	function handleLayerGapMouseenter(event) {
@@ -134,10 +154,17 @@
 		position: relative;
 		background-color: var(--layer-bg);
 		height: var(--track-layer-height);
+		box-sizing: border-box;
 	}
 
 	.timeline.layer.graggle {
 		background-color: var(--layer-graggle-bg);
+	}
+
+	.timeline.layer.disabled {
+		border-top: 1px solid var(--el-color-danger-light-5);
+		border-bottom: 1px solid var(--el-color-danger-light-5);
+		background-image: repeating-linear-gradient(40deg, transparent, transparent 20px, var(--el-color-danger-light-8) 10px, var(--el-color-danger-light-8) 40px);
 	}
 
 	.timeline.layer-gap {

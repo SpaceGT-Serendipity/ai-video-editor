@@ -6,13 +6,13 @@
 		</template>
 	</el-page-header>
 	<div class="project-name">
-		<el-button v-if="editProjectName==false" text @click="editProjectName = true">
-			{{projectName}}
+		<el-button v-if="editTitle==false" text @click="editTitle = true">
+			{{globalStore.title}}
 			<el-icon>
 				<Edit />
 			</el-icon>
 		</el-button>
-		<el-input v-else v-model="projectName" @change="onChangeProjectName">
+		<el-input v-else v-model="globalStore.title" @change="onTitleChange">
 			<template #suffix>
 				<el-icon>
 					<Edit />
@@ -34,7 +34,11 @@
 	import {
 		useWebNotification
 	} from '@vueuse/core'
+	import {
+		useGlobalStore
+	} from '../store/global.js'
 
+	const globalStore = useGlobalStore()
 	const options = {
 		title: 'AI 编辑器 开始合成视频!',
 		body: '点击查看详情',
@@ -54,15 +58,13 @@
 		window.open(import.meta.env.VITE_APP_WEB_NOTIFICATION)
 	})
 
-	const editProjectName = ref(false)
-	const projectName = ref('未命名项目')
+	const editTitle = ref(false)
 
 	const onBack = () => {
 		window.location.href = import.meta.env.VITE_APP_BACK_PATH
 	}
-	const onChangeProjectName = () => {
-		console.log(projectName.value)
-		editProjectName.value = false
+	const onTitleChange = () => {
+		editTitle.value = false
 	}
 </script>
 
