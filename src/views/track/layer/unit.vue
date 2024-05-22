@@ -24,11 +24,11 @@
 		useTrackStore
 	} from '../../../store/track.js'
 	import {
-		useEditorDataStore
-	} from '../../../store/editor.js'
+		useLayersDataStore
+	} from '../../../store/layers.js'
 
 	const trackStore = useTrackStore()
-	const editorDataStore = useEditorDataStore()
+	const layersDataStore = useLayersDataStore()
 	const unitRef = ref()
 	const emits = defineEmits(['onDrag'])
 	const props = defineProps({
@@ -79,17 +79,17 @@
 	}
 	/* 触发活跃状态 */
 	const onActivated = () => {
-		editorDataStore.setUnitActive(props.data.id)
+		layersDataStore.setUnitActive(props.data.id)
 	}
 	/* 触发失去活跃状态,使其失去活力慢一点,可在激活状态做一些事件如分割 */
 	const onDeactivated = () => {
-		// setTimeout(() => editorDataStore.activeUnit = null, 200)
+		// setTimeout(() => layersDataStore.activeUnit = null, 200)
 	}
 	// 吸附判定
 	const adsorption = (x) => {
 		const headLines = []
 		const tailLines = []
-		const layer = editorDataStore.getLayerByUnitId(props.data.id)
+		const layer = layersDataStore.getLayerByUnitId(props.data.id)
 		layer.units.forEach(item => {
 			if (item.id != props.data.id) {
 				headLines.push(parseInt(item.track.x))

@@ -5,15 +5,15 @@
 		</div>
 		<div class="options">
 			<div style="padding: 10px; box-sizing: border-box;">
-				<el-slider v-model="trackStore.seekerTime" :max="editorDataStore.videoTotalDuration" :step="1"
-					:disabled="editorDataStore.videoTotalDuration==0" :format-tooltip="formatTooltip" />
+				<el-slider v-model="trackStore.seekerTime" :max="layersDataStore.videoTotalDuration" :step="1"
+					:disabled="layersDataStore.videoTotalDuration==0" :format-tooltip="formatTooltip" />
 				<div class="group-option">
 					<div class="left-option">
 						<span class="current-time">
 							{{dateFormat(trackStore.seekerTime,'hh:mm:ss')}}
 						</span> |
 						<span>
-							{{dateFormat(editorDataStore.videoTotalDuration,'hh:mm:ss')}}
+							{{dateFormat(layersDataStore.videoTotalDuration,'hh:mm:ss')}}
 						</span>
 					</div>
 					<div class="center-option">
@@ -67,8 +67,8 @@
 		dateFormat
 	} from '../../utils/time.js'
 	import {
-		useEditorDataStore
-	} from '../../store/editor.js'
+		useLayersDataStore
+	} from '../../store/layers.js'
 	import {
 		useSceneStore
 	} from '../../store/scene.js'
@@ -76,7 +76,7 @@
 		useTrackStore
 	} from '../../store/track.js'
 
-	const editorDataStore = useEditorDataStore()
+	const layersDataStore = useLayersDataStore()
 	const sceneStore = useSceneStore()
 	const trackStore = useTrackStore()
 	const adaptiveSizeRef = ref()

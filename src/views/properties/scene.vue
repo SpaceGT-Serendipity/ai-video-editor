@@ -2,7 +2,7 @@
 	<el-collapse :model-value="['positionSize','blend']">
 		<el-collapse-item title="位置大小" name="positionSize">
 			<div class="properties-block">
-				{{editorDataStore.activeUnit!=null}}
+				{{layersDataStore.activeUnit!=null}}
 				<span class="block-name">等比例缩放</span>
 				<el-switch v-model="options.positionSize.equalScale" size="small" />
 			</div>
@@ -64,10 +64,10 @@
 		reactive
 	} from 'vue'
 	import {
-		useEditorDataStore
-	} from '../../store/editor.js'
+		useLayersDataStore
+	} from '../../store/layers.js'
 	
-	const editorDataStore = useEditorDataStore()
+	const layersDataStore = useLayersDataStore()
 	const options = reactive({
 		positionSize: {
 			equalScale: true,

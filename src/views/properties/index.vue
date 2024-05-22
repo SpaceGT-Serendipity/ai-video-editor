@@ -1,6 +1,6 @@
 <template>
 	<div class="properties-panel">
-		<scene v-if="editorDataStore.activeUnit"></scene>
+		<scene v-if="layersDataStore.activeUnit"></scene>
 		<project v-else></project>
 	</div>
 </template>
@@ -9,10 +9,10 @@
 	import Project from './project.vue'
 	import Scene from './scene.vue'
 	import {
-		useEditorDataStore
-	} from '../../store/editor.js'
+		useLayersDataStore
+	} from '../../store/layers.js'
 	
-	const editorDataStore = useEditorDataStore()
+	const layersDataStore = useLayersDataStore()
 </script>
 
 <style>

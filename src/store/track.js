@@ -2,8 +2,8 @@ import {
 	defineStore
 } from 'pinia'
 import {
-	useEditorDataStore
-} from './editor.js'
+	useLayersDataStore
+} from './layers.js'
 import {
 	useSceneStore
 } from './scene.js'
@@ -48,10 +48,10 @@ export const useTrackStore = defineStore('track', {
 				this.seekerTime = 0
 				return;
 			}
-			const editorDataStore = useEditorDataStore()
-			if (x / this.milliscondWidth > editorDataStore.videoTotalDuration) {
-				this.seekerLocation = parseInt(editorDataStore.videoTotalDuration * this.milliscondWidth);
-				this.seekerTime = parseInt(editorDataStore.videoTotalDuration)
+			const layersDataStore = useLayersDataStore()
+			if (x / this.milliscondWidth > layersDataStore.videoTotalDuration) {
+				this.seekerLocation = parseInt(layersDataStore.videoTotalDuration * this.milliscondWidth);
+				this.seekerTime = parseInt(layersDataStore.videoTotalDuration)
 				return;
 			}
 			this.seekerLocation = x;

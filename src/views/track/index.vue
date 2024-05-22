@@ -8,7 +8,7 @@
 		<div class="view" ref="dropZoneRef"
 			:style="{'position':isOverDropZone||resourceDragStore.data?'relative':'initial'}">
 			<div v-show="haveResources" class="controller-group" ref="controllerGroupRef">
-				<controller-layer v-for="item in editorDataStore.layers" :key="item.id" :data="item"></controller-layer>
+				<controller-layer v-for="item in layersDataStore.layers" :key="item.id" :data="item"></controller-layer>
 			</div>
 			<div v-show="haveResources" class="scrollbar" ref="scrollbarRef">
 				<div class="debug float">
@@ -18,7 +18,7 @@
 					<timeline-ruler ref="timelineRulerRef" :time="trackStore.rulerDefultTime"
 						:scale-width="trackStore.rulerScaleWidth"
 						:scale-time="trackStore.rulerScaleTime"></timeline-ruler>
-					<layer-centre ref="timelineLayersRef" v-model="editorDataStore.layers"
+					<layer-centre ref="timelineLayersRef" v-model="layersDataStore.layers"
 						@on-drag="handleTimelineLayersOnDrag"></layer-centre>
 					<timeline-seeker></timeline-seeker>
 					<layer-unit-virtual-location :drag-data="dragData"></layer-unit-virtual-location>
@@ -71,11 +71,11 @@
 		useTrackStore
 	} from '../../store/track.js'
 	import {
-		useEditorDataStore
-	} from '../../store/editor.js'
+		useLayersDataStore
+	} from '../../store/layers.js'
 
 	const trackStore = useTrackStore()
-	const editorDataStore = useEditorDataStore()
+	const layersDataStore = useLayersDataStore()
 	const resourceDragStore = useResourceDragStore()
 	const toolbarRef = ref()
 	const timelineRulerRef = ref()
@@ -84,7 +84,7 @@
 	const controllerGroupRef = ref()
 	const uploadDragTipRef = ref()
 	const dragData = ref(null)
-	const haveResources = computed(() => editorDataStore.layers.length > 0)
+	const haveResources = computed(() => layersDataStore.layers.length > 0)
 	const scrollbarRef = ref()
 	const scrollbar = reactive({
 		paddingLeft: trackStore.trackTimelineScrollbarPaddingLeft,
@@ -107,7 +107,7 @@
 	} = useDropZone(dropZoneRef, {
 		onDrop(files) {
 			files.forEach(file => {
-				editorDataStore.layers.push(
+				layersDataStore.layers.push(
 					Layer.list(new LayerUnit({
 						resource: new ImageResource({
 							name: file.name,
@@ -145,7 +145,7 @@
 					// 单元宽度的一半，指针指向中间
 					(unit.track.w / 2)
 				unit.track.x = x;
-				editorDataStore.layers.push(Layer.list(unit))
+				layersDataStore.layers.push(Layer.list(unit))
 				// 主动触发单元点击事件
 				nextTick(() => unit.track.onMousedown(event))
 			})
@@ -158,10 +158,10 @@
 	}
 	/* 点击 scrollbar 设置 seeker 位置，以及点击空白区域取消元素的激活状态 */
 	function handleScrollbarMouseDown(event) {
-		const unit = editorDataStore.getUnitUnderMouse(event)
+		const unit = layersDataStore.getUnitUnderMouse(event)
 		if (unit == null) {
 			trackStore.setSeeker(scrollbar.scrollbarMouseX)
-			editorDataStore.setUnitActive(null)
+			layersDataStore.setUnitActive(null)
 		}
 	}
 

@@ -23,16 +23,16 @@
 		ref
 	} from 'vue'
 	import {
-		useEditorDataStore
-	} from '../../../store/editor.js'
+		useLayersDataStore
+	} from '../../../store/layers.js'
 
 	const props = defineProps({
 		data: Object
 	})
-	const editorDataStore = useEditorDataStore()
+	const layersDataStore = useLayersDataStore()
 
 	const onDel = () => {
-		editorDataStore.delLayerById(props.data.id)
+		layersDataStore.delLayerById(props.data.id)
 	}
 </script>
 

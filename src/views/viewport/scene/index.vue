@@ -25,8 +25,8 @@
 	// 	Sound
 	// } from '@pixi/sound'
 	import {
-		useEditorDataStore
-	} from '../../../store/editor.js'
+		useLayersDataStore
+	} from '../../../store/layers.js'
 	import {
 		useSceneStore
 	} from '../../../store/scene.js'
@@ -42,7 +42,7 @@
 	} from '../../../bean/Scene.js'
 
 	const app = new Application();
-	const editorDataStore = useEditorDataStore()
+	const layersDataStore = useLayersDataStore()
 	const sceneStore = useSceneStore()
 	const trackStore = useTrackStore()
 	const loading = ref(true)
@@ -63,14 +63,14 @@
 	}
 	const render = () => {
 		const showUnits = []
-		editorDataStore.layersTracks.forEach((layer, layerIndex) => {
+		layersDataStore.layersTracks.forEach((layer, layerIndex) => {
 			layer.units.forEach(unit => {
 				if (unit.scene.loaded) {
 					if (layer.display) {
 						if (trackStore.seekerTime >= unit.duration.left &&
 							trackStore.seekerTime <= unit.duration.right) {
 							unit.scene.container.zIndex =
-								editorDataStore.layersTracks.length - layerIndex
+								layersDataStore.layersTracks.length - layerIndex
 							unit.scene.container.visible = true
 							if (unit.resource.type == 'video') {
 								if (sceneStore.playing) {
@@ -94,8 +94,8 @@
 			})
 		})
 	}
-	watch(() => editorDataStore.layersScenes, (layers) => loadScene(layers))
-	watch(() => editorDataStore.layersTracks, (value) => render())
+	watch(() => layersDataStore.layersScenes, (layers) => loadScene(layers))
+	watch(() => layersDataStore.layersTracks, (value) => render())
 	watch(() => trackStore.seekerTime, (value) => render())
 	watch(() => sceneStore.playing, (value) => render())
 

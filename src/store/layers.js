@@ -5,9 +5,8 @@ import {
 	useTrackStore
 } from './track.js'
 
-export const useEditorDataStore = defineStore('editor-data', {
+export const useLayersDataStore = defineStore('layers-data', {
 	state: () => ({
-		debug: true, // 测试模式
 		layers: [], // 轨道时间线层级
 	}),
 	getters: {

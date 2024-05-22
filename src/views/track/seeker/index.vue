@@ -23,13 +23,13 @@
 		useTrackStore
 	} from '../../../store/track.js'
 	import {
-		useEditorDataStore
-	} from '../../../store/editor.js'
+		useLayersDataStore
+	} from '../../../store/layers.js'
 	import {
 		useSceneStore
 	} from '../../../store/scene.js'
 
-	const editorDataStore = useEditorDataStore()
+	const layersDataStore = useLayersDataStore()
 	const trackStore = useTrackStore()
 	const sceneStore = useSceneStore()
 	const parentEl = useParentElement()
@@ -49,7 +49,7 @@
 		trackSeekerRootRef.value.style.left = trackStore.seekerLocation + "px";
 	})
 	watch(() => trackStore.seekerTime, (value) => {
-		if (trackStore.seekerTime == editorDataStore.videoTotalDuration) {
+		if (trackStore.seekerTime == layersDataStore.videoTotalDuration) {
 			sceneStore.playing = false
 		}
 		trackStore.seekerLocation = parseInt(trackStore.seekerTime * trackStore.milliscondWidth)

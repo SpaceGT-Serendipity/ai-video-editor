@@ -13,15 +13,11 @@
 	import {
 		useTrackStore
 	} from '../../../store/track.js'
-	import {
-		useEditorDataStore
-	} from '../../../store/editor.js'
 
 	const props = defineProps({
 		dragData: Object
 	})
 	const trackStore = useTrackStore()
-	const editorDataStore = useEditorDataStore()
 	const virtualLocationRef = ref()
 
 	let parentElement = null;

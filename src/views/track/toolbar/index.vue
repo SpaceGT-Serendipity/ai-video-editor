@@ -15,7 +15,7 @@
 					</el-icon>
 				</el-tooltip>
 			</el-button>
-			<el-button link size="small" :disabled="editorDataStore.activeUnit==null" @click="onSplit">
+			<el-button link size="small" :disabled="layersDataStore.activeUnit==null" @click="onSplit">
 				<el-tooltip class="box-item" effect="dark" content="切割" placement="top">
 					<el-icon>
 						<font-awesome-icon icon="i-cursor" />
@@ -49,25 +49,25 @@
 		nextTick
 	} from 'vue'
 	import {
-		useEditorDataStore
-	} from '../../../store/editor.js'
+		useLayersDataStore
+	} from '../../../store/layers.js'
 	import {
 		useTrackStore
 	} from '../../../store/track.js'
 
-	const editorDataStore = useEditorDataStore()
+	const layersDataStore = useLayersDataStore()
 	const trackStore = useTrackStore()
 	const emits = defineEmits(['changeScale'])
 	const scale = ref(1)
 
 	const onSplit = () => {
-		if (trackStore.seekerLocation > editorDataStore.activeUnit.track.location.left &&
-			trackStore.seekerLocation < editorDataStore.activeUnit.track.location.right) {
-			if (editorDataStore.activeUnit.resource.type == 'video') {
-				const width = trackStore.seekerLocation - editorDataStore.activeUnit.track.location.left
-				const ratio = width / editorDataStore.activeUnit.track.w
-				const newUnit = editorDataStore.activeUnit.split(ratio)
-				const layer = editorDataStore.getLayerByUnitId(editorDataStore.activeUnit.id)
+		if (trackStore.seekerLocation > layersDataStore.activeUnit.track.location.left &&
+			trackStore.seekerLocation < layersDataStore.activeUnit.track.location.right) {
+			if (layersDataStore.activeUnit.resource.type == 'video') {
+				const width = trackStore.seekerLocation - layersDataStore.activeUnit.track.location.left
+				const ratio = width / layersDataStore.activeUnit.track.w
+				const newUnit = layersDataStore.activeUnit.split(ratio)
+				const layer = layersDataStore.getLayerByUnitId(layersDataStore.activeUnit.id)
 				nextTick(() => {
 					layer.units.push(newUnit)
 					layer.sort()

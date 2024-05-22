@@ -7,12 +7,9 @@
 				<el-text v-else type="danger" size="small">离线</el-text>
 			</el-tag>
 			<el-tag type="info">画布分辨率 {{sceneStore.width}} x {{sceneStore.height}}</el-tag>
-			<el-tag type="info">视频总时长 {{dateFormat(editorDataStore.videoTotalDuration,'hh:mm:ss')}}</el-tag>
-			<el-tag type="info" class="debug">时间引导线
-				Location : {{trackStore.seekerLocation}}
-				Time : {{trackStore.seekerTime}}ms</el-tag>
-			<el-tag type="info" :class="{'open-debug':editorDataStore.debug}"
-				@click="openDebug(!editorDataStore.debug)">Debug</el-tag>
+			<el-tag type="info">视频总时长 {{dateFormat(layersDataStore.videoTotalDuration,'hh:mm:ss')}}</el-tag>
+			<el-tag type="info" :class="{'open-debug':globalStore.debug}"
+				@click="openDebug(!globalStore.debug)">Debug</el-tag>
 		</div>
 	</div>
 </template>
@@ -23,8 +20,11 @@
 		onMounted
 	} from 'vue'
 	import {
-		useEditorDataStore
-	} from '../store/editor.js'
+		useGlobalStore
+	} from '../store/global.js'
+	import {
+		useLayersDataStore
+	} from '../store/layers.js'
 	import {
 		useTrackStore
 	} from '../store/track.js'
@@ -38,19 +38,20 @@
 		useOnline
 	} from '@vueuse/core'
 
-	const editorDataStore = useEditorDataStore()
+	const globalStore = useGlobalStore()
+	const layersDataStore = useLayersDataStore()
 	const trackStore = useTrackStore()
 	const sceneStore = useSceneStore()
 	const online = useOnline()
 
 	const openDebug = (state) => {
-		editorDataStore.debug = state
-		if (editorDataStore.debug) document.querySelector('html').classList.add('debug-open')
+		globalStore.debug = state
+		if (globalStore.debug) document.querySelector('html').classList.add('debug-open')
 		else document.querySelector('html').classList.remove('debug-open')
 	}
 
 	onMounted(() => {
-		openDebug(editorDataStore.debug)
+		openDebug(globalStore.debug)
 	})
 </script>
 
