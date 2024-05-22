@@ -44,12 +44,13 @@
 		loadBackgroundText
 	} from '../../../bean/Scene.js'
 
-	const app = new Application();
-	const layersDataStore = useLayersDataStore()
 	const viewportStore = useViewportStore()
+	const layersDataStore = useLayersDataStore()
 	const trackStore = useTrackStore()
 	const globalStore = useGlobalStore()
 	const loading = ref(true)
+	const app = new Application();
+	viewportStore.app = app
 
 	let loadSceneLoading = false
 	const loadScene = async (layers) => {

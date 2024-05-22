@@ -7,5 +7,6 @@ export const useViewportStore = defineStore('viewport', {
 		scale: 1,
 		background: '#000000',
 		playing: false, // 播放中
+		app: null
 	})
 })

@@ -9,5 +9,4 @@ export const useGlobalStore = defineStore('global', {
 		width: 1920,
 		height: 1080,
 	}),
-	persist: true
 })

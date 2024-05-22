@@ -1,12 +1,12 @@
 <template>
 	<div class="el-position">
 		<div class="key-value">
-			<span>X</span>
+			<span>x</span>
 			<el-input-number :model-value="modelValue.x" :step="1" :step-strictly="true" controls-position="right"
 				size="small" @input="handleInputX" />
 		</div>
 		<div class="key-value">
-			<span>Y</span>
+			<span>y</span>
 			<el-input-number :model-value="modelValue.y" :step="1" :step-strictly="true" controls-position="right"
 				size="small" @input="handleInputY" />
 		</div>

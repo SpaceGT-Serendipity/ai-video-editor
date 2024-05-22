@@ -2,14 +2,19 @@
 	<el-collapse :model-value="['positionSize','blend']">
 		<el-collapse-item title="位置大小" name="positionSize">
 			<div class="properties-block">
-				{{layersDataStore.activeUnit!=null}}
+				<span class="block-name">智能对齐</span>
+				<div>
+					<el-button @click="center">居中</el-button>
+					<el-button @click="adaptiveSize">自适应画布大小</el-button>
+				</div>
+			</div>
+			<div class="properties-block">
 				<span class="block-name">等比例缩放</span>
 				<el-switch v-model="options.positionSize.equalScale" size="small" />
 			</div>
 			<div class="properties-block" v-show="options.positionSize.equalScale">
 				<span class="block-name">缩放</span>
-				<el-slider-plus v-model="options.positionSize.scale" :min="0.01" :max="5"
-					:step="0.01"></el-slider-plus>
+				<el-slider-plus v-model="options.positionSize.scale" :min="0.01" :max="5" :step="0.01"></el-slider-plus>
 			</div>
 			<div class="properties-block" v-show="!options.positionSize.equalScale">
 				<span class="block-name">缩放宽度</span>
@@ -66,8 +71,12 @@
 	import {
 		useLayersDataStore
 	} from '../../store/layers.js'
-	
+	import {
+		useViewportStore
+	} from '../../store/viewport.js'
+
 	const layersDataStore = useLayersDataStore()
+	const viewportStore = useViewportStore()
 	const options = reactive({
 		positionSize: {
 			equalScale: true,
@@ -85,9 +94,25 @@
 			alpha: 1
 		}
 	})
-	
+
 	const formatTooltip = (number) => {
 		return parseInt(number * 100) + '%'
+	}
+	const center = () => {
+		const container = layersDataStore.activeUnit.scene.container
+		const x = viewportStore.app.screen.width / 2 - container.width / 2
+		const y = viewportStore.app.screen.height / 2 - container.height / 2
+		container.x = x
+		container.y = y
+	}
+	const adaptiveSize = () => {
+		const container = layersDataStore.activeUnit.scene.container
+		const widthScale = viewportStore.app.screen.width / container.width
+		const heightScale = viewportStore.app.screen.height / container.height
+		const maxScale = Math.max(widthScale, heightScale)
+		container.scale.x = container.scale.x * maxScale
+		container.scale.y = container.scale.y * maxScale
+		center()
 	}
 </script>
 
