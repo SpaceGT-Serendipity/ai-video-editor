@@ -9,10 +9,10 @@ export default defineConfig({
 	server: {
 		host: '0.0.0.0',
 		port: 443,
-		// https: {
-		// 	key: fs.readFileSync('./cert/127.0.0.1-key.pem'),
-		// 	cert: fs.readFileSync('./cert/127.0.0.1.pem'),
-		// },
+		https: {
+			key: fs.readFileSync('./cert/127.0.0.1-key.pem'),
+			cert: fs.readFileSync('./cert/127.0.0.1.pem'),
+		},
 	},
 	define: {
 		__VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true'

@@ -39,12 +39,13 @@ export default class Track {
 
 	/* 主动触发鼠标事件 */
 	onMousedown(event) {
+		const rect = this.instance.getBoundingClientRect()
 		var mouseEvent = new MouseEvent('mousedown', {
 			'view': window,
 			'bubbles': true,
 			'cancelable': false,
-			'clientX': event.clientX,
-			'clientY': event.clientY
+			'clientX': rect.x + (rect.width / 2),
+			'clientY': rect.y + (rect.height / 2)
 		});
 		this.instance.dispatchEvent(mouseEvent)
 	}
