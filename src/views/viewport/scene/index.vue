@@ -69,28 +69,33 @@
 			layer.units.forEach(unit => {
 				if (unit.scene.loaded) {
 					if (layer.display) {
+						const currentTime = trackStore.seekerTime - unit.duration.left
 						if (trackStore.seekerTime >= unit.duration.left &&
 							trackStore.seekerTime <= unit.duration.right) {
-							unit.scene.container.zIndex =
-								layersDataStore.layersTracks.length - layerIndex
+							unit.scene.container.zIndex = layersDataStore.layersTracks.length -
+								layerIndex
 							unit.scene.container.visible = true
-							if (unit.resource.type == 'video') {
-								if (viewportStore.playing) {
+							if (viewportStore.playing) {
+								if (unit.resource.type == 'video') {
 									unit.scene.play()
-								} else {
-									const currentTime = trackStore.seekerTime - unit.duration.left
-									unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
+									unit.scene.muted(layer.muted)
+								}
+							} else {
+								if (unit.resource.type == 'video') {
 									unit.scene.pause()
+									unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
 								}
 							}
-
 						} else {
 							unit.scene.container.visible = false
-							if (unit.resource.type == 'video') unit.scene.currentTime(0)
+							if (unit.resource.type == 'video') {
+								unit.scene.pause()
+								unit.scene.currentTime(unit.duration.start / 1000)
+							}
 						}
 					} else {
 						unit.scene.container.visible = false
-						if (unit.resource.type == 'video') unit.scene.currentTime(0)
+						if (unit.type == 'video') unit.scene.pause()
 					}
 				}
 			})

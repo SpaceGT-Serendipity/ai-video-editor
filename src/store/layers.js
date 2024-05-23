@@ -98,6 +98,13 @@ export const useLayersDataStore = defineStore('layers-data', {
 					unit.track.active = unit.id == unitId
 				}
 			}
+		},
+		/* 清除空图层 */
+		clearEmptyLayer() {
+			for (let i = this.layers.length - 1; i >= 0; i--) {
+				if (this.layers[i].length == 0)
+					this.layers.splice(i, 1)
+			}
 		}
 	}
 })

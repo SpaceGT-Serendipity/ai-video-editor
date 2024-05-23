@@ -42,7 +42,7 @@
 
 	onMounted(() => {
 		if (!props.data.loaded) {
-			props.data.load()
+			props.data.init()
 		}
 		GLightbox({
 			type: props.data.type

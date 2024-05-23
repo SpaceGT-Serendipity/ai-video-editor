@@ -17,14 +17,20 @@
 				</el-icon>
 			</el-tooltip>
 		</el-button>
-		<el-button link size="small" v-if="data.display" @click="data.display=false">
-			<el-icon size="16px">
+		<el-button link size="small" @click="data.display=!data.display">
+			<el-icon size="16px" v-if="data.display">
 				<View />
 			</el-icon>
-		</el-button>
-		<el-button link size="small" v-else @click="data.display=true">
-			<el-icon size="16px">
+			<el-icon size="16px" v-else>
 				<Hide />
+			</el-icon>
+		</el-button>
+		<el-button link size="small" @click="data.muted=!data.muted">
+			<el-icon size="16px" v-if="data.muted">
+				<font-awesome-icon icon="fa-solid fa-volume-xmark" />
+			</el-icon>
+			<el-icon size="16px" v-else>
+				<font-awesome-icon icon="fa-solid fa-volume-low" />
 			</el-icon>
 		</el-button>
 		<el-button link size="small" @click="onDel">

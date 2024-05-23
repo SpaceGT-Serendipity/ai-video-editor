@@ -29,6 +29,9 @@ import {
 	createPinia
 } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+// 右键菜单
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
+import ContextMenu from '@imengyu/vue3-context-menu'
 
 const app = createApp(App)
 app.use(ElementPlus, {
@@ -38,6 +41,7 @@ app.use(router)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
+app.use(ContextMenu)
 
 for (let key in ElIconModules) app.component(key, ElIconModules[key])
 app.component('font-awesome-icon', FontAwesomeIcon)
@@ -48,6 +52,7 @@ library.add(
 	freeSolidSvgIcons.faArrowRotateLeft,
 	freeSolidSvgIcons.faArrowRotateRight,
 	freeSolidSvgIcons.faICursor,
+	freeSolidSvgIcons.faVolumeLow,
+	freeSolidSvgIcons.faVolumeXmark,
 )
-
 app.mount('#app')

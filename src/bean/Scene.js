@@ -35,7 +35,8 @@ export default class Scene {
 	}
 
 	destroy() {
-		this.container.destroy()
+		if (this.sprite) this.sprite.destroy()
+		if (this.container) this.container.destroy()
 	}
 
 	async load(app, resource) {
@@ -65,6 +66,10 @@ export default class Scene {
 
 	currentTime(value) {
 		this.texture.source.resource.currentTime = value
+	}
+
+	muted(value) {
+		this.texture.source.resource.muted = value
 	}
 
 	get paused() {
@@ -168,5 +173,5 @@ const center = (app, container) => {
 
 export {
 	loadBackground,
-	loadBackgroundText 
+	loadBackgroundText
 }

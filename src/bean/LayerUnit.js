@@ -39,12 +39,14 @@ export class LayerUnit {
 	}
 
 	destroy() {
+		this.resource.destroy()
+		this.track.destroy()
 		this.scene.destroy()
 	}
 
 	clone() {
 		const unit = new LayerUnit({
-			resource: this.resource,
+			resource: this.resource.clone(),
 			scene: this.scene.clone(),
 			track: this.track.clone()
 		})
@@ -87,6 +89,7 @@ export class LayerUnit {
 			track: this.track.simplify,
 			duration: this.duration,
 			scene: this.scene,
+			type: this.type
 		}
 	}
 
@@ -106,9 +109,9 @@ export class LayerUnit {
 		else
 			return 0
 	}
-	
+
 	/* 获取资源类型 */
-	get type(){
+	get type() {
 		return this.resource.type
 	}
 }

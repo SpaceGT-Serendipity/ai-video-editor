@@ -5,11 +5,11 @@ import {
 export class Layer {
 	units = null
 	display = true
+	muted = false
 	instance = null
 
 	constructor() {
 		this.id = uuidv4()
-		this.display = true
 	}
 
 	static list(...list) {
@@ -33,6 +33,7 @@ export class Layer {
 
 	destroy() {
 		this.units.forEach(unit => unit.destroy())
+		if (this.instance) this.instance.remove()
 	}
 
 	remove(id) {
@@ -60,6 +61,7 @@ export class Layer {
 			id: this.id,
 			units: this.units.map(item => item.scenes),
 			display: this.display,
+			muted: this.muted,
 			length: this.length,
 			remove: this.remove
 		}
@@ -70,6 +72,7 @@ export class Layer {
 			id: this.id,
 			units: this.units.map(item => item.tracks),
 			display: this.display,
+			muted: this.muted,
 			length: this.length,
 			remove: this.remove
 		}
@@ -77,7 +80,7 @@ export class Layer {
 
 	/* 获取图册元素类型 */
 	get type() {
-		 const unit = this.units.find(item => true)
-		 return unit.type
+		const unit = this.units.find(item => true)
+		return unit.type
 	}
 }

@@ -37,6 +37,10 @@ export default class Track {
 		})
 	}
 
+	destroy() {
+		if (this.instance) this.instance.remove()
+	}
+
 	/* 主动触发鼠标事件 */
 	onMousedown(event) {
 		const rect = this.instance.getBoundingClientRect()

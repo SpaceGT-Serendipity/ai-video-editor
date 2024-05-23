@@ -4,7 +4,7 @@
 	<!-- 图层 -->
 	<div class="timeline layer container" ref="containerRef">
 		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item"
-			@on-drag="emits('onDrag', $event)">
+			@on-drag="emits('onDrag', $event)" @contextmenu="onContextMenu">
 			<div class="view" v-html="item.view"></div>
 		</layer-unit>
 	</div>
@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+	import ContextMenu from '@imengyu/vue3-context-menu'
 	import LayerUnit from './unit.vue'
 	import {
 		ref,
@@ -26,7 +27,11 @@
 	import {
 		ElNotification
 	} from 'element-plus'
+	import {
+		useLayersDataStore
+	} from '../../../store/layers.js'
 
+	const layersDataStore  = useLayersDataStore()
 	const emits = defineEmits(['onDrag', 'onDrop'])
 	const props = defineProps({
 		modelValue: Object,
@@ -36,6 +41,22 @@
 	const topRef = ref()
 	const containerRef = ref()
 	const layerGapRef = ref()
+
+	const onContextMenu = (e) => {
+		e.preventDefault();
+		ContextMenu.showContextMenu({
+			x: e.x,
+			y: e.y,
+			items: [{
+				label: "删除素材",
+				onClick: () => {
+					const unit = layersDataStore.getUnitUnderMouse(e)
+					props.modelValue.remove(unit.id)
+					layersDataStore.clearEmptyLayer()
+				}
+			}]
+		});
+	}
 
 	function handleContainerMouseenter(event) {
 		if (props.dropData && props.dropData.track.dragging) {

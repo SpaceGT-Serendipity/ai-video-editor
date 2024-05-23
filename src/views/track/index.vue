@@ -131,7 +131,7 @@
 			resourceDragStore.data = null
 			nextTick(() => {
 				const unit = new LayerUnit({
-					resource
+					resource: resource.clone()
 				})
 				// 元素坐标
 				const x =

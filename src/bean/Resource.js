@@ -4,10 +4,12 @@ import {
 import axios from '../axios/index.js'
 
 export class Resource {
+	/* 文件名 */
+	name = null
 	/* 文件类型 */
 	type = null;
 	/* 原始时长(ms) */
-	duration = 6000
+	duration = 0
 	/* 资源大小 */
 	size = 0
 	/* 资源加载完成 */
@@ -26,6 +28,12 @@ export class Resource {
 		this.type = type
 	}
 
+	clone() {
+		return this;
+	}
+
+	destroy() {}
+
 	get view() {
 		return '';
 	}
@@ -38,6 +46,7 @@ export class TextResource extends Resource {
 			name,
 			type: 'text'
 		})
+		this.duration = 6000
 		this.loaded = true
 	}
 
@@ -57,6 +66,7 @@ export class ImageResource extends Resource {
 		})
 		this.url = url;
 		this.cover = url;
+		this.duration = 6000
 		this.loaded = true
 	}
 
@@ -73,33 +83,17 @@ export class ImageResource extends Resource {
 }
 
 export class VideoResource extends Resource {
+	_file = null;
 	_video = null;
 
-	constructor({
-		name,
-		size,
-		url,
-		cover = null,
-		duration = 0,
-		loaded = false
-	}) {
+	constructor(resource) {
 		super({
-			name,
+			name: resource.name,
 			type: 'video'
 		})
-		this.size = size;
-		this.url = url
-		this.cover = cover
-		this.duration = duration
-		this.loaded = loaded
-	}
-
-	static file(resource) {
-		return new VideoResource({
-			name: resource.name,
-			size: resource.size,
-			url: URL.createObjectURL(resource)
-		});
+		this.size = resource.size;
+		this.url = URL.createObjectURL(resource)
+		this._file = resource
 	}
 
 	static async url(url, name) {
@@ -109,35 +103,44 @@ export class VideoResource extends Resource {
 		const file = new File([blob], name, {
 			type: blob.type
 		})
-		return VideoResource.file(file);
+		return new VideoResource(file);
 	}
 
-	get view() {
-		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});"></div>`
+	clone() {
+		const newVideoResource = new VideoResource(this._file);
+		newVideoResource.cover = this.cover
+		newVideoResource.duration = this.duration
+		return newVideoResource;
 	}
 
-	load() {
-		this._video = document.createElement('video');
-		this._video.src = this.url;
-		this._video.load();
-		this._video.addEventListener('loadedmetadata', async () => {
-			this.duration = this._video.duration * 1000
-			if (this.cover == null) {
-				this._video.pause();
-				this._video.currentTime = parseInt(this._video.duration / 3)
-			} else {
-				this.loaded = true
-			}
-		});
-		this._video.addEventListener('timeupdate', async () => {
-			if (this._video.currentTime > 0) {
-				const coverBlob = await this.screenshot(160, 90);
-				this.cover = URL.createObjectURL(coverBlob)
-				this.loaded = true
-			}
-		});
-		setTimeout(() => this.loaded = true, 2000)
-		return this;
+	destroy() {
+		if (this._video) this._video.remove()
+	}
+
+	init() {
+		return new Promise((resolve, reject) => {
+			this._video = document.createElement('video');
+			this._video.src = this.url;
+			this._video.load();
+			this._video.addEventListener('loadedmetadata', async () => {
+				this.duration = this._video.duration * 1000
+				if (this.cover == null) {
+					this._video.pause();
+					this._video.currentTime = parseInt(this._video.duration / 3)
+				} else {
+					this.loaded = true
+					resolve()
+				}
+			});
+			this._video.addEventListener('timeupdate', async () => {
+				if (this._video.currentTime > 0) {
+					const coverBlob = await this.screenshot(160, 90);
+					this.cover = URL.createObjectURL(coverBlob)
+					this.loaded = true
+					resolve()
+				}
+			});
+		})
 	}
 
 	screenshot(width = 320, height = 240) {
@@ -156,6 +159,11 @@ export class VideoResource extends Resource {
 				canvas.toBlob((blob) => resolve(blob))
 			}, 500)
 		})
+	}
+
+
+	get view() {
+		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});"></div>`
 	}
 }
 
