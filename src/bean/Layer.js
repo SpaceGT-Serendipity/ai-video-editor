@@ -3,9 +3,13 @@ import {
 } from 'uuid'
 
 export class Layer {
+	/* 元素集合 */
 	units = null
+	/* 显示隐藏图层 */
 	display = true
+	/* 静音图层 */
 	muted = false
+	/* 实例元素 */
 	instance = null
 
 	constructor() {

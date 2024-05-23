@@ -12,6 +12,7 @@
 	<div class="timeline layer-gap" ref="layerGapRef" :class="{'last':last}">
 		<div v-if="last">插入新的时间线</div>
 	</div>
+
 </template>
 
 <script setup>
@@ -31,7 +32,7 @@
 		useLayersDataStore
 	} from '../../../store/layers.js'
 
-	const layersDataStore  = useLayersDataStore()
+	const layersDataStore = useLayersDataStore()
 	const emits = defineEmits(['onDrag', 'onDrop'])
 	const props = defineProps({
 		modelValue: Object,
@@ -44,13 +45,52 @@
 
 	const onContextMenu = (e) => {
 		e.preventDefault();
+		const unit = layersDataStore.getUnitUnderMouse(e)
+		const dark = document.querySelector('html').classList.contains('dark')
 		ContextMenu.showContextMenu({
+			theme: 'mac' + (dark ? ' dark' : ''),
 			x: e.x,
 			y: e.y,
 			items: [{
-				label: "删除素材",
+				label: "显示",
+				hidden: unit.display,
+				svgIcon: '#fa-eye',
+				svgProps: {
+					fill: dark ? '#aaa' : '#666',
+				},
+				onClick: () => unit.display = true
+			}, {
+				label: "隐藏",
+				hidden: !unit.display,
+				svgIcon: '#fa-eye-slash',
+				svgProps: {
+					fill: dark ? '#aaa' : '#666',
+				},
+				onClick: () => unit.display = false
+			}, {
+				label: "声音",
+				hidden: !unit.muted,
+				svgIcon: '#fa-volume-low',
+				svgProps: {
+					fill: dark ? '#aaa' : '#666',
+				},
+				onClick: () => unit.muted = false
+			}, {
+				label: "静音",
+				hidden: unit.muted,
+				svgIcon: '#fa-volume-xmark',
+				svgProps: {
+					fill: dark ? '#aaa' : '#666',
+				},
+				onClick: () => unit.muted = true
+			}, {
+				divided: 'up',
+				label: "删除",
+				svgIcon: '#fa-trash-can',
+				svgProps: {
+					fill: dark ? '#aaa' : '#666',
+				},
 				onClick: () => {
-					const unit = layersDataStore.getUnitUnderMouse(e)
 					props.modelValue.remove(unit.id)
 					layersDataStore.clearEmptyLayer()
 				}

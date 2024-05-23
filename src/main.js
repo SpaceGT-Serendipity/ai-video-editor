@@ -48,6 +48,7 @@ app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('vue-draggable-resizable', VueDraggableResizable)
 library.add(
 	freeSolidSvgIcons.faExpand,
+	freeSolidSvgIcons.faEyeSlash,
 	freeSolidSvgIcons.faCompress,
 	freeSolidSvgIcons.faArrowRotateLeft,
 	freeSolidSvgIcons.faArrowRotateRight,

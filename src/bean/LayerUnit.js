@@ -20,6 +20,10 @@ export class LayerUnit {
 	_durationStart = 0
 	/* 结束时间,并不是真实时间,仅为显示的结束时间(ms) */
 	_durationEnd = 0
+	/* 显示隐藏元素 */
+	display = true
+	/* 静音元素 */
+	muted = false
 
 	constructor({
 		resource,
@@ -89,7 +93,9 @@ export class LayerUnit {
 			track: this.track.simplify,
 			duration: this.duration,
 			scene: this.scene,
-			type: this.type
+			type: this.type,
+			display: this.display,
+			muted: this.muted
 		}
 	}
 

@@ -6,8 +6,12 @@
 		:on-drag="onDrag" :on-resize="onResize" :snap="true" @activated="onActivated" @deactivated="onDeactivated"
 		@resizeStop="onResizeStop">
 		<slot></slot>
-		<div class="debug float">
+		<div class="debug float" :style="{'margin-left':(!data.display||data.muted?'70px':'10px')}">
 			X: {{data.track.x}} W: {{data.track.w}} DurableActive: {{data.track.active}}
+		</div>
+		<div class="states" v-show="!data.display||data.muted">
+			<font-awesome-icon icon="fa-solid fa-eye-slash" v-show="!data.display" />
+			<font-awesome-icon icon="fa-solid fa-volume-xmark" v-if="data.muted" />
 		</div>
 	</vue-draggable-resizable>
 </template>
@@ -195,6 +199,19 @@
 	.layer-unit-durable-active {
 		border: 2px solid var(--layer-unit-boder-color);
 		filter: brightness(1);
+	}
+
+	.states {
+		display: flex;
+		font-size: 12px;
+		justify-content: space-between;
+		position: absolute;
+		margin-left: 10px;
+		background-color: #0006;
+		border-radius: 4px;
+		padding: 8px;
+		color: #eee;
+		gap: 10px;
 	}
 
 	.debug {

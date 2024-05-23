@@ -68,7 +68,7 @@
 		layersDataStore.layersTracks.forEach((layer, layerIndex) => {
 			layer.units.forEach(unit => {
 				if (unit.scene.loaded) {
-					if (layer.display) {
+					if (layer.display && unit.display) {
 						const currentTime = trackStore.seekerTime - unit.duration.left
 						if (trackStore.seekerTime >= unit.duration.left &&
 							trackStore.seekerTime <= unit.duration.right) {
@@ -78,7 +78,7 @@
 							if (viewportStore.playing) {
 								if (unit.resource.type == 'video') {
 									unit.scene.play()
-									unit.scene.muted(layer.muted)
+									unit.scene.muted(layer.muted || unit.muted)
 								}
 							} else {
 								if (unit.resource.type == 'video') {

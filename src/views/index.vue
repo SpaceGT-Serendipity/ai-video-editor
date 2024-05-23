@@ -60,6 +60,7 @@
 			此处会显示操作提示，并且提供一些视频信息。
 		</el-tour-step>
 	</el-tour>
+	<svg-library v-show="false"></svg-library>
 </template>
 
 <script setup>
@@ -72,6 +73,7 @@
 	import Viewport from './viewport/index.vue'
 	import Properties from './properties/index.vue'
 	import Track from './track/index.vue'
+	import SvgLibrary from '../components/svg-library.vue'
 	import {
 		ref,
 		onMounted
