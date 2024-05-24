@@ -69,3 +69,37 @@ export const useTrackRulerConfigStore = defineStore('track-ruler-config', {
 		scaleThrottledTime: 50
 	}),
 })
+
+export const useHistoryStore = defineStore('history', {
+	state: () => ({
+		history: [],
+		currentIndex: 0,
+		max: 50
+	}),
+	getters: {
+		currentValue() {
+			return this.history[this.currentIndex]
+		}
+	},
+	actions: {
+		/* 撤回 */
+		undo() {
+			this.currentIndex--;
+		},
+		/* 重做 */
+		redo() {
+			this.currentIndex++;
+		},
+		push(value) {
+			if (this.currentIndex < this.history.length - 1) {
+				console.log(this.history.length - 1 - this.currentIndex)
+				this.history.splice(this.currentIndex - (this.history.length - 1))
+			}
+			if (this.history.length > this.max) {
+				this.history.splice(0, 1)
+			}
+			this.history.push(value)
+			this.currentIndex = this.history.length - 1
+		}
+	}
+})

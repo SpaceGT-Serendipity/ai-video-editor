@@ -72,6 +72,12 @@ export default class Scene {
 		this.texture.source.resource.muted = value
 	}
 
+	get serialize() {
+		return {
+			timestamp: this.timestamp
+		}
+	}
+
 	get paused() {
 		return this.texture.source.resource.paused || false
 	}

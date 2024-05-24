@@ -79,7 +79,7 @@ export default class Track {
 		}
 	}
 
-	get simplify() {
+	get serialize() {
 		return {
 			x: this.x,
 			w: this.w

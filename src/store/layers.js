@@ -32,6 +32,9 @@ export const useLayersDataStore = defineStore('layers-data', {
 		layersTracks() {
 			return this.layers.map(layer => layer.tracks)
 		},
+		layersSerialize() {
+			return this.layers.map(layer => layer.serialize)
+		},
 		// 选中激活的元素
 		activeUnit() {
 			for (let i = 0; i < this.layers.length; i++) {

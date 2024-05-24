@@ -82,6 +82,15 @@ export class Layer {
 		}
 	}
 
+	get serialize() {
+		return {
+			id: this.id,
+			units: this.units.map(item => item.serialize),
+			display: this.display,
+			muted: this.muted
+		}
+	}
+
 	/* 获取图册元素类型 */
 	get type() {
 		const unit = this.units.find(item => true)

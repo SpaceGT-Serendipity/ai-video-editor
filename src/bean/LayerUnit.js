@@ -90,10 +90,20 @@ export class LayerUnit {
 		return {
 			id: this.id,
 			resource: this.resource,
-			track: this.track.simplify,
+			track: this.track.serialize,
 			duration: this.duration,
 			scene: this.scene,
 			type: this.type,
+			display: this.display,
+			muted: this.muted
+		}
+	}
+
+	get serialize() {
+		return {
+			id: this.id,
+			track: this.track.serialize,
+			scene: this.scene.serialize,
 			display: this.display,
 			muted: this.muted
 		}
