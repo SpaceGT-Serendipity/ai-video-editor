@@ -16,9 +16,7 @@
 	import {
 		v4 as uuidv4
 	} from 'uuid'
-	import {
-		Layer
-	} from '../../../bean/Layer.js'
+	import Layer from '../../../bean/Layer.js'
 	import {
 		useTrackStore
 	} from '../../../store/track.js'

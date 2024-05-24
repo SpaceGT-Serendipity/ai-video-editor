@@ -73,7 +73,7 @@
 	const link = ref()
 
 	const handleUpload = (file) => {
-		const video = new VideoResource(file.raw)
+		const video = VideoResource.file(file.raw)
 		localFileList.push(video)
 	}
 	const addLinkResource = async () => {

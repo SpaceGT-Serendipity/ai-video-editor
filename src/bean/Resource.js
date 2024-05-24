@@ -38,6 +38,38 @@ export class Resource {
 		return '';
 	}
 
+	get serialize() {
+		return {
+			id: this.id,
+			name: this.name,
+			type: this.type,
+			duration: this.duration,
+			size: this.size,
+			url: this.url,
+			cover: this.cover,
+		}
+	}
+}
+
+
+function ResourceDeserialize(data) {
+	let resource = null
+	if (data.type == 'video') {
+		resource = new VideoResource({
+			name: data.name
+		});
+	} else
+	if (data.type == 'image') {
+		resource = new ImageResource({
+			name: data.name,
+			url: data.url
+		});
+	}
+	resource.id = data.id;
+	resource.duration = data.duration;
+	resource.size = data.size;
+	resource.cover = data.cover;
+	return resource;
 }
 
 export class TextResource extends Resource {
@@ -80,20 +112,30 @@ export class ImageResource extends Resource {
 	get view() {
 		return `<div style="${ImageResourceStyle} background-image: url(${this.url});"></div>`
 	}
+
 }
 
 export class VideoResource extends Resource {
 	_file = null;
 	_video = null;
 
-	constructor(resource) {
+	constructor({
+		name
+	}) {
 		super({
-			name: resource.name,
+			name,
 			type: 'video'
 		})
-		this.size = resource.size;
-		this.url = URL.createObjectURL(resource)
-		this._file = resource
+	}
+
+	static file(resource) {
+		const videoResource = new VideoResource({
+			name: resource.name,
+		});
+		videoResource.size = resource.size
+		videoResource.url = URL.createObjectURL(resource)
+		videoResource._file = resource
+		return videoResource
 	}
 
 	static async url(url, name) {
@@ -103,11 +145,11 @@ export class VideoResource extends Resource {
 		const file = new File([blob], name, {
 			type: blob.type
 		})
-		return new VideoResource(file);
+		return VideoResource.file(file);
 	}
 
 	clone() {
-		const newVideoResource = new VideoResource(this._file);
+		const newVideoResource = VideoResource.file(this._file);
 		newVideoResource.cover = this.cover
 		newVideoResource.duration = this.duration
 		return newVideoResource;
@@ -161,10 +203,10 @@ export class VideoResource extends Resource {
 		})
 	}
 
-
 	get view() {
 		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});"></div>`
 	}
+
 }
 
 const ImageResourceStyle = `
@@ -174,3 +216,7 @@ const ImageResourceStyle = `
     background-size: contain;
 	background-position: left;
 `
+
+export {
+	ResourceDeserialize
+}

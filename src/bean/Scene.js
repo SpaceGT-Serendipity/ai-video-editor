@@ -12,11 +12,11 @@ const {
 import {
 	mountMove,
 	unmountMove
-} from './SceneSpriteMove.js'
+} from './utils/SceneSpriteMove.js'
 import {
 	mountScale,
 	unmountScale
-} from './SceneSpriteScale.js'
+} from './utils/SceneSpriteScale.js'
 
 export default class Scene {
 	/* 最后更新时间 */
@@ -72,14 +72,22 @@ export default class Scene {
 		this.texture.source.resource.muted = value
 	}
 
+	get paused() {
+		return this.texture.source.resource.paused || false
+	}
+
 	get serialize() {
 		return {
+			id: this.id,
 			timestamp: this.timestamp
 		}
 	}
 
-	get paused() {
-		return this.texture.source.resource.paused || false
+	static deserialize(data) {
+		const scene = new Scene();
+		scene.id = data.id;
+		scene.timestamp = data.timestamp;
+		return scene;
 	}
 }
 

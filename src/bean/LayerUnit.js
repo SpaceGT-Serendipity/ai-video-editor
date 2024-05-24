@@ -6,8 +6,11 @@ import {
 } from '../store/track.js'
 import Scene from './Scene.js'
 import Track from './Track.js'
+import {
+	ResourceDeserialize
+} from './Resource.js'
 
-export class LayerUnit {
+export default class LayerUnit {
 	/* 轨道配置 */
 	trackStore = useTrackStore()
 	/* 资源信息 */
@@ -99,16 +102,6 @@ export class LayerUnit {
 		}
 	}
 
-	get serialize() {
-		return {
-			id: this.id,
-			track: this.track.serialize,
-			scene: this.scene.serialize,
-			display: this.display,
-			muted: this.muted
-		}
-	}
-
 	get duration() {
 		return {
 			start: this._durationStart,
@@ -129,5 +122,32 @@ export class LayerUnit {
 	/* 获取资源类型 */
 	get type() {
 		return this.resource.type
+	}
+
+	get serialize() {
+		return {
+			id: this.id,
+			resource: this.resource.serialize,
+			track: this.track.serialize,
+			scene: this.scene.serialize,
+			durationStart: this._durationStart,
+			durationEnd: this._durationEnd,
+			display: this.display,
+			muted: this.muted
+		}
+	}
+
+	static deserialize(data) {
+		const unit = new LayerUnit({
+			resource: ResourceDeserialize(data.resource),
+			scene: Scene.deserialize(data.scene),
+			track: Track.deserialize(data.track)
+		})
+		unit.id = data.id
+		unit.display = data.display
+		unit.muted = data.muted
+		unit.durationStart = data.durationStart
+		unit.durationEnd = data.durationEnd
+		return unit;
 	}
 }

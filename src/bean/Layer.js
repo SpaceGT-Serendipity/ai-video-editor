@@ -1,8 +1,9 @@
 import {
 	v4 as uuidv4
 } from 'uuid'
+import LayerUnit from './LayerUnit.js'
 
-export class Layer {
+export default class Layer {
 	/* 元素集合 */
 	units = null
 	/* 显示隐藏图层 */
@@ -13,7 +14,7 @@ export class Layer {
 	instance = null
 
 	constructor() {
-		this.id = uuidv4()
+		this.id = uuidv4();
 	}
 
 	static list(...list) {
@@ -82,6 +83,12 @@ export class Layer {
 		}
 	}
 
+	/* 获取图册元素类型 */
+	get type() {
+		const unit = this.units.find(item => true)
+		return unit.type
+	}
+
 	get serialize() {
 		return {
 			id: this.id,
@@ -91,9 +98,12 @@ export class Layer {
 		}
 	}
 
-	/* 获取图册元素类型 */
-	get type() {
-		const unit = this.units.find(item => true)
-		return unit.type
+	static deserialize(data) {
+		const layer = new Layer()
+		layer.id = data.id;
+		layer.units = data.units.map(item => LayerUnit.deserialize(item))
+		layer.display = data.display
+		layer.muted = data.muted
+		return layer;
 	}
 }

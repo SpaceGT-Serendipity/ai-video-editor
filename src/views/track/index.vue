@@ -39,12 +39,8 @@
 	import LayerUnitVirtualLocation from './layer/unit-virtual-location.vue'
 	import TimelineRuler from './ruler/index.vue'
 	import TimelineSeeker from './seeker/index.vue'
-	import {
-		LayerUnit
-	} from '../../bean/LayerUnit.js'
-	import {
-		Layer
-	} from '../../bean/Layer.js'
+	import LayerUnit from '../../bean/LayerUnit.js'
+	import Layer from '../../bean/Layer.js'
 	import {
 		TextResource,
 		ImageResource,

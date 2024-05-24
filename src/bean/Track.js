@@ -81,8 +81,18 @@ export default class Track {
 
 	get serialize() {
 		return {
-			x: this.x,
-			w: this.w
+			id: this.id,
+			x: this._x,
+			w: this._w,
 		}
+	}
+
+	static deserialize(data) {
+		const track = new Track({
+			x: data.x,
+			w: data.w
+		});
+		track.id = data.id
+		return track;
 	}
 }

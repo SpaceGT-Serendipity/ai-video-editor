@@ -6,7 +6,7 @@
 			</el-icon>
 		</el-button>
 		<el-slider size="small" v-model="scale" :step="0.01" :max="2" :min="0.2" :format-tooltip="formatTooltip"
-			@input="changeScale" />
+			disabled @input="changeScale" />
 		<el-button link size="small" @click="addition">
 			<el-icon size="20px">
 				<ZoomIn />
@@ -52,7 +52,7 @@
 	.el-slider {
 		width: 200px;
 	}
-	
+
 	.scale {
 		display: flex;
 		justify-content: space-between;
