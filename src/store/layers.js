@@ -88,10 +88,12 @@ export const useLayersDataStore = defineStore('layers-data', {
 			return this.layers.find(layer => layer.units.find(unit => unit.id == unitId))
 		},
 		/* 删除某一时间线图层 */
-		delLayerById(layerId) {
-			const index = this.layers.findIndex(layer => layer.id == layerId)
-			this.layers[index].destroy()
-			this.layers.splice(index, 1)
+		delLayerById(...layerIds) {
+			layerIds.forEach(layerId => {
+				const index = this.layers.findIndex(layer => layer.id == layerId)
+				this.layers[index].destroy()
+				this.layers.splice(index, 1)
+			})
 		},
 		setUnitActive(unitId) {
 			for (let i = 0; i < this.layers.length; i++) {

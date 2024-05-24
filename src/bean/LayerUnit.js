@@ -143,7 +143,7 @@ export default class LayerUnit {
 			scene: Scene.deserialize(data.scene),
 			track: Track.deserialize(data.track)
 		})
-		unit.id = data.id
+		// unit.id = data.id
 		unit.display = data.display
 		unit.muted = data.muted
 		unit.durationStart = data.durationStart

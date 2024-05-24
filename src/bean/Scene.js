@@ -42,7 +42,7 @@ export default class Scene {
 	async load(app, resource) {
 		this.texture = await loadAsset({
 			alias: this.id,
-			src: resource.url,
+			src: resource.blobUrl || resource.url,
 			loadParser: getLoadParserName(resource.type)
 		})
 
@@ -85,7 +85,7 @@ export default class Scene {
 
 	static deserialize(data) {
 		const scene = new Scene();
-		scene.id = data.id;
+		// scene.id = data.id;
 		scene.timestamp = data.timestamp;
 		return scene;
 	}

@@ -22,7 +22,7 @@
 	</div>
 	<div class="button-group">
 		<SwitchTheme></SwitchTheme>
-		<el-button type="primary" icon="Monitor" @click="show()">合成视频</el-button>
+		<el-button type="primary" icon="Monitor" @click="compound">合成视频</el-button>
 	</div>
 </template>
 
@@ -37,8 +37,12 @@
 	import {
 		useGlobalStore
 	} from '../store/global.js'
+	import {
+		useLayersDataStore
+	} from '../store/layers.js'
 
 	const globalStore = useGlobalStore()
+	const layersDataStore = useLayersDataStore()
 	const options = {
 		title: 'AI 编辑器 开始合成视频!',
 		body: '点击查看详情',
@@ -65,6 +69,10 @@
 	}
 	const onTitleChange = () => {
 		editTitle.value = false
+	}
+	const compound = () => {
+		show()
+		console.log(layersDataStore.layersSerialize)
 	}
 </script>
 

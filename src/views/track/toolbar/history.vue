@@ -1,12 +1,12 @@
 <template>
-	<el-button link size="small" :disabled="true||historyStore.currentIndex<1" @click="undo">
+	<el-button link size="small" :disabled="historyStore.currentIndex<1" @click="undo">
 		<el-tooltip class="box-item" effect="dark" content="撤销" placement="top">
 			<el-icon>
 				<font-awesome-icon icon="arrow-rotate-left" />
 			</el-icon>
 		</el-tooltip>
 	</el-button>
-	<el-button link size="small" :disabled="true||(historyStore.history.length-1)-historyStore.currentIndex<1" @click="redo">
+	<el-button link size="small" :disabled="(historyStore.history.length-1)-historyStore.currentIndex<1" @click="redo">
 		<el-tooltip class="box-item" effect="dark" content="重做" placement="top">
 			<el-icon>
 				<font-awesome-icon icon="arrow-rotate-right" />
@@ -37,7 +37,6 @@
 	const historyStore = useHistoryStore()
 
 	watchThrottled(() => layersDataStore.layersSerialize, (value) => {
-		console.log(Layer.deserialize(value[0]))
 		historyStore.push(value)
 	}, {
 		throttle: 1000
@@ -45,13 +44,19 @@
 
 	const undo = () => {
 		historyStore.undo()
-		console.log(historyStore.currentValue)
+		load()
 	}
 	const redo = () => {
 		historyStore.redo()
-		console.log(historyStore.currentValue)
+		load()
 	}
-	
+	const load = () => {
+		const layers = historyStore.currentValue
+		layersDataStore.delLayerById(...layersDataStore.layers.map(layer=>layer.id))
+		layers.forEach(layer => {
+			layersDataStore.layers.push(Layer.deserialize(layer))
+		})
+	}
 </script>
 
 <style>

@@ -58,6 +58,7 @@ function ResourceDeserialize(data) {
 		resource = new VideoResource({
 			name: data.name
 		});
+		resource.url = data.url
 	} else
 	if (data.type == 'image') {
 		resource = new ImageResource({
@@ -65,7 +66,7 @@ function ResourceDeserialize(data) {
 			url: data.url
 		});
 	}
-	resource.id = data.id;
+	// resource.id = data.id;
 	resource.duration = data.duration;
 	resource.size = data.size;
 	resource.cover = data.cover;
@@ -118,6 +119,7 @@ export class ImageResource extends Resource {
 export class VideoResource extends Resource {
 	_file = null;
 	_video = null;
+	blobUrl = null;
 
 	constructor({
 		name
@@ -133,6 +135,7 @@ export class VideoResource extends Resource {
 			name: resource.name,
 		});
 		videoResource.size = resource.size
+		videoResource.blobUrl = URL.createObjectURL(resource)
 		videoResource.url = URL.createObjectURL(resource)
 		videoResource._file = resource
 		return videoResource
@@ -145,14 +148,17 @@ export class VideoResource extends Resource {
 		const file = new File([blob], name, {
 			type: blob.type
 		})
-		return VideoResource.file(file);
+		const videoResource = VideoResource.file(file)
+		videoResource.url = url
+		return videoResource;
 	}
 
 	clone() {
-		const newVideoResource = VideoResource.file(this._file);
-		newVideoResource.cover = this.cover
-		newVideoResource.duration = this.duration
-		return newVideoResource;
+		const videoResource = VideoResource.file(this._file);
+		videoResource.url = this.url
+		videoResource.cover = this.cover
+		videoResource.duration = this.duration
+		return videoResource;
 	}
 
 	destroy() {
@@ -162,7 +168,7 @@ export class VideoResource extends Resource {
 	init() {
 		return new Promise((resolve, reject) => {
 			this._video = document.createElement('video');
-			this._video.src = this.url;
+			this._video.src = this.blobUrl;
 			this._video.load();
 			this._video.addEventListener('loadedmetadata', async () => {
 				this.duration = this._video.duration * 1000

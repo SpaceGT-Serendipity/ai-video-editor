@@ -92,7 +92,6 @@ export const useHistoryStore = defineStore('history', {
 		},
 		push(value) {
 			if (this.currentIndex < this.history.length - 1) {
-				console.log(this.history.length - 1 - this.currentIndex)
 				this.history.splice(this.currentIndex - (this.history.length - 1))
 			}
 			if (this.history.length > this.max) {

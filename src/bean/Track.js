@@ -92,7 +92,7 @@ export default class Track {
 			x: data.x,
 			w: data.w
 		});
-		track.id = data.id
+		// track.id = data.id
 		return track;
 	}
 }
