@@ -1,6 +1,6 @@
 <template>
 	<div class="footer">
-		<el-alert title="状态栏 记录一些自动保存信息等等,一些信息提示" type="info" show-icon :closable="false" />
+		<el-alert :title="stateStore.alert?stateStore.alert:'状态栏'" type="info" show-icon :closable="false" />
 		<div class="short-message">
 			<el-tag type="info">网络状态
 				<el-text v-if="online" type="success" size="small">在线</el-text>
@@ -20,7 +20,8 @@
 		onMounted
 	} from 'vue'
 	import {
-		useGlobalStore
+		useGlobalStore,
+		useStateStore
 	} from '../store/global.js'
 	import {
 		useLayersDataStore
@@ -33,6 +34,7 @@
 	} from '@vueuse/core'
 
 	const globalStore = useGlobalStore()
+	const stateStore = useStateStore()
 	const layersDataStore = useLayersDataStore()
 	const online = useOnline()
 

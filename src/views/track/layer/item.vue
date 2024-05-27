@@ -121,7 +121,7 @@
 					dropMode: 'appendUnit'
 				})
 			}
-		} else {
+		} else if (props.dropData.track.dragging) {
 			ElNotification({
 				title: '提示',
 				message: '该图层与当前元素类型不匹配。',

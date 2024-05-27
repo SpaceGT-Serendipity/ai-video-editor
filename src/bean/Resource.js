@@ -14,8 +14,10 @@ export class Resource {
 	size = 0
 	/* 资源加载完成 */
 	loaded = false
-	/* 文件地址 */
+	/* 网络地址 */
 	url = null
+	/* 本地地址 */
+	blobUrl = null;
 	/* 封面 */
 	cover = null
 
@@ -97,6 +99,7 @@ export class ImageResource extends Resource {
 			type: 'image'
 		})
 		this.url = url;
+		this.blobUrl = url;
 		this.cover = url;
 		this.duration = 6000
 		this.loaded = true
@@ -110,7 +113,7 @@ export class ImageResource extends Resource {
 	}
 
 	get view() {
-		return `<div style="${ImageResourceStyle} background-image: url(${this.url});"></div>`
+		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});"></div>`
 	}
 
 }
@@ -118,7 +121,6 @@ export class ImageResource extends Resource {
 export class VideoResource extends Resource {
 	_file = null;
 	_video = null;
-	blobUrl = null;
 
 	constructor({
 		name

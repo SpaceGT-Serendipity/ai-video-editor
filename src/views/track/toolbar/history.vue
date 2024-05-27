@@ -31,10 +31,14 @@
 	import {
 		useHistoryStore
 	} from '../../../store/track.js'
+	import {
+		useGlobalStore
+	} from '../../../store/global.js'
 	import Layer from '../../../bean/Layer.js'
 
 	const layersDataStore = useLayersDataStore()
 	const historyStore = useHistoryStore()
+	const globalStore = useGlobalStore()
 	const source = ref()
 	const {
 		trigger,
@@ -45,6 +49,7 @@
 		await new Promise(resolve => setTimeout(resolve, 500));
 		if (canceled) return;
 		historyStore.push(v);
+		globalStore.serialize = v
 	}, )
 
 	watch(() => layersDataStore.layersSerialize, (value) => source.value = layersDataStore.layersSerialize)

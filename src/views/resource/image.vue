@@ -66,15 +66,20 @@
 	import {
 		loadImage
 	} from '../../api/resource.js'
+	import {
+		upload
+	} from '../../api/file.js'
 
 	const publicFileList = reactive([])
 	const localFileList = reactive([])
 	const linkFileList = reactive([])
 	const link = ref()
 
-	const handleUpload = (file) => {
+	const handleUpload = async (file) => {
 		const image = ImageResource.file(file.raw)
 		localFileList.push(image)
+		const res = await upload(file.raw, 'ai-video-editor/source/image')
+		image.url = `${import.meta.env.VITE_APP_FILE_API}/download/${res.url}`
 	}
 	const addLinkResource = () => {
 		const image = new ImageResource({
