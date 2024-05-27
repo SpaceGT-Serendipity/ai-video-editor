@@ -145,8 +145,8 @@ export default class LayerUnit {
 		})
 		unit.display = data.display
 		unit.muted = data.muted
-		unit.durationStart = data.durationStart
-		unit.durationEnd = data.durationEnd
+		unit._durationStart = data.durationStart
+		unit._durationEnd = data.durationEnd
 		return unit;
 	}
 }

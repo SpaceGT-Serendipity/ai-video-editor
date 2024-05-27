@@ -48,6 +48,7 @@ export class Resource {
 			duration: this.duration,
 			size: this.size,
 			url: this.url,
+			blobUrl: this.blobUrl,
 			cover: this.cover,
 		}
 	}
@@ -60,7 +61,6 @@ function ResourceDeserialize(data) {
 		resource = new VideoResource({
 			name: data.name
 		});
-		resource.url = data.url
 	} else
 	if (data.type == 'image') {
 		resource = new ImageResource({
@@ -68,9 +68,12 @@ function ResourceDeserialize(data) {
 			url: data.url
 		});
 	}
+	resource.url = data.url
+	resource.blobUrl = data.blobUrl
 	resource.duration = data.duration;
 	resource.size = data.size;
 	resource.cover = data.cover;
+	resource.loaded = true
 	return resource;
 }
 

@@ -65,9 +65,12 @@
 	const load = () => {
 		const layers = historyStore.currentValue
 		layersDataStore.delLayerById(...layersDataStore.layers.map(layer => layer.id))
-		layers.forEach(layer => {
-			layersDataStore.layers.push(Layer.deserialize(layer))
-		})
+		setTimeout(() => {
+			layers.forEach(layer => {
+				layersDataStore.layers.push(Layer.deserialize(layer))
+			})
+			console.log(layersDataStore.layers)
+		}, 200)
 	}
 </script>
 
