@@ -98,9 +98,12 @@ export default class Layer {
 		}
 	}
 
-	static deserialize(data) {
+	static async deserialize(data) {
 		const layer = new Layer()
-		layer.units = data.units.map(item => LayerUnit.deserialize(item))
+		layer.units = []
+		for (let i = 0; i < data.units.length; i++) {
+			layer.units.push(await LayerUnit.deserialize(data.units[i]))
+		}
 		layer.display = data.display
 		layer.muted = data.muted
 		return layer;

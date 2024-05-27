@@ -137,9 +137,9 @@ export default class LayerUnit {
 		}
 	}
 
-	static deserialize(data) {
+	static async deserialize(data) {
 		const unit = new LayerUnit({
-			resource: ResourceDeserialize(data.resource),
+			resource: await ResourceDeserialize(data.resource),
 			scene: Scene.deserialize(data.scene),
 			track: Track.deserialize(data.track)
 		})

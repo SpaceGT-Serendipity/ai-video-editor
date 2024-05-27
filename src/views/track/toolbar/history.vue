@@ -62,15 +62,12 @@
 		historyStore.redo()
 		load()
 	}
-	const load = () => {
+	const load = async () => {
 		const layers = historyStore.currentValue
+		// 硬核恢复，后期优化方向有资源只更新数据，不重新加载资源
 		layersDataStore.delLayerById(...layersDataStore.layers.map(layer => layer.id))
-		setTimeout(() => {
-			layers.forEach(layer => {
-				layersDataStore.layers.push(Layer.deserialize(layer))
-			})
-			console.log(layersDataStore.layers)
-		}, 200)
+		for (let i = 0; i < layers.length; i++)
+			layersDataStore.layers.push(await Layer.deserialize(layers[i]))
 	}
 </script>
 

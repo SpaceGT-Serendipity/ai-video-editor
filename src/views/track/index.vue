@@ -154,7 +154,13 @@
 	/* 点击 scrollbar 设置 seeker 位置，以及点击空白区域取消元素的激活状态 */
 	function handleScrollbarMouseDown(event) {
 		const unit = layersDataStore.getUnitUnderMouse(event)
-		if (unit == null) {
+		const mouseX = event.pageX;
+		const mouseY = event.pageY;
+		const rect = timelineRulerRef.value.$el.getBoundingClientRect();
+		// 条件:鼠标点击不在元素之上，或者点击时间尺都会更新 seeker 的位置。
+		if (unit == null ||
+			(mouseX >= rect.left && mouseX <= rect.right &&
+				mouseY >= rect.top && mouseY <= rect.bottom)) {
 			trackStore.setSeeker(scrollbar.scrollbarMouseX)
 			layersDataStore.setUnitActive(null)
 		}

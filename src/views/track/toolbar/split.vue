@@ -18,6 +18,9 @@
 	import {
 		nextTick
 	} from 'vue'
+	import {
+		ElNotification
+	} from 'element-plus'
 
 	const layersDataStore = useLayersDataStore()
 	const trackStore = useTrackStore()

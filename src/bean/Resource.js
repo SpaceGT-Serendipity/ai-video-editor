@@ -54,13 +54,11 @@ export class Resource {
 	}
 }
 
-
-function ResourceDeserialize(data) {
+/* 异步反序列加载远程文件 */
+async function ResourceDeserialize(data) {
 	let resource = null
 	if (data.type == 'video') {
-		resource = new VideoResource({
-			name: data.name
-		});
+		resource = await VideoResource.url(data.url, data.name)
 	} else
 	if (data.type == 'image') {
 		resource = new ImageResource({
