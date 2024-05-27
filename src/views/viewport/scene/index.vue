@@ -51,7 +51,7 @@
 
 	let loadSceneLoading = false
 	const loadScene = async (layers) => {
-		if (loadSceneLoading) return;
+		if (loadSceneLoading) return setTimeout(() => loadScene(layers), 200);
 		loadSceneLoading = true;
 		for (let i = 0; i < layers.length; i++) {
 			const layer = layers[i]

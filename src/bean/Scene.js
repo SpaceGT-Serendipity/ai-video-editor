@@ -21,10 +21,10 @@ import {
 export default class Scene {
 	/* 最后更新时间 */
 	timestamp = 0
-	loaded = false
 	texture = null
 	sprite = null
 	container = null
+	loaded = false
 
 	constructor() {
 		this.id = uuidv4()
@@ -49,8 +49,9 @@ export default class Scene {
 		if (resource.type == 'video') {
 			await loadVideo(app, this, () => this.timestamp = new Date().getTime())
 			this.pause()
-		} else {
-			await loadVideo(app, this, () => this.timestamp = new Date().getTime())
+		} else
+		if (resource.type == 'image') {
+			await loadImage(app, this, () => this.timestamp = new Date().getTime())
 		}
 		this.container.visible = false
 		this.loaded = true
@@ -133,13 +134,17 @@ const loadAssets = async (...assets) => {
 }
 
 
-const loadImg = async (app) => {
-	const image = await Assets.load('/assets/image/1.png');
-	const sprite = new Sprite(image);
-	sprite.interactive = true
-	sprite.x = app.screen.width / 2;
-	sprite.y = app.screen.height / 2;
-	app.stage.addChild(sprite);
+const loadImage = async (app, scene, callback) => {
+	const container = new Container()
+	container.interactive = true
+	const sprite = Sprite.from(scene.texture);
+	container.addChild(sprite)
+	mountMove(app, container, callback)
+	mountScale(app, container, callback)
+	center(app, container)
+	app.stage.addChild(container);
+	scene.container = container
+	scene.sprite = sprite
 }
 const loadVideo = (app, scene, callback) => {
 	const container = new Container()

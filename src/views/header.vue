@@ -73,6 +73,10 @@
 	const compound = () => {
 		show()
 		console.log(layersDataStore.layersSerialize)
+		var blob = new Blob([JSON.stringify(layersDataStore.layersSerialize)], {
+			type: 'text/plain'
+		});
+
 	}
 </script>
 

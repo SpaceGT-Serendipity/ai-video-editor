@@ -4,6 +4,7 @@ import {
 import {
 	useTrackStore
 } from './track.js'
+import Layer from '../bean/Layer.js'
 
 export const useLayersDataStore = defineStore('layers-data', {
 	state: () => ({
@@ -110,6 +111,11 @@ export const useLayersDataStore = defineStore('layers-data', {
 				if (this.layers[i].length == 0)
 					this.layers.splice(i, 1)
 			}
+		},
+		async loadSerializationConfiguration(data) {
+			this.delLayerById(...this.layers.map(layer => layer.id))
+			for (let i = 0; i < data.length; i++)
+				this.layers.push(await Layer.deserialize(data[i]))
 		}
 	}
 })

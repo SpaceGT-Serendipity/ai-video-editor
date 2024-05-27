@@ -86,6 +86,10 @@ export default class LayerUnit {
 			id: this.id,
 			resource: this.resource,
 			scene: this.scene,
+			duration: this.duration,
+			type: this.type,
+			display: this.display,
+			muted: this.muted
 		}
 	}
 
@@ -94,8 +98,8 @@ export default class LayerUnit {
 			id: this.id,
 			resource: this.resource,
 			track: this.track.serialize,
-			duration: this.duration,
 			scene: this.scene,
+			duration: this.duration,
 			type: this.type,
 			display: this.display,
 			muted: this.muted
