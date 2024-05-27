@@ -92,7 +92,6 @@ export default class Track {
 			x: data.x,
 			w: data.w
 		});
-		// track.id = data.id
 		return track;
 	}
 }

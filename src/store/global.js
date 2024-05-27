@@ -10,5 +10,4 @@ export const useGlobalStore = defineStore('global', {
 		height: 1080,
 		title: '未命名项目' // 项目标题
 	}),
-	persist: true
 })

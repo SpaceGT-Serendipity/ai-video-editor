@@ -100,7 +100,6 @@ export default class Layer {
 
 	static deserialize(data) {
 		const layer = new Layer()
-		// layer.id = data.id;
 		layer.units = data.units.map(item => LayerUnit.deserialize(item))
 		layer.display = data.display
 		layer.muted = data.muted

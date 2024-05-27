@@ -72,9 +72,11 @@ export const useTrackRulerConfigStore = defineStore('track-ruler-config', {
 
 export const useHistoryStore = defineStore('history', {
 	state: () => ({
+		enable: true, // 是否启用历史记录
 		history: [],
 		currentIndex: 0,
-		max: 50
+		max: 50,
+		recall: false // 回溯,撤回和重做的操作不会追加新纪录
 	}),
 	getters: {
 		currentValue() {
@@ -84,21 +86,27 @@ export const useHistoryStore = defineStore('history', {
 	actions: {
 		/* 撤回 */
 		undo() {
+			this.recall = true
 			this.currentIndex--;
 		},
 		/* 重做 */
 		redo() {
+			this.recall = true
 			this.currentIndex++;
 		},
 		push(value) {
-			if (this.currentIndex < this.history.length - 1) {
-				this.history.splice(this.currentIndex - (this.history.length - 1))
+			if (this.enable && !this.recall) {
+				if (this.currentIndex < this.history.length - 1) {
+					this.history.splice(this.currentIndex - (this.history.length - 1))
+				}
+				if (this.history.length > this.max) {
+					this.history.splice(0, 1)
+				}
+				this.history.push(value)
+				this.currentIndex = this.history.length - 1
+			} else {
+				this.recall = false
 			}
-			if (this.history.length > this.max) {
-				this.history.splice(0, 1)
-			}
-			this.history.push(value)
-			this.currentIndex = this.history.length - 1
 		}
 	}
 })

@@ -66,7 +66,6 @@ function ResourceDeserialize(data) {
 			url: data.url
 		});
 	}
-	// resource.id = data.id;
 	resource.duration = data.duration;
 	resource.size = data.size;
 	resource.cover = data.cover;

@@ -10,7 +10,6 @@
 			<el-tag type="info">视频总时长 {{dateFormat(layersDataStore.videoTotalDuration,'hh:mm:ss')}}</el-tag>
 			<el-tag type="info" :class="{'open-debug':globalStore.debug}"
 				@click="openDebug(!globalStore.debug)">Debug</el-tag>
-			
 		</div>
 	</div>
 </template>

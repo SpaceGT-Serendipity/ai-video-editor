@@ -13,7 +13,6 @@
 			</el-icon>
 		</el-tooltip>
 	</el-button>
-	{{historyStore.currentIndex}}
 </template>
 
 <script setup>
@@ -23,6 +22,7 @@
 		watch
 	} from 'vue'
 	import {
+		watchTriggerable,
 		watchThrottled
 	} from '@vueuse/core'
 	import {
@@ -35,12 +35,19 @@
 
 	const layersDataStore = useLayersDataStore()
 	const historyStore = useHistoryStore()
+	const source = ref()
+	const {
+		trigger,
+		ignoreUpdates
+	} = watchTriggerable(source, async (v, _, onCleanup) => {
+		let canceled = false;
+		onCleanup(() => canceled = true);
+		await new Promise(resolve => setTimeout(resolve, 500));
+		if (canceled) return;
+		historyStore.push(v);
+	}, )
 
-	watchThrottled(() => layersDataStore.layersSerialize, (value) => {
-		historyStore.push(value)
-	}, {
-		throttle: 1000
-	})
+	watch(() => layersDataStore.layersSerialize, (value) => source.value = layersDataStore.layersSerialize)
 
 	const undo = () => {
 		historyStore.undo()
@@ -52,7 +59,7 @@
 	}
 	const load = () => {
 		const layers = historyStore.currentValue
-		layersDataStore.delLayerById(...layersDataStore.layers.map(layer=>layer.id))
+		layersDataStore.delLayerById(...layersDataStore.layers.map(layer => layer.id))
 		layers.forEach(layer => {
 			layersDataStore.layers.push(Layer.deserialize(layer))
 		})

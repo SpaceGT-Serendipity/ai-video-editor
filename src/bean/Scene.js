@@ -85,7 +85,6 @@ export default class Scene {
 
 	static deserialize(data) {
 		const scene = new Scene();
-		// scene.id = data.id;
 		scene.timestamp = data.timestamp;
 		return scene;
 	}
