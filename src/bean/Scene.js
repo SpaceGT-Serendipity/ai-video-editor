@@ -45,12 +45,11 @@ export default class Scene {
 			src: resource.blobUrl || resource.url,
 			loadParser: getLoadParserName(resource.type)
 		})
-
-		if (resource.type == 'video') {
+		if (resource.type == 'video' || resource.tag == 'video') {
 			await loadVideo(app, this, () => this.timestamp = new Date().getTime())
 			this.pause()
 		} else
-		if (resource.type == 'image') {
+		if (resource.type == 'image' || resource.type == 'figure') {
 			await loadImage(app, this, () => this.timestamp = new Date().getTime())
 		}
 		this.container.visible = false

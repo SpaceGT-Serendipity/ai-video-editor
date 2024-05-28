@@ -1,56 +1,52 @@
 <template>
-	<div @keydown="enter">
-		<div style="width: 1000px;height: 1000px;background-color: #000;">
-			<vue-draggable-resizable ref="unitRef" :parent="true" :x="config.x" :y="config.y" :h="100" :w="300"
-				:on-drag="onDrag" :draggable="config.draggable">
-				<p>You cannot move me or resize me outside my parent.</p>
-			</vue-draggable-resizable>
-		</div>
-		<div style="position: absolute; height: 100%; width: 1px; background-color: #fff; top: 0; left: 200px;"></div>
-	</div>
-	{{config.x}} {{config.grid}}
-	<el-button @click="config.x = 300">x:300</el-button>
+  <video :src="video" controls />
+  <br />
+  <button @click="transcode">Start</button>
+  <p>{{ message }}</p>
 </template>
 
-<script setup>
-	import {
-		ref,
-		reactive,
-		onMounted,
-		nextTick
-	} from 'vue'
-	import {
-		useMouse
-	} from '@vueuse/core'
+<script lang="ts">
+import { FFmpeg } from '@ffmpeg/ffmpeg'
+import type { LogEvent } from '@ffmpeg/ffmpeg/dist/esm/types'
+import { fetchFile, toBlobURL } from '@ffmpeg/util'
+import { defineComponent, ref } from 'vue'
 
-	const mouse = useMouse()
+const baseURL = 'https://unpkg.com/@ffmpeg/core-mt@0.12.6/dist/esm'
+const videoURL = 'https://raw.githubusercontent.com/ffmpegwasm/testdata/master/video-15s.avi'
 
-	const unitRef = ref()
-	const config = reactive({
-		x: 100,
-		y: 100,
-		draggable: true,
-	})
-	const config_tmp = reactive({
-		x: 100,
-		y: 100,
-		draggable: true,
-	})
-	const subline = 200
-	const scope = 10
+export default defineComponent({
+  name: 'App',
+  setup() {
+    const ffmpeg = new FFmpeg()
+    const message = ref('Click Start to Transcode')
+    let video = ref('')
 
-	const onDrag = (x, y) => {
-		config.y = y = y
-		// 在区域内
-		if ((x > (subline - scope) && x < (subline + scope))) {
-			config.x = subline;
-			return false
-		} else {
-			config.x = x
-			return true
-		}
-	}
+    async function transcode() {
+      message.value = 'Loading ffmpeg-core.js'
+      ffmpeg.on('log', ({ message: msg }: LogEvent) => {
+        message.value = msg
+      })
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+        workerURL: await toBlobURL(`${baseURL}/ffmpeg-core.worker.js`, 'text/javascript')
+      })
+      message.value = 'Start transcoding'
+      await ffmpeg.writeFile('test.avi', await fetchFile(videoURL))
+      await ffmpeg.exec(['-i', 'test.avi', 'test.mp4'])
+      message.value = 'Complete transcoding'
+      const data = await ffmpeg.readFile('test.mp4')
+      video.value = URL.createObjectURL(new Blob([(data as Uint8Array).buffer], { type: 'video/mp4' }))
+    }
+    return {
+      video,
+      message,
+      transcode
+    }
+  }
+})
 </script>
 
 <style>
+ 
 </style>

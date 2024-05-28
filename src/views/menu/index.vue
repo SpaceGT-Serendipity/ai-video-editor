@@ -1,14 +1,28 @@
 <template>
-	<el-scrollbar height="100%">
-		<div class="menu">
-			<Item v-for="item in menuList" :label="item.label" :active="active==item.label" @click="onClick(item)">
-				{{item.title}}
+	<div class="menu-container">
+		<el-scrollbar height="100%">
+			<div class="resource-menu">
+				<Item v-for="item in menuList" :label="item.label" :active="active==item.label" @click="onClick(item)">
+					{{item.title}}
+				</Item>
+			</div>
+		</el-scrollbar>
+		<div class="setting-menu">
+			<Item @click="settingRef.open()">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#setting"></use>
+				</svg>
+				<div>
+					项目设置
+				</div>
 			</Item>
 		</div>
-	</el-scrollbar>
+		<setting ref="settingRef"></setting>
+	</div>
 </template>
 
 <script setup>
+	import Setting from './setting.vue'
 	import Item from './item.vue'
 	import {
 		ref,
@@ -16,6 +30,7 @@
 	} from 'vue'
 
 	const emits = defineEmits(['click'])
+	const settingRef = ref()
 	const menuList = [{
 		label: 'template',
 		title: '模板'
@@ -38,7 +53,7 @@
 		label: 'bgm',
 		title: '背景音乐'
 	}]
-	const active = ref('template')
+	const active = ref('figure')
 
 	const onClick = (menu) => {
 		active.value = menu.label
@@ -46,15 +61,36 @@
 	}
 
 	onMounted(() => {
-		onClick(menuList[5])
+		onClick(menuList[1])
 	})
 </script>
 
 <style scoped>
-	.menu {
+	.menu-container {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.resource-menu {
 		padding-top: 10px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+
+	.setting-menu {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-top: 1px solid var(--el-border-color);
+		padding: 6px;
+		text-align: center;
+	}
+
+	.setting-menu .icon {
+		width: 32px;
+		height: 32px;
 	}
 </style>

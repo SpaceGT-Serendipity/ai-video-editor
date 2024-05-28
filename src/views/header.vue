@@ -73,11 +73,8 @@
 	const compound = () => {
 		show()
 		console.log(layersDataStore.layersSerialize)
-		var blob = new Blob([JSON.stringify(layersDataStore.layersSerialize)], {
-			type: 'text/plain'
-		});
-
 	}
+	
 </script>
 
 <style scoped>
@@ -85,19 +82,23 @@
 		color: var(--el-text-color-primary);
 	}
 
+
 	.project-name .el-button:hover .el-icon {
 		opacity: 1;
 	}
 
 	.project-name .el-button .el-icon {
-		margin-left: 10px;
 		opacity: 0;
 		transition: opacity 0.2s;
 	}
 
 	.button-group {
 		display: flex;
-		gap: 30px;
+		gap: 10px;
 		justify-content: end;
+	}
+
+	.button-group .switch-theme {
+		margin-right: 20px;
 	}
 </style>

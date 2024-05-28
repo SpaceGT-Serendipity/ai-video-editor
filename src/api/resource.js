@@ -1,41 +1,30 @@
 import axios from '../axios/index.js'
 
+export async function loadFigure() {
+	const res = await axios({
+		method: 'get',
+		url: 'https://ai-api.yigee.cn/avatar/list'
+	})
+	return res.map(item => {
+		return {
+			name: item.name,
+			url: import.meta.env.VITE_APP_FILE_API + '/download/' + item.url,
+			cover: import.meta.env.VITE_APP_FILE_API + '/download/' + item.cover,
+			tag: item.type
+		}
+	})
+}
+
 export function loadImage() {
 	return [{
-			name: '带妆上阵1',
-			url: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg'
-		},
-		{
-			name: '带妆上阵2',
-			url: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg'
-		},
-		{
-			name: '带妆上阵3',
-			url: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg'
-		},
-		{
-			name: '带妆上阵4',
-			url: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg'
-		}
-	]
+		name: '带妆上阵',
+		url: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg'
+	}]
 }
 
 export function loadVideo() {
 	return [{
-			name: '带妆上阵1',
-			url: 'https://oss.file.yigee.cn/video/db42bda4-0353-44b7-bd0f-945167ae4a12.mp4'
-		},
-		{
-			name: '带妆上阵2',
-			url: 'https://oss.file.yigee.cn/video/db42bda4-0353-44b7-bd0f-945167ae4a12.mp4'
-		},
-		{
-			name: '带妆上阵3',
-			url: 'https://oss.file.yigee.cn/video/db42bda4-0353-44b7-bd0f-945167ae4a12.mp4'
-		},
-		{
-			name: '带妆上阵4',
-			url: 'https://oss.file.yigee.cn/video/db42bda4-0353-44b7-bd0f-945167ae4a12.mp4'
-		}
-	]
+		name: 'xgplayer',
+		url: 'https://oss.file.yigee.cn/ai-video-editor/source/video/5fdaa3f0-e43f-4953-962e-8a4673d049ff.mp4'
+	}]
 }

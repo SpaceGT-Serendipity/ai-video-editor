@@ -3,7 +3,7 @@ const {
 	Point
 } = PIXI;
 
-const decision_range = 15; // 从里到外判定范文 边距像素
+const decision_range = 30; // 从里到外判定范文 边距像素
 
 export function mountMove(app, container, callback) {
 	let dragging = false;

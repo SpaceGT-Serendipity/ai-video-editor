@@ -136,8 +136,8 @@
 	}
 
 	.interior .resource {
-		width: 25%;
-		min-width: 300px;
+		width: 380px;
+		min-width: 380px;
 		max-width: 50%;
 	}
 
@@ -155,8 +155,8 @@
 	}
 
 	.interior .viewport-group .properties-panel {
-		width: 30%;
-		min-width: 300px;
+		width: 400px;
+		min-width: 400px;
 		max-width: 600px;
 	}
 </style>

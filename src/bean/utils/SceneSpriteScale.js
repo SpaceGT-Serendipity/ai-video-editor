@@ -4,7 +4,7 @@ const {
 	Point
 } = PIXI;
 
-const decision_range = 15; // 从外到里判定范文 边距像素
+const decision_range = 30; // 从外到里判定范文 边距像素
 
 export function mountScale(app, container, callback) {
 	let isResizing = false;

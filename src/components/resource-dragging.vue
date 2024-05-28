@@ -1,7 +1,7 @@
 <template>
 	<div class="resource-dragging" ref="resourceDraggingRef" v-if="store.data">
 		<div class="card">
-			<el-image :src="store.data.cover"></el-image>
+			<el-image :src="store.data.cover" fit="contain"></el-image>
 			<div class="shade"></div>
 		</div>
 		<div class="title">{{store.data.name}}</div>
@@ -70,7 +70,7 @@
 		position: relative;
 		width: 160px;
 		height: 90px;
-		background-color: #666;
+		background-color: var(--resource-card-bg);
 		display: flex;
 		align-items: center;
 		gap: 10px;

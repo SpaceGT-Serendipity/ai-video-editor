@@ -69,7 +69,13 @@
 	import {
 		upload
 	} from '../../api/file.js'
+	import {
+		useResourceLocalStore,
+		useResourceLinkStore
+	} from '../../store/resource.js'
 
+	const resourceLocalStore = useResourceLocalStore()
+	const resourceLinkStore = useResourceLinkStore()
 	const publicFileList = reactive([])
 	const localFileList = reactive([])
 	const linkFileList = reactive([])
@@ -78,8 +84,14 @@
 	const handleUpload = async (file) => {
 		const image = ImageResource.file(file.raw)
 		localFileList.push(image)
+		// 上传至服务器
 		const res = await upload(file.raw, 'ai-video-editor/source/image')
 		image.url = `${import.meta.env.VITE_APP_FILE_API}/download/${res.url}`
+		// 加入本地列表
+		resourceLocalStore.images.push({
+			name: image.name,
+			url: image.url
+		})
 	}
 	const addLinkResource = () => {
 		const image = new ImageResource({
@@ -87,20 +99,45 @@
 			url: link.value
 		})
 		linkFileList.push(image)
+		// 加入本地列表
+		resourceLinkStore.images.push({
+			name: image.name,
+			url: link.value
+		})
 	}
 	const load = async () => {
 		const res = await loadImage()
-		res.forEach(item => {
+		for (let i = 0; i < res.length; i++) {
 			const image = new ImageResource({
-				name: item.name,
-				url: item.url
+				name: res[i].name,
+				url: res[i].url
 			})
 			publicFileList.push(image)
-		})
+		}
+	}
+	const loadLocal = async () => {
+		for (let i = 0; i < resourceLocalStore.images.length; i++) {
+			const image = new ImageResource({
+				name: resourceLocalStore.images[i].name,
+				url: resourceLocalStore.images[i].url
+			})
+			localFileList.push(image)
+		}
+	}
+	const loadLink = async () => {
+		for (let i = 0; i < resourceLinkStore.images.length; i++) {
+			const image = new ImageResource({
+				name: resourceLinkStore.images[i].name,
+				url: resourceLinkStore.images[i].url
+			})
+			linkFileList.push(image)
+		}
 	}
 
 	onMounted(() => {
 		load()
+		loadLocal()
+		loadLink()
 	})
 </script>
 
@@ -128,7 +165,6 @@
 		flex-wrap: wrap;
 		gap: 20px;
 		justify-content: start;
-		padding: 20px;
 	}
 
 	.upload {

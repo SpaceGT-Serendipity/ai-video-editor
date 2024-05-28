@@ -1,7 +1,7 @@
 <template>
 	<div class="resource-sample" ref="resourceSampleRef" v-loading="!data.loaded">
 		<div class="card">
-			<el-image :src="data.cover">
+			<el-image :src="data.cover" fit="contain">
 				<template #error>
 					<div class="image-slot">
 						<el-icon size="40">
@@ -11,7 +11,7 @@
 				</template>
 			</el-image>
 			<div class="shade"></div>
-			<a class="glightbox video" :href="data.url">
+			<a class="glightbox" :href="data.url">
 				<el-button link>
 					<el-icon size="26">
 						<View />
@@ -20,6 +20,17 @@
 			</a>
 		</div>
 		<div class="title">{{data.name}}</div>
+		<div class="tag" v-if="data.tag">
+			<el-tag type="info" effect="dark" v-if="data.tag=='picture'">
+				静态
+			</el-tag>
+			<el-tag type="warning" effect="dark" v-if="data.tag=='video'">
+				视频
+			</el-tag>
+			<el-tag type="warning" effect="dark" v-if="data.tag=='dynamic'">
+				动作
+			</el-tag>
+		</div>
 	</div>
 </template>
 
@@ -31,7 +42,8 @@
 	import {
 		ref,
 		reactive,
-		onMounted
+		onMounted,
+		onBeforeUnmount
 	} from 'vue'
 
 	const props = defineProps({
@@ -39,31 +51,47 @@
 	})
 	const store = useResourceDragStore()
 	const resourceSampleRef = ref()
+	let drop = false
+
+	function handleMousedown() {
+		drop = true
+	}
+
+	function handleMouseup() {
+		drop = false
+	}
+
+	function handleMouseleave() {
+		if (drop)
+			store.data = props.data
+		drop = false
+	}
 
 	onMounted(() => {
 		if (!props.data.loaded) {
 			props.data.init()
 		}
 		GLightbox({
-			type: props.data.type
+			type: ['image', 'video'].includes(props.data.type) ? props.data.type : 'image'
 		});
 
-		let drop = false
-		resourceSampleRef.value.addEventListener('mousedown', (event) => {
-			drop = true
-		})
-		resourceSampleRef.value.addEventListener('mouseup', (event) => {
-			drop = false
-		})
-		resourceSampleRef.value.addEventListener('mouseleave', (event) => {
-			if (drop)
-				store.data = props.data
-			drop = false
-		})
+		resourceSampleRef.value.addEventListener('mousedown', handleMousedown)
+		resourceSampleRef.value.addEventListener('mouseup', handleMouseup)
+		resourceSampleRef.value.addEventListener('mouseleave', handleMouseleave)
+	})
+
+	onBeforeUnmount(() => {
+		resourceSampleRef.value.removeEventListener('mousedown', handleMousedown)
+		resourceSampleRef.value.removeEventListener('mouseup', handleMouseup)
+		resourceSampleRef.value.removeEventListener('mouseleave', handleMouseleave)
 	})
 </script>
 
 <style scoped>
+	.resource-sample {
+		position: relative;
+	}
+
 	.title {
 		font-size: 14px;
 		color: var(--el-menu-text-color);
@@ -79,7 +107,7 @@
 		position: relative;
 		width: 160px;
 		height: 90px;
-		background-color: #666;
+		background-color: var(--resource-card-bg);
 		display: flex;
 		align-items: center;
 		gap: 10px;
@@ -105,8 +133,8 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		width: 110%;
-		height: 110%;
+		width: 100%;
+		height: 100%;
 		opacity: 0;
 		background: radial-gradient(#0006, #000a);
 		border-radius: 5px;
@@ -126,11 +154,6 @@
 		opacity: 0.7;
 	}
 
-	.card:hover .el-image {
-		width: 110%;
-		height: 110%;
-	}
-
 	.card a {
 		-webkit-user-drag: none;
 	}
@@ -141,5 +164,11 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	.tag {
+		position: absolute;
+		top: 4px;
+		left: 4px;
 	}
 </style>

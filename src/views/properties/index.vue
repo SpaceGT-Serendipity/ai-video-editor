@@ -13,7 +13,6 @@
 	} from '../../store/layers.js'
 
 	const layersDataStore = useLayersDataStore()
-	 
 </script>
 
 <style>
@@ -43,5 +42,11 @@
 
 	.properties-block .block-name+* {
 		flex: 0 0 70%;
+	}
+
+	.properties-block .block-content {
+		display: flex;
+		align-items: center;
+		gap: 5px;
 	}
 </style>

@@ -16,6 +16,11 @@
 					<ChatLineSquare />
 				</el-icon>
 			</el-tooltip>
+			<el-tooltip v-if="data.type=='figure'" effect="dark" content="数字人" placement="top">
+				<el-icon size="16px">
+					<font-awesome-icon icon="fa-solid fa-person" />
+				</el-icon>
+			</el-tooltip>
 		</el-button>
 		<el-button link size="small" @click="data.display=!data.display">
 			<el-icon size="16px" v-if="data.display">

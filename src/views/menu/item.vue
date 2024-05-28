@@ -1,6 +1,6 @@
 <template>
 	<div class="menu-item" :class="{'active':active}">
-		<div class="icon" :class="label"></div>
+		<div v-if="label" class="icon" :class="label"></div>
 		<div class="name">
 			<slot></slot>
 		</div>

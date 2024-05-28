@@ -14,8 +14,8 @@
 		</div>
 		<div class="properties-block">
 			<span class="block-name">分辨率</span>
-			<div>
-				{{globalStore.width}} x {{globalStore.height}}
+			<div class="block-content">
+				{{globalStore.width}} x {{globalStore.height}} <el-tag>1080p</el-tag>
 			</div>
 		</div>
 	</div>

@@ -59,6 +59,7 @@ async function ResourceDeserialize(data) {
 	let resource = null
 	if (data.type == 'video') {
 		resource = await VideoResource.url(data.url, data.name)
+		await resource.init()
 	} else
 	if (data.type == 'image') {
 		resource = new ImageResource({
@@ -66,13 +67,40 @@ async function ResourceDeserialize(data) {
 			url: data.url
 		});
 	}
-	resource.url = data.url
-	resource.blobUrl = data.blobUrl
 	resource.duration = data.duration;
 	resource.size = data.size;
-	resource.cover = data.cover;
 	resource.loaded = true
 	return resource;
+}
+
+export class FigureResource extends Resource {
+	tag = null;
+
+	constructor({
+		name,
+		tag,
+		url,
+		cover
+	}) {
+		super({
+			name,
+			type: 'figure'
+		})
+		this.url = url;
+		this.blobUrl = url;
+		this.cover = cover;
+		this.tag = tag;
+		this.duration = 6000;
+		this.loaded = true;
+	}
+	
+	clone() {
+		return this;
+	}
+
+	get view() {
+		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});"></div>`
+	}
 }
 
 export class TextResource extends Resource {

@@ -11,6 +11,7 @@ html {
 	--scrollbar-background-color: #e3e3fa;
 	--scrollbar-foreground-color: #c4cad8;
 	--seeker-color: #868686;
+	--resource-card-bg: #dedeff;
 }
 
 html.dark {
@@ -30,6 +31,7 @@ html.dark {
 	--scrollbar-background-color: #2d2d32;
 	--scrollbar-foreground-color: #404247;
 	--seeker-color: #fafafa;
+	--resource-card-bg: #2E2E35;
 }
 
 html.dark .el-input {

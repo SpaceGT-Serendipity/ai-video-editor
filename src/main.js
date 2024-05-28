@@ -55,5 +55,9 @@ library.add(
 	freeSolidSvgIcons.faICursor,
 	freeSolidSvgIcons.faVolumeLow,
 	freeSolidSvgIcons.faVolumeXmark,
+	freeSolidSvgIcons.faUpload,
+	freeSolidSvgIcons.faPenRuler,
+	freeSolidSvgIcons.faPerson,
+	freeRegularSvgIcons.faFloppyDisk
 )
 app.mount('#app')

@@ -69,7 +69,13 @@
 	import {
 		upload
 	} from '../../api/file.js'
+	import {
+		useResourceLocalStore,
+		useResourceLinkStore
+	} from '../../store/resource.js'
 
+	const resourceLocalStore = useResourceLocalStore()
+	const resourceLinkStore = useResourceLinkStore()
 	const publicFileList = reactive([])
 	const localFileList = reactive([])
 	const linkFileList = reactive([])
@@ -78,12 +84,23 @@
 	const handleUpload = async (file) => {
 		const video = VideoResource.file(file.raw)
 		localFileList.push(video)
+		// 上传至服务器
 		const res = await upload(file.raw, 'ai-video-editor/source/video')
 		video.url = `${import.meta.env.VITE_APP_FILE_API}/download/${res.url}`
+		// 加入本地列表
+		resourceLocalStore.videos.push({
+			name: video.name,
+			url: video.url
+		})
 	}
 	const addLinkResource = async () => {
 		const video = await VideoResource.url(link.value, dateFormat(new Date()))
 		linkFileList.push(video)
+		// 加入本地列表
+		resourceLinkStore.videos.push({
+			name: video.name,
+			url: link.value
+		})
 	}
 	const load = async () => {
 		const res = await loadVideo()
@@ -92,9 +109,25 @@
 			publicFileList.push(video)
 		}
 	}
+	const loadLocal = async () => {
+		for (let i = 0; i < resourceLocalStore.videos.length; i++) {
+			const video = await VideoResource.url(resourceLocalStore.videos[i].url,
+				resourceLocalStore.videos[i].name)
+			localFileList.push(video)
+		}
+	}
+	const loadLink = async () => {
+		for (let i = 0; i < resourceLinkStore.videos.length; i++) {
+			const video = await VideoResource.url(resourceLinkStore.videos[i].url,
+				resourceLinkStore.videos[i].name)
+			linkFileList.push(video)
+		}
+	}
 
 	onMounted(() => {
 		load()
+		loadLocal()
+		loadLink()
 	})
 </script>
 
@@ -122,7 +155,6 @@
 		flex-wrap: wrap;
 		gap: 20px;
 		justify-content: start;
-		padding: 20px;
 	}
 
 	.upload {
