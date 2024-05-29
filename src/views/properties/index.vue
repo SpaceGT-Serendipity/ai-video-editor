@@ -2,11 +2,15 @@
 	<div class="properties-panel">
 		<project v-show="layersDataStore.activeUnit==null"></project>
 		<el-tabs v-model="tabsActive" v-show="layersDataStore.activeUnit!=null">
-			<el-tab-pane label="属性面板" name="属性面板">
-				<scene></scene>
-			</el-tab-pane>
 			<el-tab-pane label="配音" name="配音" v-if="layersDataStore.activeUnit?.type=='figure'">
-				<audio-panel></audio-panel>
+				<voice></voice>
+			</el-tab-pane>
+			<el-tab-pane label="声音" name="声音" v-if="layersDataStore.activeUnit?.type=='audio'">
+				<sound></sound>
+			</el-tab-pane>
+			<el-tab-pane label="属性" name="属性"
+				:disabled="!['image','video','figure'].includes(layersDataStore.activeUnit?.type)">
+				<scene></scene>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -15,7 +19,8 @@
 <script setup>
 	import Project from './project.vue'
 	import Scene from './scene.vue'
-	import AudioPanel from './audio.vue'
+	import Voice from './voice.vue'
+	import Sound from './sound.vue'
 	import {
 		useLayersDataStore
 	} from '../../store/layers.js'
@@ -28,10 +33,16 @@
 	const tabsActive = ref('属性面板')
 
 	watch(() => layersDataStore.activeUnit, (value) => {
-		if (value && value.type == 'figure') {
-			tabsActive.value = '配音'
-		} else {
-			tabsActive.value = '属性面板'
+		if (value) {
+			if (['figure'].includes(value.type)) {
+				tabsActive.value = '配音'
+			} else
+			if (['audio'].includes(value.type)) {
+				tabsActive.value = '声音'
+			} else
+			if (['image', 'video'].includes(value.type)) {
+				tabsActive.value = '属性'
+			}
 		}
 	})
 </script>

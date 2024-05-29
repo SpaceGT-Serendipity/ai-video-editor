@@ -21,6 +21,11 @@
 					<font-awesome-icon icon="fa-solid fa-person" />
 				</el-icon>
 			</el-tooltip>
+			<el-tooltip v-if="data.type=='audio'" effect="dark" content="音频" placement="top">
+				<el-icon size="16px">
+					<font-awesome-icon icon="fa-solid fa-headphones" />
+				</el-icon>
+			</el-tooltip>
 		</el-button>
 		<el-button link size="small" @click="data.display=!data.display">
 			<el-icon size="16px" v-if="data.display">

@@ -21,9 +21,6 @@
 		reactifyObject,
 		watchArray
 	} from '@vueuse/core'
-	// import {
-	// 	Sound
-	// } from '@pixi/sound'
 	import {
 		useLayersDataStore
 	} from '../../../store/layers.js'
@@ -40,6 +37,7 @@
 		loadBackground,
 		loadBackgroundText
 	} from '../../../bean/Scene.js'
+	
 
 	const viewportStore = useViewportStore()
 	const layersDataStore = useLayersDataStore()
@@ -69,7 +67,7 @@
 		const showUnits = []
 		layersDataStore.layersTracks.forEach((layer, layerIndex) => {
 			layer.units.forEach(unit => {
-				if (unit.scene.loaded) {
+				if (unit.scene.loaded && unit.scene.container) {
 					if (layer.display && unit.display) {
 						const currentTime = trackStore.seekerTime - unit.duration.left
 						if (trackStore.seekerTime >= unit.duration.left &&

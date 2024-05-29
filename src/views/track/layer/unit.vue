@@ -3,7 +3,7 @@
 		:class-name="config.className" :class-name-active="config.classNameActive" :parent="config.parent"
 		:prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x" :y="config.y" :w="config.w"
 		:h="config.h" :z="config.z" :min-width="config.minWidth" :max-width="config.maxWidth" :handles="config.handles"
-		:on-drag="onDrag" :on-resize="onResize" :snap="true" @activated="onActivated" @deactivated="onDeactivated"
+		:on-drag="onDrag" :on-resize="onResize" :snap="true" :resizable="data.resizable" @activated="onActivated" @deactivated="onDeactivated"
 		@resizeStop="onResizeStop">
 		<slot></slot>
 		<div class="debug float" :style="{'margin-left':(!data.display||data.muted?'70px':'10px')}">

@@ -2,6 +2,11 @@ import {
 	v4 as uuidv4
 } from 'uuid'
 import axios from '../axios/index.js'
+import {
+	sound
+} from '@pixi/sound';
+
+
 
 export class Resource {
 	/* 文件名 */
@@ -112,6 +117,33 @@ export class FigureResource extends Resource {
 	}
 }
 
+export class AudioResource extends Resource {
+	volume = 1
+	
+	constructor({
+		name,
+		url,
+		duration
+	}) {
+		super({
+			name,
+			type: 'audio'
+		})
+		this.url = url;
+		this.duration = duration;
+		sound.add(this.id, this.url);
+		this.loaded = true;
+	}
+
+	play() {
+		sound.play(this.id);
+	}
+
+	get view() {
+		return `<span style="line-height: 40px;font-size:12px;">${this.name}</span>`
+	}
+}
+
 export class TextResource extends Resource {
 	constructor(name) {
 		super({
@@ -123,7 +155,7 @@ export class TextResource extends Resource {
 	}
 
 	get view() {
-		return `<span style="line-height: 46px;">${this.name}</span>`
+		return `<span style="line-height: 40px;font-size:12px;">${this.name}</span>`
 	}
 }
 

@@ -11,7 +11,8 @@ export const useResourceDragStore = defineStore('resource-drag', {
 export const useResourceLocalStore = defineStore('resource-local', {
 	state: () => ({
 		videos: [],
-		images: []
+		images: [],
+		audios: []
 	}),
 	persist: true
 })
@@ -19,7 +20,8 @@ export const useResourceLocalStore = defineStore('resource-local', {
 export const useResourceLinkStore = defineStore('resource-link', {
 	state: () => ({
 		videos: [],
-		images: []
+		images: [],
+		audios: []
 	}),
 	persist: true
 })

@@ -1,7 +1,20 @@
 <template>
 	<div class="resource-dragging" ref="resourceDraggingRef" v-if="store.data">
 		<div class="card">
-			<el-image :src="store.data.cover" fit="contain"></el-image>
+			<el-image :src="store.data.cover" fit="contain">
+				<template #placeholder>
+					<div class="placeholder">
+						<el-icon size="90" v-if="store.data.type=='audio'">
+							<svg aria-hidden="true">
+								<use xlink:href="#undraw_happy_music_g6wc"></use>
+							</svg>
+						</el-icon>
+						<el-icon size="60" v-else>
+							<Picture></Picture>
+						</el-icon>
+					</div>
+				</template>
+			</el-image>
 			<div class="shade"></div>
 		</div>
 		<div class="title">{{store.data.name}}</div>
@@ -91,4 +104,10 @@
 		transition: height 0.3s, width 0.3s;
 	}
 	
+	.card .placeholder{
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100%;
+	}
 </style>

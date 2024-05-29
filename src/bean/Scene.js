@@ -40,19 +40,21 @@ export default class Scene {
 	}
 
 	async load(app, resource) {
-		this.texture = await loadAsset({
-			alias: this.id,
-			src: resource.blobUrl || resource.url,
-			loadParser: getLoadParserName(resource.type)
-		})
-		if (resource.type == 'video' || resource.tag == 'video') {
-			await loadVideo(app, this, () => this.timestamp = new Date().getTime())
-			this.pause()
-		} else
-		if (resource.type == 'image' || resource.type == 'figure') {
-			await loadImage(app, this, () => this.timestamp = new Date().getTime())
+		if (['video', 'image', 'figure'].includes(resource.type)) {
+			this.texture = await loadAsset({
+				alias: this.id,
+				src: resource.blobUrl || resource.url,
+				loadParser: getLoadParserName(resource.type)
+			})
+			if (resource.type == 'video' || resource.tag == 'video') {
+				await loadVideo(app, this, () => this.timestamp = new Date().getTime())
+				this.pause()
+			} else
+			if (resource.type == 'image' || resource.type == 'figure') {
+				await loadImage(app, this, () => this.timestamp = new Date().getTime())
+			}
+			this.container.visible = false
 		}
-		this.container.visible = false
 		this.loaded = true
 	}
 
@@ -156,6 +158,9 @@ const loadVideo = (app, scene, callback) => {
 	app.stage.addChild(container);
 	scene.container = container
 	scene.sprite = sprite
+}
+const loadAudio = (app, scene, callback) => {
+
 }
 const loadBackground = async (app) => {
 	const background = await Assets.load('/assets/image/background.jpg');

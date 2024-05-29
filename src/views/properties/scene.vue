@@ -4,8 +4,9 @@
 			<div class="properties-block">
 				<span class="block-name">智能对齐</span>
 				<div>
-					<el-button @click="center">居中</el-button>
-					<el-button @click="adaptiveSize">自适应画布大小</el-button>
+					<el-button size="small" @click="center">居中</el-button>
+					<el-button size="small" @click="canvasSize">铺满画布</el-button>
+					<el-button size="small" @click="adaptiveSize">自适应</el-button>
 				</div>
 			</div>
 			<div class="properties-block">
@@ -111,7 +112,7 @@
 	}, (value) => {
 		if (value) {
 			const read = () => {
-				if (value.scene.loaded) {
+				if (value.scene.loaded && value.scene.container) {
 					container.value = value.scene.container
 					options.positionSize.scale.x = container.value.scale.x
 					options.positionSize.scale.y = container.value.scale.y
@@ -132,11 +133,9 @@
 		} else {
 			container.value.scale.x = value
 		}
-		center()
 	})
 	watch(() => options.positionSize.scale.y, (value) => {
 		container.value.scale.y = value
-		center()
 	})
 	watch(() => options.positionSize.position.x, (value) => {
 		container.value.x = value
@@ -160,14 +159,29 @@
 		const y = viewportStore.app.screen.height / 2 - container.height / 2
 		container.x = x
 		container.y = y
+		options.positionSize.position.x = container.x
+		options.positionSize.position.y = container.y
 	}
-	const adaptiveSize = () => {
+	const canvasSize = () => {
 		const container = layersDataStore.activeUnit.scene.container
 		const widthScale = viewportStore.app.screen.width / container.width
 		const heightScale = viewportStore.app.screen.height / container.height
 		const maxScale = Math.max(widthScale, heightScale)
 		container.scale.x = container.scale.x * maxScale
 		container.scale.y = container.scale.y * maxScale
+		options.positionSize.scale.x = container.scale.x
+		options.positionSize.scale.y = container.scale.y
+		center()
+	}
+	const adaptiveSize = () => {
+		const container = layersDataStore.activeUnit.scene.container
+		const widthScale = viewportStore.app.screen.width / container.width
+		const heightScale = viewportStore.app.screen.height / container.height
+		const minScale = Math.min(widthScale, heightScale)
+		container.scale.x = container.scale.x * minScale
+		container.scale.y = container.scale.y * minScale
+		options.positionSize.scale.x = container.scale.x
+		options.positionSize.scale.y = container.scale.y
 		center()
 	}
 </script>

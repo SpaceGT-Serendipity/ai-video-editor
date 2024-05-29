@@ -58,6 +58,7 @@ library.add(
 	freeSolidSvgIcons.faVolumeXmark,
 	freeSolidSvgIcons.faUpload,
 	freeSolidSvgIcons.faHeadset,
+	freeSolidSvgIcons.faHeadphones,
 	freeSolidSvgIcons.faPenRuler,
 	freeSolidSvgIcons.faPerson,
 	freeSolidSvgIcons.faPlay,

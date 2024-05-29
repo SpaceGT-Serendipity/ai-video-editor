@@ -119,13 +119,13 @@
 		height: 4px;
 		background-color: var(--el-border-color);
 		cursor: row-resize;
+		flex: 0 0 4px;
 	}
 
 	.window-resize.row {
 		width: 4px;
 		background-color: var(--el-border-color);
 		cursor: col-resize;
+		flex: 0 0 4px;
 	}
-
-	 
 </style>

@@ -134,6 +134,10 @@ export default class LayerUnit {
 		return this.resource.type
 	}
 
+	get resizable() {
+		return ['image', 'video'].includes(this.resource.type);
+	}
+
 	get serialize() {
 		return {
 			id: this.id,
