@@ -31,6 +31,7 @@
 					<div class="right-option">
 						<select-scene-size></select-scene-size>
 						<!-- <select-scene-speed></select-scene-speed> -->
+						<cover></cover>
 						<el-button v-if="!isFullscreen" text @click="enter()">
 							<el-icon size="20">
 								<font-awesome-icon icon="expand" />
@@ -50,6 +51,7 @@
 </template>
 
 <script setup>
+	import Cover from './cover.vue'
 	import SelectSceneSize from '../../components/select-scene-size.vue'
 	import SelectSceneSpeed from '../../components/select-scene-speed.vue'
 	import {
@@ -106,7 +108,8 @@
 	})
 	watch(() => ({
 		width: adaptiveSize.width.value,
-		height: adaptiveSize.height.value
+		height: adaptiveSize.height.value,
+		scale: globalStore.scale //视频比例
 	}), ({
 		width,
 		height

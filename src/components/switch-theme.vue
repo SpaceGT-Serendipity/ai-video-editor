@@ -39,7 +39,6 @@
 
 	const onSwitchTheme = () => {
 		const html = document.querySelector('html')
-		console.log(checkbox.value)
 		if (checkbox.value) {
 			html.classList.add('dark')
 		} else {

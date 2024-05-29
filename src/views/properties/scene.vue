@@ -172,5 +172,8 @@
 	}
 </script>
 
-<style>
+<style scoped>
+	.el-collapse {
+		border-top: none;
+	}
 </style>

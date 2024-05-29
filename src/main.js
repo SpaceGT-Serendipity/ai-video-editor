@@ -53,11 +53,16 @@ library.add(
 	freeSolidSvgIcons.faArrowRotateLeft,
 	freeSolidSvgIcons.faArrowRotateRight,
 	freeSolidSvgIcons.faICursor,
+	freeSolidSvgIcons.faFileAudio,
 	freeSolidSvgIcons.faVolumeLow,
 	freeSolidSvgIcons.faVolumeXmark,
 	freeSolidSvgIcons.faUpload,
+	freeSolidSvgIcons.faHeadset,
 	freeSolidSvgIcons.faPenRuler,
 	freeSolidSvgIcons.faPerson,
+	freeSolidSvgIcons.faPlay,
+	freeSolidSvgIcons.faPause,
+	freeSolidSvgIcons.faSquarePlus,
 	freeRegularSvgIcons.faFloppyDisk
 )
 app.mount('#app')

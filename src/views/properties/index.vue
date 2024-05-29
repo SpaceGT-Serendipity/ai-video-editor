@@ -1,21 +1,41 @@
 <template>
 	<div class="properties-panel">
 		<project v-show="layersDataStore.activeUnit==null"></project>
-		<scene v-show="layersDataStore.activeUnit!=null"></scene>
+		<el-tabs v-model="tabsActive" v-show="layersDataStore.activeUnit!=null">
+			<el-tab-pane label="属性面板" name="属性面板">
+				<scene></scene>
+			</el-tab-pane>
+			<el-tab-pane label="配音" name="配音" v-if="layersDataStore.activeUnit?.type=='figure'">
+				<audio-panel></audio-panel>
+			</el-tab-pane>
+		</el-tabs>
 	</div>
 </template>
 
 <script setup>
 	import Project from './project.vue'
 	import Scene from './scene.vue'
+	import AudioPanel from './audio.vue'
 	import {
 		useLayersDataStore
 	} from '../../store/layers.js'
+	import {
+		ref,
+		watch
+	} from 'vue'
 
 	const layersDataStore = useLayersDataStore()
-</script>
+	const tabsActive = ref('属性面板')
 
-<style>
+	watch(() => layersDataStore.activeUnit, (value) => {
+		if (value && value.type == 'figure') {
+			tabsActive.value = '配音'
+		} else {
+			tabsActive.value = '属性面板'
+		}
+	})
+</script>
+<style scoped>
 	.properties-panel {
 		padding: 20px;
 		box-sizing: border-box;
@@ -23,6 +43,25 @@
 		color: var(--el-text-color-primary);
 	}
 
+	.properties-panel .el-tabs {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.properties-panel:deep(.el-tabs__header) {
+		flex: 0 0 0%;
+	}
+
+	.properties-panel:deep(.el-tabs__content) {
+		flex: 1 1 0%
+	}
+
+	.properties-panel:deep(.el-tab-pane) {
+		height: 100%;
+	}
+</style>
+<style>
 	.properties-block {
 		box-sizing: border-box;
 		padding: 0 20px;

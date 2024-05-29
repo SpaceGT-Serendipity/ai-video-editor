@@ -1,4 +1,5 @@
 html {
+	--el-bg-dark-color: #cfcfff;
 	--el-empty-bg: #fafafa;
 	--menu-hover-bg: #f0f0f0;
 	--menu-active-bg: #dee7ef;
@@ -17,6 +18,7 @@ html {
 html.dark {
 	/* 自定义深色背景颜色 */
 	--el-bg-color: #232329;
+	--el-bg-dark-color: #111115;
 	--el-border-color: #030303;
 	--el-text-color-primary: #c6c6ca;
 	--el-empty-bg: #2e2e35;

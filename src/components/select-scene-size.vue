@@ -25,6 +25,7 @@
 
 	const handleCommand = (data) => {
 		activeSize.value = data;
+		globalStore.scale = data;
 		switch (data) {
 			case '21:9':
 				globalStore.width = 2520;

@@ -6,6 +6,8 @@ import axios from '../axios/index.js'
 export class Resource {
 	/* 文件名 */
 	name = null
+	/* 标签 */
+	tag = null;
 	/* 文件类型 */
 	type = null;
 	/* 原始时长(ms) */
@@ -44,6 +46,7 @@ export class Resource {
 		return {
 			id: this.id,
 			name: this.name,
+			tag: this.tag,
 			type: this.type,
 			duration: this.duration,
 			size: this.size,
@@ -67,6 +70,14 @@ async function ResourceDeserialize(data) {
 			url: data.url
 		});
 	}
+	if (data.type == 'figure') {
+		resource = new FigureResource({
+			name: data.name,
+			tag: data.tag,
+			url: data.url,
+			cover: data.cover
+		});
+	}
 	resource.duration = data.duration;
 	resource.size = data.size;
 	resource.loaded = true
@@ -74,8 +85,6 @@ async function ResourceDeserialize(data) {
 }
 
 export class FigureResource extends Resource {
-	tag = null;
-
 	constructor({
 		name,
 		tag,
@@ -93,7 +102,7 @@ export class FigureResource extends Resource {
 		this.duration = 6000;
 		this.loaded = true;
 	}
-	
+
 	clone() {
 		return this;
 	}

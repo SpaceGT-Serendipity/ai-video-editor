@@ -47,6 +47,8 @@
 	const globalStore = useGlobalStore()
 	const loading = ref(true)
 	const app = new Application();
+	const background = ref(null)
+	const backgroundText = ref(null)
 	viewportStore.app = app
 
 	let loadSceneLoading = false
@@ -105,6 +107,19 @@
 	watch(() => layersDataStore.layersTracks, (value) => render())
 	watch(() => trackStore.seekerTime, (value) => render())
 	watch(() => viewportStore.playing, (value) => render())
+	watch(() => ({
+		width: globalStore.width,
+		height: globalStore.height
+	}), async ({
+		width,
+		height
+	}) => {
+		app.renderer.resize(width, height);
+		if (background.value) background.value.destroy()
+		background.value = await loadBackground(app)
+		if (backgroundText.value) backgroundText.value.destroy()
+		backgroundText.value = await loadBackgroundText(app)
+	})
 
 	// const runAudio = () => {
 	// 	const sound = Sound.from('/assets/audio/jin.mp3')
@@ -135,8 +150,8 @@
 		});
 		app.stage.interactive = true
 		scene.appendChild(app.canvas);
-		await loadBackground(app)
-		await loadBackgroundText(app)
+		background.value = await loadBackground(app)
+		backgroundText.value = await loadBackgroundText(app)
 		loading.value = false
 		handleTicker()
 	})

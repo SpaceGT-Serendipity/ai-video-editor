@@ -12,7 +12,7 @@
 				<el-upload class="upload" :show-file-list="false" action :auto-upload="false" multiple accept=".mp4"
 					:on-change="handleUpload">
 					<el-button icon="Plus">点击上传本地视频</el-button>
-					<el-tooltip class="box-item" effect="dark" content="支持批量上传视频,点文件不超过100MB" placement="top">
+					<el-tooltip class="box-item" effect="dark" content="支持批量上传文件,单文件不超过100MB" placement="top">
 						<el-button link>
 							<el-icon>
 								<InfoFilled />

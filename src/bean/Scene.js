@@ -164,6 +164,7 @@ const loadBackground = async (app) => {
 	backgroundSprite.height = app.screen.height
 	backgroundSprite.alpha = 0
 	app.stage.addChild(backgroundSprite);
+	return backgroundSprite;
 }
 const loadBackgroundText = async (app) => {
 	const style = new TextStyle({
@@ -180,6 +181,7 @@ const loadBackgroundText = async (app) => {
 	basicText.y = app.screen.height / 2;
 	basicText.anchor.set(0.5);
 	app.stage.addChild(basicText);
+	return basicText;
 }
 
 
