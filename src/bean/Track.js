@@ -84,6 +84,7 @@ export default class Track {
 			id: this.id,
 			x: this._x,
 			w: this._w,
+			active: this.active
 		}
 	}
 

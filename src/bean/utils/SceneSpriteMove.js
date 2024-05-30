@@ -49,6 +49,7 @@ export function unmountMove(container) {
  */
 function mountMoveDecisionRange(app, range) {
 	const graphics = new Graphics();
+	graphics.zIndex = 1
 	graphics.rect(range.bounds.left, range.bounds.top, range.width, range.height);
 	graphics.fill('#0000')
 	graphics.interactive = true

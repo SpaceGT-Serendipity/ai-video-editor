@@ -17,6 +17,10 @@ import {
 	mountScale,
 	unmountScale
 } from './utils/SceneSpriteScale.js'
+import {
+	wireframe,
+	unWireframe
+} from './utils/Wireframe.js'
 
 export default class Scene {
 	/* 最后更新时间 */
@@ -72,6 +76,11 @@ export default class Scene {
 
 	muted(value) {
 		this.texture.source.resource.muted = value
+	}
+
+	frame(value) {
+		if (value) wireframe(this, () => this.timestamp = new Date().getTime())
+		else unWireframe(this, () => this.timestamp = new Date().getTime())
 	}
 
 	get paused() {

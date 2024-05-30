@@ -37,7 +37,7 @@
 		loadBackground,
 		loadBackgroundText
 	} from '../../../bean/Scene.js'
-	
+
 
 	const viewportStore = useViewportStore()
 	const layersDataStore = useLayersDataStore()
@@ -86,6 +86,7 @@
 									unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
 								}
 							}
+							unit.scene.frame(unit.track.active)
 						} else {
 							unit.scene.container.visible = false
 							if (unit.resource.type == 'video') {

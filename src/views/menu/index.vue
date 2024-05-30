@@ -61,7 +61,7 @@
 	}
 
 	onMounted(() => {
-		onClick(menuList[1])
+		onClick(menuList[6])
 	})
 </script>
 

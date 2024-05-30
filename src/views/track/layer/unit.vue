@@ -3,8 +3,8 @@
 		:class-name="config.className" :class-name-active="config.classNameActive" :parent="config.parent"
 		:prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x" :y="config.y" :w="config.w"
 		:h="config.h" :z="config.z" :min-width="config.minWidth" :max-width="config.maxWidth" :handles="config.handles"
-		:on-drag="onDrag" :on-resize="onResize" :snap="true" :resizable="data.resizable" @activated="onActivated" @deactivated="onDeactivated"
-		@resizeStop="onResizeStop">
+		:on-drag="onDrag" :on-resize="onResize" :snap="true" :resizable="data.resizable" @activated="onActivated"
+		@deactivated="onDeactivated" @resizeStop="onResizeStop">
 		<slot></slot>
 		<div class="debug float" :style="{'margin-left':(!data.display||data.muted?'70px':'10px')}">
 			X: {{data.track.x}} W: {{data.track.w}} DurableActive: {{data.track.active}}
@@ -22,7 +22,8 @@
 		reactive,
 		onMounted,
 		onBeforeUnmount,
-		watch
+		watch,
+		nextTick
 	} from 'vue'
 	import {
 		useTrackStore
@@ -133,11 +134,21 @@
 		}
 	}
 
+	/* 渲染，部分资源需要加载后渲染样式 */
+	function viewRender() {
+		if (props.data.resource.viewRender) {
+			nextTick(() => {
+				props.data.resource.viewRender()
+			})
+		}
+	}
+
 	onMounted(() => {
 		props.data.track.instance = unitRef.value.$el
 		// 元素点击更新拖拽状态
 		unitRef.value.$el.addEventListener('mousedown', mousedown);
 		document.addEventListener('mouseup', mouseup);
+		viewRender()
 	})
 
 	onBeforeUnmount(() => {

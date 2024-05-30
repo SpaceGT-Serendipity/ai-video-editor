@@ -133,6 +133,7 @@ function mountScaleDecisionRange(app, range) {
 		cursor: 'e-resize'
 	}]
 	const container = new Container()
+	container.zIndex = 1
 	areas.forEach(area => {
 		const graphics = new Graphics();
 		graphics.interactive = true

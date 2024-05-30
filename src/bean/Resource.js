@@ -5,8 +5,7 @@ import axios from '../axios/index.js'
 import {
 	sound
 } from '@pixi/sound';
-
-
+import WaveSurfer from 'wavesurfer.js'
 
 export class Resource {
 	/* 文件名 */
@@ -119,7 +118,8 @@ export class FigureResource extends Resource {
 
 export class AudioResource extends Resource {
 	volume = 1
-	
+	_wavesurfer = null
+
 	constructor({
 		name,
 		url,
@@ -135,12 +135,32 @@ export class AudioResource extends Resource {
 		this.loaded = true;
 	}
 
+	clone() {
+		const audioResource = new AudioResource({
+			name: this.name,
+			url: this.url,
+			duration: this.duration
+		})
+		return audioResource;
+	}
+
 	play() {
 		sound.play(this.id);
 	}
 
 	get view() {
-		return `<span style="line-height: 40px;font-size:12px;">${this.name}</span>`
+		return `<div id="${this.id}" style=" position: relative;padding-top:10px;">
+			<span style=" position: absolute; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size:10px; top: 0; padding-left: 2px;">${this.name}</span>
+		</div>`
+	}
+
+	viewRender() {
+		this._wavesurfer = WaveSurfer.create({
+			container: document.getElementById(this.id),
+			url: this.url,
+			interact: false,
+			height: 30
+		})
 	}
 }
 
