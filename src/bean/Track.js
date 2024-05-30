@@ -13,7 +13,7 @@ export default class Track {
 	/* 原始宽度 */
 	_w = 0;
 	/* 高度(固定) */
-	h = 45;
+	h = 50;
 	/* 拖拽中状态 */
 	dragging = false;
 	/* 组件实例 */

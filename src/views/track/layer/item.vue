@@ -2,7 +2,8 @@
 	<!-- 图层顶部 -->
 	<div class="timeline layer-top" ref="topRef"> </div>
 	<!-- 图层 -->
-	<div class="timeline layer container" ref="containerRef">
+	<div class="timeline layer container" ref="containerRef"
+		:style="{'height': `${modelValue.height}px`}">
 		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item"
 			@on-drag="emits('onDrag', $event)" @contextmenu="onContextMenu">
 			<div class="view" v-html="item.view"></div>
@@ -214,7 +215,6 @@
 	.timeline.layer {
 		position: relative;
 		background-color: var(--layer-bg);
-		height: var(--track-layer-height);
 		box-sizing: border-box;
 	}
 
@@ -239,8 +239,8 @@
 	}
 
 	.timeline.layer-gap.last {
-		height: var(--track-layer-height);
-		line-height: var(--track-layer-height);
+		height: 40px;
+		line-height: 40px;
 		margin: 0;
 	}
 
@@ -281,6 +281,6 @@
 		white-space: nowrap;
 		width: 100%;
 		height: 100%;
-		min-width: calc(var(--track-layer-height) * 16 / 9);
+		min-width: 100px;
 	}
 </style>

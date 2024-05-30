@@ -149,8 +149,8 @@ export class AudioResource extends Resource {
 	}
 
 	get view() {
-		return `<div id="${this.id}" style=" position: relative;padding-top:10px;">
-			<span style=" position: absolute; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size:10px; top: 0; padding-left: 2px;">${this.name}</span>
+		return `<div id="${this.id}" style=" position: relative; padding-top:10px;">
+			<span style="${NameStyle}">${this.name}</span>
 		</div>`
 	}
 
@@ -159,7 +159,7 @@ export class AudioResource extends Resource {
 			container: document.getElementById(this.id),
 			url: this.url,
 			interact: false,
-			height: 30
+			height: 40
 		})
 	}
 }
@@ -203,7 +203,9 @@ export class ImageResource extends Resource {
 	}
 
 	get view() {
-		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});"></div>`
+		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});">
+			<span style="${NameStyle}">${this.name}</span>
+		</div>`
 	}
 
 }
@@ -301,7 +303,9 @@ export class VideoResource extends Resource {
 	}
 
 	get view() {
-		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});"></div>`
+		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});">
+			<span style="${NameStyle}">${this.name}</span>
+		</div>`
 	}
 
 }
@@ -312,6 +316,17 @@ const ImageResourceStyle = `
     background-repeat: repeat-x;
     background-size: contain;
 	background-position: left;
+`
+
+const NameStyle = `
+	position: absolute; 
+	max-width: 100%; 
+	overflow: hidden; 
+	text-overflow: ellipsis; 
+	white-space: nowrap; 
+	font-size:10px; 
+	top: 0; 
+	padding-left: 2px;
 `
 
 export {

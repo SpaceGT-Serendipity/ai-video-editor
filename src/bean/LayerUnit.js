@@ -138,6 +138,16 @@ export default class LayerUnit {
 		return ['image', 'video'].includes(this.resource.type);
 	}
 
+	/* 元素是否是可见的 */
+	get visible() {
+		return ['image', 'video', 'figure'].includes(this.type)
+	}
+
+	/* 元素是否是有声音的 */
+	get audible() {
+		return ['video', 'figure', 'audio'].includes(this.type)
+	}
+
 	get serialize() {
 		return {
 			id: this.id,
@@ -150,6 +160,7 @@ export default class LayerUnit {
 			muted: this.muted
 		}
 	}
+
 
 	static async deserialize(data) {
 		const unit = new LayerUnit({

@@ -230,5 +230,8 @@
 		border-radius: 4px;
 		margin-left: 10px;
 		color: #fff;
+		bottom: 0;
+		right: 0;
+		z-index: 10;
 	}
 </style>

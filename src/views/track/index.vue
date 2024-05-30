@@ -1,7 +1,6 @@
 <template>
 	<div class="track" :style="{
 		'--controller-group-width':`${trackStore.controllerGroupWidth}px`,
-		'--track-layer-height':`${trackStore.layerHeight}px`,
 		'--track-timeline-ruler-height':`${trackStore.rulerHeight}px`
 	}">
 		<toolbar ref="toolbarRef"></toolbar>
@@ -223,7 +222,7 @@
 		margin-top: var(--track-timeline-ruler-height);
 		overflow-y: auto;
 		overflow-x: hidden;
-		padding-bottom: calc(var(--track-layer-height) + 8px);
+		padding-bottom: 48px;
 	}
 
 	.controller-group::-webkit-scrollbar {
@@ -232,7 +231,6 @@
 
 	.controller-group .controller.layer {
 		padding: 0 20px;
-		height: var(--track-layer-height);
 		margin-bottom: 12px;
 	}
 
