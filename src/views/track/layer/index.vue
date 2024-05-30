@@ -1,11 +1,12 @@
 <template>
-	<div class="timeline-layers" ref="layersRef">
+	<div class="timeline-layers" ref="layersRef" @contextmenu="onContextMenu">
 		<layer-item v-for="(item,index) in layers" :key="item.id" v-model="layers[index]" :last="layers.length==index+1"
 			:drop-data="dragData" @on-drag="onDrag($event,index)" @on-drop="onDrop($event,index)"></layer-item>
 	</div>
 </template>
 
 <script setup>
+	import ContextMenu from '@imengyu/vue3-context-menu'
 	import LayerItem from './item.vue'
 	import {
 		ref,
@@ -39,6 +40,64 @@
 	const layers = ref(props.modelValue)
 	const layersRef = ref()
 	const dragData = ref(null)
+
+	const onContextMenu = (e) => {
+		e.preventDefault();
+		const unit = layersDataStore.getUnitUnderMouse(e)
+		if (unit) {
+			const dark = document.querySelector('html').classList.contains('dark')
+			ContextMenu.showContextMenu({
+				theme: 'mac' + (dark ? ' dark' : ''),
+				x: e.x,
+				y: e.y,
+				items: [{
+					label: "显示",
+					hidden: !unit.visible || unit.display,
+					svgIcon: '#fa-eye',
+					svgProps: {
+						fill: dark ? '#aaa' : '#666',
+					},
+					onClick: () => unit.display = true
+				}, {
+					label: "隐藏",
+					hidden: !unit.visible || !unit.display,
+					svgIcon: '#fa-eye-slash',
+					svgProps: {
+						fill: dark ? '#aaa' : '#666',
+					},
+					onClick: () => unit.display = false
+				}, {
+					label: "声音",
+					hidden: !unit.audible || !unit.muted,
+					svgIcon: '#fa-volume-low',
+					svgProps: {
+						fill: dark ? '#aaa' : '#666',
+					},
+					onClick: () => unit.muted = false
+				}, {
+					label: "静音",
+					hidden: !unit.audible || unit.muted,
+					svgIcon: '#fa-volume-xmark',
+					svgProps: {
+						fill: dark ? '#aaa' : '#666',
+					},
+					onClick: () => unit.muted = true
+				}, {
+					divided: 'up',
+					label: "删除",
+					svgIcon: '#fa-trash-can',
+					svgProps: {
+						fill: dark ? '#aaa' : '#666',
+					},
+					onClick: () => {
+						const layer = layersDataStore.getLayerUnderMouse(e)
+						layer.remove(unit.id)
+						layersDataStore.clearEmptyLayer()
+					}
+				}]
+			});
+		}
+	}
 
 	const onDrag = (event, index) => {
 		dragData.value = event

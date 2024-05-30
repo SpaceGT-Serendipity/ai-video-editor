@@ -66,40 +66,43 @@
 	const render = () => {
 		const showUnits = []
 		layersDataStore.layersTracks.forEach((layer, layerIndex) => {
-			layer.units.forEach(unit => {
-				if (unit.scene.loaded && unit.scene.container) {
-					if (layer.display && unit.display) {
-						const currentTime = trackStore.seekerTime - unit.duration.left
-						if (trackStore.seekerTime >= unit.duration.left &&
-							trackStore.seekerTime <= unit.duration.right) {
-							unit.scene.container.zIndex = layersDataStore.layersTracks.length -
-								layerIndex
-							unit.scene.container.visible = true
-							if (viewportStore.playing) {
-								if (unit.resource.type == 'video') {
-									unit.scene.play()
-									unit.scene.muted(layer.muted || unit.muted)
+			if (layer.visible) {
+				layer.units.forEach(unit => {
+					if (unit.scene.loaded && unit.scene.container) {
+						if (layer.display && unit.display) {
+							const currentTime = trackStore.seekerTime - unit.duration.left
+							if (trackStore.seekerTime >= unit.duration.left &&
+								trackStore.seekerTime <= unit.duration.right) {
+								unit.scene.container.zIndex =
+									layersDataStore.layersTracks.length - layerIndex
+								unit.scene.container.visible = true
+								if (viewportStore.playing) {
+									if (unit.resource.type == 'video') {
+										unit.scene.play()
+										unit.scene.muted(layer.muted || unit.muted)
+									}
+								} else {
+									if (unit.resource.type == 'video') {
+										unit.scene.pause()
+										unit.scene.currentTime((unit.duration.start + currentTime) /
+											1000)
+									}
 								}
+								unit.scene.frame(unit.track.active)
 							} else {
+								unit.scene.container.visible = false
 								if (unit.resource.type == 'video') {
 									unit.scene.pause()
-									unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
+									unit.scene.currentTime(unit.duration.start / 1000)
 								}
 							}
-							unit.scene.frame(unit.track.active)
 						} else {
 							unit.scene.container.visible = false
-							if (unit.resource.type == 'video') {
-								unit.scene.pause()
-								unit.scene.currentTime(unit.duration.start / 1000)
-							}
+							if (unit.type == 'video') unit.scene.pause()
 						}
-					} else {
-						unit.scene.container.visible = false
-						if (unit.type == 'video') unit.scene.pause()
 					}
-				}
-			})
+				})
+			}
 		})
 	}
 	watch(() => layersDataStore.layersScenes, (layers) => loadScene(layers))

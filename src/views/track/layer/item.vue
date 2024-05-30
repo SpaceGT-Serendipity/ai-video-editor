@@ -5,7 +5,7 @@
 	<div class="timeline layer container" ref="containerRef"
 		:style="{'height': `${modelValue.height}px`}">
 		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item"
-			@on-drag="emits('onDrag', $event)" @contextmenu="onContextMenu">
+			@on-drag="emits('onDrag', $event)" >
 			<div class="view" v-html="item.view"></div>
 		</layer-unit>
 	</div>
@@ -13,11 +13,9 @@
 	<div class="timeline layer-gap" ref="layerGapRef" :class="{'last':last}">
 		<div v-if="last">插入新的时间线</div>
 	</div>
-
 </template>
 
 <script setup>
-	import ContextMenu from '@imengyu/vue3-context-menu'
 	import LayerUnit from './unit.vue'
 	import {
 		ref,
@@ -43,61 +41,6 @@
 	const topRef = ref()
 	const containerRef = ref()
 	const layerGapRef = ref()
-
-	const onContextMenu = (e) => {
-		e.preventDefault();
-		const unit = layersDataStore.getUnitUnderMouse(e)
-		const dark = document.querySelector('html').classList.contains('dark')
-		ContextMenu.showContextMenu({
-			theme: 'mac' + (dark ? ' dark' : ''),
-			x: e.x,
-			y: e.y,
-			items: [{
-				label: "显示",
-				hidden: unit.display,
-				svgIcon: '#fa-eye',
-				svgProps: {
-					fill: dark ? '#aaa' : '#666',
-				},
-				onClick: () => unit.display = true
-			}, {
-				label: "隐藏",
-				hidden: !unit.display,
-				svgIcon: '#fa-eye-slash',
-				svgProps: {
-					fill: dark ? '#aaa' : '#666',
-				},
-				onClick: () => unit.display = false
-			}, {
-				label: "声音",
-				hidden: !unit.muted,
-				svgIcon: '#fa-volume-low',
-				svgProps: {
-					fill: dark ? '#aaa' : '#666',
-				},
-				onClick: () => unit.muted = false
-			}, {
-				label: "静音",
-				hidden: unit.muted,
-				svgIcon: '#fa-volume-xmark',
-				svgProps: {
-					fill: dark ? '#aaa' : '#666',
-				},
-				onClick: () => unit.muted = true
-			}, {
-				divided: 'up',
-				label: "删除",
-				svgIcon: '#fa-trash-can',
-				svgProps: {
-					fill: dark ? '#aaa' : '#666',
-				},
-				onClick: () => {
-					props.modelValue.remove(unit.id)
-					layersDataStore.clearEmptyLayer()
-				}
-			}]
-		});
-	}
 
 	function handleContainerMouseenter(event) {
 		if (props.dropData && props.dropData.track.dragging) {

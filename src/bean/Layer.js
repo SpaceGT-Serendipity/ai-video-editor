@@ -68,7 +68,9 @@ export default class Layer {
 			display: this.display,
 			muted: this.muted,
 			length: this.length,
-			remove: this.remove
+			remove: this.remove,
+			visible: this.visible,
+			audible: this.audible
 		}
 	}
 
@@ -79,7 +81,9 @@ export default class Layer {
 			display: this.display,
 			muted: this.muted,
 			length: this.length,
-			remove: this.remove
+			remove: this.remove,
+			visible: this.visible,
+			audible: this.audible
 		}
 	}
 
@@ -88,20 +92,20 @@ export default class Layer {
 		const unit = this.units.find(item => true)
 		return unit.type
 	}
-	
+
 	/* 图层是否是可见的 */
 	get visible() {
 		const unit = this.units.find(item => true)
 		return unit.visible
 	}
-	
+
 	/* 图层是否是有声音的 */
 	get audible() {
 		const unit = this.units.find(item => true)
 		return unit.audible
 	}
-	
-	get height(){
+
+	get height() {
 		const unit = this.units.find(item => true)
 		return unit.track.h
 	}
@@ -111,7 +115,9 @@ export default class Layer {
 			id: this.id,
 			units: this.units.map(item => item.serialize),
 			display: this.display,
-			muted: this.muted
+			muted: this.muted,
+			visible: this.visible,
+			audible: this.audible
 		}
 	}
 

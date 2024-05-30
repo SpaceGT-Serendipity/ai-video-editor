@@ -157,7 +157,9 @@ export default class LayerUnit {
 			durationStart: this._durationStart,
 			durationEnd: this._durationEnd,
 			display: this.display,
-			muted: this.muted
+			muted: this.muted,
+			visible: this.visible,
+			audible: this.audible
 		}
 	}
 
