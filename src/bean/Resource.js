@@ -2,10 +2,12 @@ import {
 	v4 as uuidv4
 } from 'uuid'
 import axios from '../axios/index.js'
-import {
-	sound
-} from '@pixi/sound';
 import WaveSurfer from 'wavesurfer.js'
+import {
+	sound,
+	Sound
+} from '@pixi/sound';
+sound.disableAutoPause = true
 
 export class Resource {
 	/* 文件名 */
@@ -116,9 +118,28 @@ export class FigureResource extends Resource {
 	}
 }
 
+export class TextResource extends Resource {
+	constructor(name) {
+		super({
+			name,
+			type: 'text'
+		})
+		this.duration = 6000
+		this.loaded = true
+	}
+
+	get view() {
+		return `<span style="line-height: 40px;font-size:12px;">${this.name}</span>`
+	}
+}
+
+
 export class AudioResource extends Resource {
 	volume = 1
 	_wavesurfer = null
+	_audio = null
+	_sound = null
+	_instance = null
 
 	constructor({
 		name,
@@ -130,9 +151,46 @@ export class AudioResource extends Resource {
 			type: 'audio'
 		})
 		this.url = url;
+		this.blobUrl = url;
 		this.duration = duration;
-		sound.add(this.id, this.url);
+		this._sound = Sound.from({
+			url: this.url
+		});
 		this.loaded = true;
+	}
+
+	static file(resource) {
+		const audioResource = new AudioResource({
+			name: resource.name,
+			url: URL.createObjectURL(resource),
+			duration: 0
+		});
+		audioResource.loaded = false
+		return audioResource
+	}
+
+	static async url(url, name) {
+		const blob = await axios.get(url, {
+			responseType: 'blob'
+		})
+		const file = new File([blob], name, {
+			type: blob.type
+		})
+		const audioResource = AudioResource.file(file);
+		audioResource.url = url;
+		await audioResource.init();
+		return audioResource;
+	}
+
+	init() {
+		return new Promise((resolve, reject) => {
+			this._audio = new Audio(this.blobUrl);
+			this._audio.addEventListener('canplaythrough', () => {
+				this.duration = parseInt(this._audio.duration * 1000)
+				this.loaded = true
+				resolve()
+			});
+		})
 	}
 
 	clone() {
@@ -144,8 +202,18 @@ export class AudioResource extends Resource {
 		return audioResource;
 	}
 
-	play() {
-		sound.play(this.id);
+	play(currentTime) {
+		if (this._instance == null) {
+			this._instance = this._sound.play({
+				start: currentTime / 1000,
+				volume: this.volume
+			});
+		}
+	}
+
+	pause() {
+		this._sound.pause();
+		this._instance = null;
 	}
 
 	get view() {
@@ -161,21 +229,6 @@ export class AudioResource extends Resource {
 			interact: false,
 			height: 40
 		})
-	}
-}
-
-export class TextResource extends Resource {
-	constructor(name) {
-		super({
-			name,
-			type: 'text'
-		})
-		this.duration = 6000
-		this.loaded = true
-	}
-
-	get view() {
-		return `<span style="line-height: 40px;font-size:12px;">${this.name}</span>`
 	}
 }
 
@@ -201,6 +254,7 @@ export class ImageResource extends Resource {
 			url: URL.createObjectURL(resource)
 		});
 	}
+
 
 	get view() {
 		return `<div style="${ImageResourceStyle} background-image: url(${this.cover});">
@@ -264,7 +318,7 @@ export class VideoResource extends Resource {
 			this._video.src = this.blobUrl;
 			this._video.load();
 			this._video.addEventListener('loadedmetadata', async () => {
-				this.duration = this._video.duration * 1000
+				this.duration = parseInt(this._video.duration * 1000)
 				if (this.cover == null) {
 					this._video.pause();
 					this._video.currentTime = parseInt(this._video.duration / 3)

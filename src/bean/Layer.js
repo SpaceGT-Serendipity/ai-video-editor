@@ -57,6 +57,29 @@ export default class Layer {
 		}
 	}
 
+	/* 获取图层元素类型 */
+	get type() {
+		const unit = this.units.find(item => true)
+		return unit.type
+	}
+
+	/* 图层是否是可见的 */
+	get visible() {
+		const unit = this.units.find(item => true)
+		return unit.visible
+	}
+
+	/* 图层是否是有声音的 */
+	get audible() {
+		const unit = this.units.find(item => true)
+		return unit.audible
+	}
+
+	get height() {
+		const unit = this.units.find(item => true)
+		return unit.track.h
+	}
+
 	get length() {
 		return this.units.length
 	}
@@ -85,29 +108,6 @@ export default class Layer {
 			visible: this.visible,
 			audible: this.audible
 		}
-	}
-
-	/* 获取图层元素类型 */
-	get type() {
-		const unit = this.units.find(item => true)
-		return unit.type
-	}
-
-	/* 图层是否是可见的 */
-	get visible() {
-		const unit = this.units.find(item => true)
-		return unit.visible
-	}
-
-	/* 图层是否是有声音的 */
-	get audible() {
-		const unit = this.units.find(item => true)
-		return unit.audible
-	}
-
-	get height() {
-		const unit = this.units.find(item => true)
-		return unit.track.h
 	}
 
 	get serialize() {

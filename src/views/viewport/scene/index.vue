@@ -63,46 +63,66 @@
 		}
 		loadSceneLoading = false
 	}
+	const renderUnit = (layer, layerIndex, unit) => {
+		// 确保场景已加载 
+		if (unit.scene.loaded && unit.scene.container) {
+			if (layer.display && unit.display) {
+				const currentTime = trackStore.seekerTime - unit.duration.left
+				if (trackStore.seekerTime >= unit.duration.left &&
+					trackStore.seekerTime <= unit.duration.right) {
+					unit.scene.container.zIndex =
+						layersDataStore.layersTracks.length - layerIndex
+					unit.scene.container.visible = true
+					if (viewportStore.playing) {
+						if (unit.resource.type == 'video') {
+							unit.scene.play()
+							unit.scene.muted(layer.muted || unit.muted)
+						}
+					} else {
+						if (unit.resource.type == 'video') {
+							unit.scene.pause()
+							unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
+						}
+					}
+					unit.scene.frame(unit.track.active)
+				} else {
+					unit.scene.container.visible = false
+					if (unit.resource.type == 'video') {
+						unit.scene.pause()
+						unit.scene.currentTime(unit.duration.start / 1000)
+					}
+				}
+			} else {
+				unit.scene.container.visible = false
+				if (unit.type == 'video') unit.scene.pause()
+			}
+		}
+	}
+	const listenUnit = (layer, layerIndex, unit) => {
+		// 只聆听音频文件，视频文件声音渲染时管理。
+		if (!layer.muted && !unit.muted) {
+			const currentTime = trackStore.seekerTime - unit.duration.left
+			if (trackStore.seekerTime >= unit.duration.left &&
+				trackStore.seekerTime <= unit.duration.right) {
+				if (viewportStore.playing) {
+					if (unit.resource.play) unit.resource.play(currentTime)
+				} else {
+					if (unit.resource.pause) unit.resource.pause()
+				}
+			} else {
+				if (unit.resource.pause) unit.resource.pause()
+			}
+		} else {
+			if (unit.resource.pause) unit.resource.pause()
+		}
+	}
 	const render = () => {
 		const showUnits = []
 		layersDataStore.layersTracks.forEach((layer, layerIndex) => {
-			if (layer.visible) {
-				layer.units.forEach(unit => {
-					if (unit.scene.loaded && unit.scene.container) {
-						if (layer.display && unit.display) {
-							const currentTime = trackStore.seekerTime - unit.duration.left
-							if (trackStore.seekerTime >= unit.duration.left &&
-								trackStore.seekerTime <= unit.duration.right) {
-								unit.scene.container.zIndex =
-									layersDataStore.layersTracks.length - layerIndex
-								unit.scene.container.visible = true
-								if (viewportStore.playing) {
-									if (unit.resource.type == 'video') {
-										unit.scene.play()
-										unit.scene.muted(layer.muted || unit.muted)
-									}
-								} else {
-									if (unit.resource.type == 'video') {
-										unit.scene.pause()
-										unit.scene.currentTime((unit.duration.start + currentTime) /
-											1000)
-									}
-								}
-								unit.scene.frame(unit.track.active)
-							} else {
-								unit.scene.container.visible = false
-								if (unit.resource.type == 'video') {
-									unit.scene.pause()
-									unit.scene.currentTime(unit.duration.start / 1000)
-								}
-							}
-						} else {
-							unit.scene.container.visible = false
-							if (unit.type == 'video') unit.scene.pause()
-						}
-					}
-				})
-			}
+			layer.units.forEach(unit => {
+				if (layer.visible) renderUnit(layer, layerIndex, unit)
+				if (layer.audible) listenUnit(layer, layerIndex, unit)
+			})
 		})
 	}
 	watch(() => layersDataStore.layersScenes, (layers) => loadScene(layers))
@@ -123,12 +143,7 @@
 		backgroundText.value = await loadBackgroundText(app)
 	})
 
-	// const runAudio = () => {
-	// 	const sound = Sound.from('/assets/audio/jin.mp3')
-	// 	sound.play({
-	// 		start: currentTime.value
-	// 	});
-	// }
+
 	const handleTicker = () => {
 		let totalDeltaMS = 0
 		let seekerPlayingStartTime = 0

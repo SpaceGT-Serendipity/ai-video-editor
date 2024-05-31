@@ -163,7 +163,6 @@ export default class LayerUnit {
 		}
 	}
 
-
 	static async deserialize(data) {
 		const unit = new LayerUnit({
 			resource: await ResourceDeserialize(data.resource),

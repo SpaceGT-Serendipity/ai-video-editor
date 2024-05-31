@@ -9,8 +9,8 @@
 		</el-tab-pane>
 		<el-tab-pane label="本地音乐" name="本地音乐">
 			<el-scrollbar>
-				<el-upload class="upload" :show-file-list="false" action :auto-upload="false" multiple
-					accept=".jpg,.png" :on-change="handleUpload">
+				<el-upload class="upload" :show-file-list="false" action :auto-upload="false" multiple accept=".mp3"
+					:on-change="handleUpload">
 					<el-button icon="Plus">点击上传本地音乐</el-button>
 					<el-tooltip class="box-item" effect="dark" content="支持批量上传文件,单文件不超过10MB" placement="top">
 						<el-button link>
@@ -90,19 +90,18 @@
 		// 加入本地列表
 		resourceLocalStore.audios.push({
 			name: audio.name,
-			url: audio.url
+			url: audio.url,
+			duration: audio.duration
 		})
 	}
-	const addLinkResource = () => {
-		const audio = new AudioResource({
-			name: dateFormat(new Date()),
-			url: link.value
-		})
+	const addLinkResource = async () => {
+		const audio = await AudioResource.url(link.value, dateFormat(new Date()))
 		linkFileList.push(audio)
 		// 加入本地列表
 		resourceLinkStore.audios.push({
 			name: audio.name,
-			url: link.value
+			url: link.value,
+			duration: audio.duration
 		})
 	}
 	const load = async () => {

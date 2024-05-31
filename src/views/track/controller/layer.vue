@@ -27,7 +27,8 @@
 				</el-icon>
 			</el-tooltip>
 		</el-button>
-		<el-button link size="small" v-show="data.visible" @click="data.display=!data.display">
+		<el-button link size="small" v-show="data.visible" @click="data.display=!data.display"
+			@keydown.space.prevent="onSpace">
 			<el-icon size="14px" v-if="data.display">
 				<View />
 			</el-icon>
@@ -35,7 +36,8 @@
 				<Hide />
 			</el-icon>
 		</el-button>
-		<el-button link size="small" v-show="data.audible" @click="data.muted=!data.muted">
+		<el-button link size="small" v-show="data.audible" @click="data.muted=!data.muted"
+			@keydown.space.prevent="onSpace">
 			<el-icon size="14px" v-if="data.muted">
 				<font-awesome-icon icon="fa-solid fa-volume-xmark" />
 			</el-icon>
@@ -43,7 +45,7 @@
 				<font-awesome-icon icon="fa-solid fa-volume-low" />
 			</el-icon>
 		</el-button>
-		<el-button link size="small" @click="onDel">
+		<el-button link size="small" @click="onDel" @keydown.space.prevent="onSpace">
 			<el-icon size="14px">
 				<Delete />
 			</el-icon>
@@ -67,6 +69,7 @@
 	const onDel = () => {
 		layersDataStore.delLayerById(props.data.id)
 	}
+	const onSpace = (event) => event.preventDefault();
 </script>
 
 <style scoped>
