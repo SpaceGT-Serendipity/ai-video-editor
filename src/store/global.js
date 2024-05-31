@@ -10,6 +10,7 @@ export const useGlobalStore = defineStore('global', {
 		height: 1080,
 		title: '未命名项目', // 项目标题
 		serialize: null, // layers 序列化存档
+		menu: 'image' //菜单打开的选项
 	}),
 	persist: true
 })

@@ -28,7 +28,11 @@
 		ref,
 		onMounted
 	} from 'vue'
+	import {
+		useGlobalStore
+	} from '../../store/global.js'
 
+	const globalStore = useGlobalStore()
 	const emits = defineEmits(['click'])
 	const settingRef = ref()
 	const menuList = [{
@@ -53,15 +57,16 @@
 		label: 'bgm',
 		title: '背景音乐'
 	}]
-	const active = ref('figure')
+	const active = ref(globalStore.menu)
 
 	const onClick = (menu) => {
 		active.value = menu.label
 		emits('click', menu)
+		globalStore.menu = menu.label
 	}
 
 	onMounted(() => {
-		onClick(menuList[6])
+		onClick(menuList.find(item => item.label == active.value))
 	})
 </script>
 

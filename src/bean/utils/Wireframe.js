@@ -7,7 +7,7 @@ export function wireframe(scene, callback) {
 	const container = scene.container
 	if (container.children.find(item => item.label == 'wireframe') != null) return;
 	const sprite = scene.sprite
-	const borderWidth = Math.ceil(sprite.width / 200)
+	const borderWidth = Math.ceil(8 / container.scale.x)
 	const graphics = new Graphics();
 	graphics.label = 'wireframe'
 	graphics.interactive = false
@@ -16,7 +16,7 @@ export function wireframe(scene, callback) {
 	graphics.rect(0, sprite.height - borderWidth, sprite.width, borderWidth);
 	graphics.rect(sprite.width - borderWidth, 0, borderWidth, sprite.height);
 	graphics.fill('#aaa')
-	const markWidth = borderWidth * 4
+	const markWidth = borderWidth * 2
 	graphics.rect(borderWidth / 2, borderWidth / 2, markWidth, markWidth);
 	graphics.rect(sprite.width / 2 - markWidth / 2 - borderWidth / 2, borderWidth / 2, markWidth, markWidth);
 	graphics.rect(sprite.width - markWidth - borderWidth / 2, borderWidth / 2, markWidth, markWidth);

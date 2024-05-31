@@ -154,13 +154,16 @@
 		return parseInt(number * 100) + '%'
 	}
 	const center = () => {
-		const container = layersDataStore.activeUnit.scene.container
+		const unit = layersDataStore.activeUnit
+		const container = unit.scene.container
 		const x = viewportStore.app.screen.width / 2 - container.width / 2
 		const y = viewportStore.app.screen.height / 2 - container.height / 2
 		container.x = x
 		container.y = y
 		options.positionSize.position.x = container.x
 		options.positionSize.position.y = container.y
+		unit.scene.frame(false)
+		unit.scene.frame(true)
 	}
 	const canvasSize = () => {
 		const container = layersDataStore.activeUnit.scene.container
