@@ -9,6 +9,11 @@
 								<use xlink:href="#undraw_happy_music_g6wc"></use>
 							</svg>
 						</el-icon>
+						<el-icon size="90" v-if="store.data.type=='text'">
+							<svg aria-hidden="true">
+								<use xlink:href="#text"></use>
+							</svg>
+						</el-icon>
 						<el-icon size="60" v-else>
 							<Picture></Picture>
 						</el-icon>

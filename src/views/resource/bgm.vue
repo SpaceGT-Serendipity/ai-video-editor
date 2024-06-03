@@ -82,7 +82,7 @@
 	const link = ref()
 
 	const handleUpload = async (file) => {
-		const audio = AudioResource.file(file.raw)
+		const audio = await AudioResource.file(file.raw)
 		localFileList.push(audio)
 		// 上传至服务器
 		const res = await upload(file.raw, 'ai-video-editor/source/audio')

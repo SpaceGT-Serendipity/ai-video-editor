@@ -2,6 +2,13 @@
 	<div class="resource-sample" ref="resourceSampleRef" v-loading="!data.loaded">
 		<div class="card">
 			<el-image :src="data.cover" fit="contain">
+				<template #placeholder>
+					<div class="image-slot">
+						<el-icon size="20">
+							<font-awesome-icon icon="fa-solid fa-spinner" spin-pulse />
+						</el-icon>
+					</div>
+				</template>
 				<template #error>
 					<div class="image-slot">
 						<el-icon size="40">
@@ -68,9 +75,6 @@
 	}
 
 	onMounted(() => {
-		if (!props.data.loaded) {
-			props.data.init()
-		}
 		GLightbox({
 			type: ['image', 'video'].includes(props.data.type) ? props.data.type : 'image'
 		});
@@ -164,6 +168,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		opacity: 0.4;
 	}
 
 	.tag {

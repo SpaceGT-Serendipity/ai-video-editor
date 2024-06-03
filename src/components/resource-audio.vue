@@ -71,9 +71,6 @@
 	}
 
 	onMounted(() => {
-		if (!props.data.loaded) {
-			props.data.init()
-		}
 		resourceAudioRef.value.addEventListener('mousedown', handleMousedown)
 		resourceAudioRef.value.addEventListener('mouseup', handleMouseup)
 		resourceAudioRef.value.addEventListener('mouseleave', handleMouseleave)
@@ -98,7 +95,7 @@
 		gap: 10px;
 		align-items: center;
 		opacity: 0.8;
-		cursor: pointer;
+		cursor: all-scroll;
 	}
 
 	.resource-audio:hover {

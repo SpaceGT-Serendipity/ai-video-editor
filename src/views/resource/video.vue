@@ -8,7 +8,7 @@
 			</el-scrollbar>
 		</el-tab-pane>
 		<el-tab-pane label="本地视频" name="本地视频">
-			<el-scrollbar>
+			<el-scrollbar v-loading="loadingLocalVideos" element-loading-text="正在加载本地视频,请稍等...">
 				<el-upload class="upload" :show-file-list="false" action :auto-upload="false" multiple accept=".mp4"
 					:on-change="handleUpload">
 					<el-button icon="Plus">点击上传本地视频</el-button>
@@ -28,7 +28,7 @@
 			</el-scrollbar>
 		</el-tab-pane>
 		<el-tab-pane label="视频链接" name="视频链接">
-			<el-scrollbar>
+			<el-scrollbar v-loading="loadingLinkVideos" element-loading-text="正在加载远程视频,请稍等...">
 				<div class="link-group-button">
 					<el-input v-model="link" placeholder="URL"></el-input>
 					<el-button @click="addLinkResource">添加</el-button>
@@ -80,10 +80,14 @@
 	const localFileList = reactive([])
 	const linkFileList = reactive([])
 	const link = ref()
+	const loadingLocalVideos = ref(false)
+	const loadingLinkVideos = ref(false)
 
 	const handleUpload = async (file) => {
-		const video = VideoResource.file(file.raw)
+		loadingLocalVideos.value = true
+		const video = await VideoResource.file(file.raw)
 		localFileList.push(video)
+		loadingLocalVideos.value = false
 		// 上传至服务器
 		const res = await upload(file.raw, 'ai-video-editor/source/video')
 		video.url = `${import.meta.env.VITE_APP_FILE_API}/download/${res.url}`
@@ -94,8 +98,10 @@
 		})
 	}
 	const addLinkResource = async () => {
+		loadingLinkVideos.value = true
 		const video = await VideoResource.url(link.value, dateFormat(new Date()))
 		linkFileList.push(video)
+		loadingLinkVideos.value = false
 		// 加入本地列表
 		resourceLinkStore.videos.push({
 			name: video.name,
@@ -105,23 +111,27 @@
 	const load = async () => {
 		const res = await loadVideo()
 		for (let i = 0; i < res.length; i++) {
-			const video = await VideoResource.url(res[i].url, res[i].name)
+			const video = new VideoResource(res[i])
 			publicFileList.push(video)
 		}
 	}
 	const loadLocal = async () => {
+		loadingLocalVideos.value = true
 		for (let i = 0; i < resourceLocalStore.videos.length; i++) {
-			const video = await VideoResource.url(resourceLocalStore.videos[i].url,
-				resourceLocalStore.videos[i].name)
+			const video =
+				await VideoResource.url(resourceLocalStore.videos[i].url, resourceLocalStore.videos[i].name)
 			localFileList.push(video)
 		}
+		loadingLocalVideos.value = false
 	}
 	const loadLink = async () => {
+		loadingLinkVideos.value = true
 		for (let i = 0; i < resourceLinkStore.videos.length; i++) {
-			const video = await VideoResource.url(resourceLinkStore.videos[i].url,
-				resourceLinkStore.videos[i].name)
+			const video =
+				await VideoResource.url(resourceLinkStore.videos[i].url, resourceLinkStore.videos[i].name)
 			linkFileList.push(video)
 		}
+		loadingLinkVideos.value = false
 	}
 
 	onMounted(() => {
@@ -138,11 +148,11 @@
 		flex-direction: column;
 	}
 
-	.tabs .el-tabs__header {
+	.tabs:deep(.el-tabs__header) {
 		flex: 0 0 0%;
 	}
 
-	.tabs .el-tabs__content {
+	.tabs:deep(.el-tabs__content) {
 		flex: 1 1 0%
 	}
 

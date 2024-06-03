@@ -15,16 +15,25 @@ export async function loadFigure() {
 	})
 }
 
-export function loadImage() {
+export async function loadImage() {
 	return [{
 		name: '带妆上阵',
 		url: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg'
 	}]
 }
 
-export function loadVideo() {
-	return [{
-		name: 'xgplayer',
-		url: 'https://oss.file.yigee.cn/ai-video-editor/source/video/5fdaa3f0-e43f-4953-962e-8a4673d049ff.mp4'
-	}]
+export async function loadVideo() {
+	const res = await axios({
+		method: 'get',
+		url: 'https://ai-api.yigee.cn/video/list?uid=dfcb32daa5870d271ae1f7519cadf3b8'
+	})
+	return res.map(item => {
+		return {
+			name: item.name,
+			url: import.meta.env.VITE_APP_FILE_API + '/download/' + item.url,
+			cover: import.meta.env.VITE_APP_FILE_API + '/download/' + item.cover,
+			duration: item.duration * 1000,
+			size: item.size
+		}
+	})
 }

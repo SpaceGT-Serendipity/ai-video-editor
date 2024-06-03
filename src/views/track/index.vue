@@ -124,9 +124,9 @@
 		if (resourceDragStore.data) {
 			const resource = resourceDragStore.data
 			resourceDragStore.data = null
-			nextTick(() => {
+			nextTick(async () => {
 				const unit = new LayerUnit({
-					resource: resource.clone()
+					resource: await resource.clone()
 				})
 				// 元素坐标
 				const x =

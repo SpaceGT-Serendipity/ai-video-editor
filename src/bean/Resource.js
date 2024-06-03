@@ -159,13 +159,13 @@ export class AudioResource extends Resource {
 		this.loaded = true;
 	}
 
-	static file(resource) {
+	static async file(resource) {
 		const audioResource = new AudioResource({
 			name: resource.name,
 			url: URL.createObjectURL(resource),
 			duration: 0
 		});
-		audioResource.loaded = false
+		await audioResource.init()
 		return audioResource
 	}
 
@@ -176,9 +176,8 @@ export class AudioResource extends Resource {
 		const file = new File([blob], name, {
 			type: blob.type
 		})
-		const audioResource = AudioResource.file(file);
+		const audioResource = await AudioResource.file(file);
 		audioResource.url = url;
-		await audioResource.init();
 		return audioResource;
 	}
 
@@ -269,22 +268,34 @@ export class VideoResource extends Resource {
 	_video = null;
 
 	constructor({
-		name
+		name,
+		url,
+		cover,
+		duration,
+		size
 	}) {
 		super({
 			name,
 			type: 'video'
 		})
+		this.url = url;
+		this.blobUrl = url;
+		this.cover = cover;
+		this.duration = duration;
+		this.size = size;
+		this.loaded = true
 	}
 
-	static file(resource) {
+	static async file(resource) {
 		const videoResource = new VideoResource({
 			name: resource.name,
+			url: URL.createObjectURL(resource),
+			size: resource.size,
+			duration: 0
 		});
-		videoResource.size = resource.size
 		videoResource.blobUrl = URL.createObjectURL(resource)
-		videoResource.url = URL.createObjectURL(resource)
 		videoResource._file = resource
+		await videoResource.init()
 		return videoResource
 	}
 
@@ -300,11 +311,21 @@ export class VideoResource extends Resource {
 		return videoResource;
 	}
 
-	clone() {
-		const videoResource = VideoResource.file(this._file);
-		videoResource.url = this.url
-		videoResource.cover = this.cover
-		videoResource.duration = this.duration
+	async clone() {
+		const videoResource = new VideoResource({
+			name: this.name,
+			url: this.url,
+			cover: this.cover,
+			duration: this.duration,
+			size: this.size
+		})
+		if (this._file != null) {
+			videoResource._file = this._file
+			videoResource.blobUrl = URL.createObjectURL(videoResource._file)
+		} else {
+			videoResource.blobUrl = `${this.url}?id=${videoResource.id}`
+		}
+		console.log(videoResource)
 		return videoResource;
 	}
 
@@ -314,27 +335,31 @@ export class VideoResource extends Resource {
 
 	init() {
 		return new Promise((resolve, reject) => {
-			this._video = document.createElement('video');
-			this._video.src = this.blobUrl;
-			this._video.load();
-			this._video.addEventListener('loadedmetadata', async () => {
-				this.duration = parseInt(this._video.duration * 1000)
-				if (this.cover == null) {
-					this._video.pause();
-					this._video.currentTime = parseInt(this._video.duration / 3)
-				} else {
-					this.loaded = true
-					resolve()
-				}
-			});
-			this._video.addEventListener('timeupdate', async () => {
-				if (this._video.currentTime > 0) {
-					const coverBlob = await this.screenshot(160, 90);
-					this.cover = URL.createObjectURL(coverBlob)
-					this.loaded = true
-					resolve()
-				}
-			});
+			if (this.duration == 0) {
+				this._video = document.createElement('video');
+				this._video.src = this.blobUrl;
+				this._video.load();
+				this._video.addEventListener('loadedmetadata', async () => {
+					this.duration = parseInt(this._video.duration * 1000)
+					if (this.cover == null) {
+						this._video.pause();
+						this._video.currentTime = parseInt(this._video.duration / 3)
+					} else {
+						this.loaded = true
+						resolve()
+					}
+				});
+				this._video.addEventListener('timeupdate', async () => {
+					if (this._video.currentTime > 0) {
+						const coverBlob = await this.screenshot(160, 90);
+						this.cover = URL.createObjectURL(coverBlob)
+						this.loaded = true
+						resolve()
+					}
+				});
+			} else {
+				resolve()
+			}
 		})
 	}
 
