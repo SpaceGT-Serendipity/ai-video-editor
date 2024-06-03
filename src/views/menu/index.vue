@@ -35,28 +35,28 @@
 	const globalStore = useGlobalStore()
 	const emits = defineEmits(['click'])
 	const settingRef = ref()
-	const menuList = [{
-		label: 'template',
-		title: '模板'
-	}, {
-		label: 'figure',
-		title: '数字人'
-	}, {
-		label: 'text',
-		title: '文本'
-	}, {
-		label: 'subtitle',
-		title: '字幕'
-	}, {
-		label: 'image',
-		title: '图片'
-	}, {
-		label: 'video',
-		title: '视频'
-	}, {
-		label: 'bgm',
-		title: '背景音乐'
-	}]
+	const menuList = [
+		// 	{ label: 'template', title: '模板' },
+		{
+			label: 'figure',
+			title: '数字人'
+		}, {
+			label: 'text',
+			title: '文本'
+		}, {
+			label: 'subtitle',
+			title: '字幕'
+		}, {
+			label: 'image',
+			title: '图片'
+		}, {
+			label: 'video',
+			title: '视频'
+		}, {
+			label: 'bgm',
+			title: '背景音乐'
+		}
+	]
 	const active = ref(globalStore.menu)
 
 	const onClick = (menu) => {

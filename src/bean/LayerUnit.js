@@ -135,12 +135,12 @@ export default class LayerUnit {
 	}
 
 	get resizable() {
-		return ['image', 'video'].includes(this.resource.type);
+		return ['image', 'video', 'text'].includes(this.resource.type);
 	}
 
 	/* 元素是否是可见的 */
 	get visible() {
-		return ['image', 'video', 'figure'].includes(this.type)
+		return ['image', 'video', 'figure', 'text'].includes(this.type)
 	}
 
 	/* 元素是否是有声音的 */

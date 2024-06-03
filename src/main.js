@@ -65,6 +65,7 @@ library.add(
 	freeSolidSvgIcons.faPause,
 	freeSolidSvgIcons.faSquarePlus,
 	freeSolidSvgIcons.faSpinner,
+	freeSolidSvgIcons.faT,
 	freeRegularSvgIcons.faFloppyDisk
 )
 app.mount('#app')

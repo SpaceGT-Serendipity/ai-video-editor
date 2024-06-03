@@ -124,6 +124,8 @@
 			}
 			read()
 		}
+	}, {
+		immediate: true
 	})
 	watch(() => options.positionSize.scale.x, (value) => {
 		if (options.positionSize.syncScale) {

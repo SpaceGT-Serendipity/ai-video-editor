@@ -4,6 +4,7 @@ const {
 } = PIXI;
 
 export function wireframe(scene, callback) {
+	if (scene.container == null || scene.sprite == null) return;
 	const container = scene.container
 	if (container.children.find(item => item.label == 'wireframe') != null) return;
 	const sprite = scene.sprite

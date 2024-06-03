@@ -28,6 +28,7 @@ export default class Scene {
 	texture = null
 	sprite = null
 	container = null
+	text = null
 	loaded = false
 
 	constructor() {
@@ -44,18 +45,23 @@ export default class Scene {
 	}
 
 	async load(app, resource) {
-		if (['video', 'image', 'figure'].includes(resource.type)) {
-			this.texture = await loadAsset({
-				alias: this.id,
-				src: resource.blobUrl || resource.url,
-				loadParser: getLoadParserName(resource.type)
-			})
+		if (['video', 'image', 'figure', 'text'].includes(resource.type)) {
+			if (getLoadParserName(resource.type)) {
+				this.texture = await loadAsset({
+					alias: this.id,
+					src: resource.blobUrl || resource.url,
+					loadParser: getLoadParserName(resource.type)
+				})
+			}
 			if (resource.type == 'video' || resource.tag == 'video') {
 				await loadVideo(app, this, () => this.timestamp = new Date().getTime())
 				this.pause()
 			} else
 			if (resource.type == 'image' || resource.type == 'figure') {
 				await loadImage(app, this, () => this.timestamp = new Date().getTime())
+			} else
+			if (resource.type == 'text') {
+				await loadText(app, this, () => this.timestamp = new Date().getTime())
 			}
 			this.container.visible = false
 		}
@@ -108,6 +114,7 @@ const getLoadParserName = (type) => {
 		case 'image':
 			return 'loadTextures';
 	}
+	return null;
 }
 
 /**
@@ -168,8 +175,24 @@ const loadVideo = (app, scene, callback) => {
 	scene.container = container
 	scene.sprite = sprite
 }
-const loadAudio = (app, scene, callback) => {
-
+const loadText = (app, scene, callback) => {
+	const container = new Container()
+	container.interactive = true
+	const basicText = new Text({
+		text: '默认文本',
+		style: {
+			fontFamily: 'Arial',
+			fontSize: 50,
+			fill: '#FFFFFF',
+			align: 'center',
+		}
+	});
+	container.addChild(basicText);
+	mountMove(app, container, callback, 0)
+	center(app, container)
+	app.stage.addChild(container);
+	scene.container = container
+	scene.text = basicText
 }
 const loadBackground = async (app) => {
 	const background = await Assets.load('/assets/image/background.jpg');

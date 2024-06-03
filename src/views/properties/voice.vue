@@ -104,7 +104,6 @@
 	})
 
 	const handleUpload = async (file) => {
-		console.log(file)
 	}
 	const load = async () => {
 		const res = await loadAudios()

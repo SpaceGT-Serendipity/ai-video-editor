@@ -34,7 +34,6 @@ export function getVideoSpecialFrame({
 		let videoSrc = "";
 
 		// 处理视频链接
-		console.log(typeof source)
 		if (source instanceof File) {
 			let blob = await generateVideoFileBlobUrl(source).then(data => data).catch(err => null);
 			if (!blob) return reject(new Error("文件处理错误，转换失败"));
@@ -62,7 +61,6 @@ export function getVideoSpecialFrame({
 
 			// 留给页面绘制的时间
 			setTimeout(() => {
-				console.log(video.videoWidth)
 				let {
 					videoWidth,
 					videoHeight

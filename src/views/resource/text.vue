@@ -24,10 +24,19 @@
 		onMounted,
 		computed
 	} from 'vue'
+	import {
+		TextResource
+	} from '../../bean/Resource.js'
 
-	const list = ref([{
-		name: '默认文本'
-	}])
+	const list = ref([])
+	
+	const load = () => {
+		list.value.push(new TextResource('默认文本'))
+	}
+
+	onMounted(() => {
+		load()
+	})
 </script>
 
 <style scoped>

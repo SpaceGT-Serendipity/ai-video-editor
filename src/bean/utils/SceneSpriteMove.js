@@ -5,10 +5,10 @@ const {
 
 const decision_range = 30; // 从里到外判定范文 边距像素
 
-export function mountMove(app, container, callback) {
+export function mountMove(app, container, callback, decisionRange) {
 	let dragging = false;
 	let position = null
-	const range = getRange(container)
+	const range = getRange(container, decisionRange)
 	const graphics = mountMoveDecisionRange(app, range)
 	container.addChild(graphics)
 	graphics.onmousedown = (event) => {
@@ -65,17 +65,17 @@ function unmountMoveDecisionRange(container) {
 }
 
 /**
- * @param decision_range 边缘距离
+ * @param decisionRange 边缘距离
  */
-function getRange(container) {
+function getRange(container, decisionRange = decision_range) {
 	return {
-		width: container.width - decision_range * 2,
-		height: container.height - decision_range * 2,
+		width: container.width - decisionRange * 2,
+		height: container.height - decisionRange * 2,
 		bounds: {
-			left: decision_range,
-			right: container.width - decision_range,
-			top: decision_range,
-			bottom: container.height - decision_range,
+			left: decisionRange,
+			right: container.width - decisionRange,
+			top: decisionRange,
+			bottom: container.height - decisionRange,
 		}
 	}
 }

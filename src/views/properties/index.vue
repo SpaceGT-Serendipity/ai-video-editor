@@ -8,8 +8,10 @@
 			<el-tab-pane label="声音" name="声音" v-if="layersDataStore.activeUnit?.type=='audio'">
 				<sound></sound>
 			</el-tab-pane>
-			<el-tab-pane label="属性" name="属性"
-				:disabled="!['image','video','figure'].includes(layersDataStore.activeUnit?.type)">
+			<el-tab-pane label="文字样式" name="文字样式" v-if="layersDataStore.activeUnit?.type=='text'">
+				<text-panel></text-panel>
+			</el-tab-pane>
+			<el-tab-pane label="属性" name="属性" v-if="['image','video','figure','text'].includes(layersDataStore.activeUnit?.type)">
 				<scene></scene>
 			</el-tab-pane>
 		</el-tabs>
@@ -21,6 +23,7 @@
 	import Scene from './scene.vue'
 	import Voice from './voice.vue'
 	import Sound from './sound.vue'
+	import TextPanel from './text.vue'
 	import {
 		useLayersDataStore
 	} from '../../store/layers.js'
@@ -39,6 +42,9 @@
 			} else
 			if (['audio'].includes(value.type)) {
 				tabsActive.value = '声音'
+			} else
+			if (['text'].includes(value.type)) {
+				tabsActive.value = '文字样式'
 			} else
 			if (['image', 'video'].includes(value.type)) {
 				tabsActive.value = '属性'

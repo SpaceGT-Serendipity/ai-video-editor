@@ -72,7 +72,6 @@
 	}
 	const compound = () => {
 		show()
-		console.log(layersDataStore.layersSerialize)
 	}
 	
 </script>

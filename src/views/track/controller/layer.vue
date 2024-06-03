@@ -13,7 +13,7 @@
 			</el-tooltip>
 			<el-tooltip v-if="data.type=='text'" effect="dark" content="文本" placement="top">
 				<el-icon size="14px">
-					<ChatLineSquare />
+					<font-awesome-icon icon="fa-solid fa-t" />
 				</el-icon>
 			</el-tooltip>
 			<el-tooltip v-if="data.type=='figure'" effect="dark" content="数字人" placement="top">
