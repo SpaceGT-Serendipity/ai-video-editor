@@ -6,10 +6,6 @@ import {
 } from '../store/track.js'
 import Scene from './Scene.js'
 import Track from './Track.js'
-import {
-	ResourceDeserialize
-} from './Resource.js'
-import Figure from './Figure.js'
 
 export default class LayerUnit {
 	/* 轨道配置 */
@@ -20,8 +16,6 @@ export default class LayerUnit {
 	track = null
 	/* 场景信息 */
 	scene = null
-	/* 数字人信息 */
-	figure = null
 	/* 开始时间,并不是真实时间,仅为显示的开始时间(ms) */
 	_durationStart = 0
 	/* 结束时间,并不是真实时间,仅为显示的结束时间(ms) */
@@ -46,9 +40,7 @@ export default class LayerUnit {
 			// 原始宽度不进行缩放计算
 			w: resource.duration / this.trackStore.rulerScaleTime * this.trackStore.rulerScaleWidth,
 		})
-		if (resource.type == 'figure') {
-			this.figure = new Figure()
-		}
+
 	}
 
 	destroy() {
@@ -175,4 +167,31 @@ export default class LayerUnit {
 		unit._durationEnd = data.durationEnd
 		return unit;
 	}
+}
+
+/* 异步反序列加载远程文件 */
+async function ResourceDeserialize(data) {
+	let resource = null
+	if (data.type == 'video') {
+		resource = await VideoResource.url(data.url, data.name)
+		await resource.init()
+	} else
+	if (data.type == 'image') {
+		resource = new ImageResource({
+			name: data.name,
+			url: data.url
+		});
+	}
+	if (data.type == 'figure') {
+		resource = new FigureResource({
+			name: data.name,
+			tag: data.tag,
+			url: data.url,
+			cover: data.cover
+		});
+	}
+	resource.duration = data.duration;
+	resource.size = data.size;
+	resource.loaded = true
+	return resource;
 }

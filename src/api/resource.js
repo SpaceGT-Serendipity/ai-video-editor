@@ -8,8 +8,8 @@ export async function loadFigure() {
 	return res.map(item => {
 		return {
 			name: item.name,
-			url: import.meta.env.VITE_APP_FILE_API + '/download/' + item.url,
-			cover: import.meta.env.VITE_APP_FILE_API + '/download/' + item.cover,
+			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.url,
+			cover: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.cover,
 			tag: item.type
 		}
 	})
@@ -30,8 +30,8 @@ export async function loadVideo() {
 	return res.map(item => {
 		return {
 			name: item.name,
-			url: import.meta.env.VITE_APP_FILE_API + '/download/' + item.url,
-			cover: import.meta.env.VITE_APP_FILE_API + '/download/' + item.cover,
+			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.url,
+			cover: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.cover,
 			duration: item.duration * 1000,
 			size: item.size
 		}

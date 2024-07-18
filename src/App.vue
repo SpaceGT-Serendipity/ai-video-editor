@@ -57,6 +57,7 @@
 <style>
 	@import "vue-draggable-resizable/style.css";
 	@import 'glightbox/dist/css/glightbox.min.css';
+	@import 'plyr/dist/plyr.css';
 
 	html {
 		background-color: var(--el-bg-color);

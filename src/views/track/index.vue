@@ -3,7 +3,7 @@
 		'--controller-group-width':`${trackStore.controllerGroupWidth}px`,
 		'--track-timeline-ruler-height':`${trackStore.rulerHeight}px`
 	}">
-		<toolbar ref="toolbarRef"></toolbar>
+		<!-- <toolbar ref="toolbarRef"></toolbar> -->
 		<div class="view" ref="dropZoneRef"
 			:style="{'position':isOverDropZone||resourceDragStore.data?'relative':'initial'}">
 			<div v-show="haveResources" class="controller-group" ref="controllerGroupRef">
@@ -40,11 +40,9 @@
 	import TimelineSeeker from './seeker/index.vue'
 	import LayerUnit from '../../bean/LayerUnit.js'
 	import Layer from '../../bean/Layer.js'
-	import {
-		TextResource,
-		ImageResource,
-		VideoResource
-	} from '../../bean/Resource.js'
+	import TextResource from '../../bean/TextResource'
+	import ImageResource from '../../bean/ImageResource'
+	import VideoResource from '../../bean/VideoResource'
 	import {
 		useDropZone,
 		useMouse

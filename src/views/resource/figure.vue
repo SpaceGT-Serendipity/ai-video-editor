@@ -52,9 +52,7 @@
 	import {
 		loadFigure
 	} from '../../api/resource.js'
-	import {
-		FigureResource
-	} from '../../bean/Resource.js'
+	import FigureResource from '../../bean/FigureResource'
 
 	const list = ref([])
 	const pictureList = computed(() => list.value.filter(item => item.tag == 'picture'))

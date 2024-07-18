@@ -53,7 +53,7 @@ export default class Scene {
 					loadParser: getLoadParserName(resource.type)
 				})
 			}
-			if (resource.type == 'video' || resource.tag == 'video') {
+			if (resource.type == 'video') {
 				await loadVideo(app, this, () => this.timestamp = new Date().getTime())
 				this.pause()
 			} else
@@ -112,6 +112,8 @@ const getLoadParserName = (type) => {
 		case 'video':
 			return 'loadVideo';
 		case 'image':
+			return 'loadTextures';
+		case 'figure':
 			return 'loadTextures';
 	}
 	return null;

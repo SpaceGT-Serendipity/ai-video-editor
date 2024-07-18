@@ -40,13 +40,16 @@
 		{
 			label: 'figure',
 			title: '数字人'
-		}, {
-			label: 'text',
-			title: '文本'
-		}, {
-			label: 'subtitle',
-			title: '字幕'
-		}, {
+		},
+		// {
+		// 	label: 'text',
+		// 	title: '文本'
+		// }, 
+		// {
+		// 	label: 'subtitle',
+		// 	title: '字幕'
+		// }, 
+		{
 			label: 'image',
 			title: '图片'
 		}, {

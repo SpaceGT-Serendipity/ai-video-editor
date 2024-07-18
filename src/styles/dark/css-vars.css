@@ -5,6 +5,7 @@ html {
 	--menu-active-bg: #dee7ef;
 	--track-toolbar-bg: #f4f4f5;
 	--layer-bg: #F5F5F3;
+	--layer-bg-dark: #e1e1e0;
 	--layer-graggle-bg: #e6e6fe;
 	--layer-unit-bg: #86edff33;
 	--layer-unit-boder-color: #11111188;
@@ -26,6 +27,7 @@ html.dark {
 	--menu-active-bg: #060608;
 	--track-toolbar-bg: #29292D;
 	--layer-bg: #28282E;
+	--layer-bg-dark: #141414;
 	--layer-graggle-bg: #303035;
 	--layer-unit-bg: #2A4A50;
 	--layer-unit-boder-color: #eeeeee88;
@@ -38,4 +40,8 @@ html.dark {
 
 html.dark .el-input {
 	--el-input-bg-color: #1B1B1D;
+}
+
+html.dark .plyr--audio .plyr__controls {
+	background-color: var(--layer-bg-dark);
 }

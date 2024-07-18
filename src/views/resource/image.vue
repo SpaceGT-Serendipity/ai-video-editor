@@ -57,9 +57,7 @@
 		ElMessage,
 		ElMessageBox
 	} from 'element-plus'
-	import {
-		ImageResource
-	} from '../../bean/Resource.js'
+	import ImageResource from '../../bean/ImageResource'
 	import {
 		dateFormat
 	} from '../../utils/time.js'
@@ -86,7 +84,7 @@
 		localFileList.push(image)
 		// 上传至服务器
 		const res = await upload(file.raw, 'ai-video-editor/source/image')
-		image.url = `${import.meta.env.VITE_APP_FILE_API}/download/${res.url}`
+		image.url = `${import.meta.env.VITE_APP_FILE_SERVER}/download/${res.url}`
 		// 加入本地列表
 		resourceLocalStore.images.push({
 			name: image.name,

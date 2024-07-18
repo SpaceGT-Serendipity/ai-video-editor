@@ -5,7 +5,7 @@
 			<split></split>
 		</div>
 		<div class="button-group-right">
-			<scale></scale>
+			<!-- <scale></scale> -->
 		</div>
 	</div>
 </template>

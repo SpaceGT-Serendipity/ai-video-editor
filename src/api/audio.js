@@ -9,7 +9,7 @@ export async function loadAudios() {
 		return {
 			id: item.id,
 			name: item.name,
-			url: import.meta.env.VITE_APP_FILE_API + '/download/' + item.url,
+			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.url,
 			duration: item.duration * 1000
 		}
 	})

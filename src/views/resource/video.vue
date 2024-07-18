@@ -54,9 +54,7 @@
 		ElMessage,
 		ElMessageBox
 	} from 'element-plus'
-	import {
-		VideoResource
-	} from '../../bean/Resource.js'
+	import VideoResource from '../../bean/VideoResource'
 	import {
 		reactify
 	} from '@vueuse/core'
@@ -90,7 +88,7 @@
 		loadingLocalVideos.value = false
 		// 上传至服务器
 		const res = await upload(file.raw, 'ai-video-editor/source/video')
-		video.url = `${import.meta.env.VITE_APP_FILE_API}/download/${res.url}`
+		video.url = `${import.meta.env.VITE_APP_FILE_SERVER}/download/${res.url}`
 		// 加入本地列表
 		resourceLocalStore.videos.push({
 			name: video.name,

@@ -5,7 +5,8 @@
 				<el-button text bg :class="{'active':driveMode=='文本驱动'}" @click="driveMode='文本驱动'">文本驱动</el-button>
 				<el-button text bg :class="{'active':driveMode=='音频驱动'}" @click="driveMode='音频驱动'">音频驱动</el-button>
 			</div>
-			<el-button text bg class="model" :class="{'show':driveMode=='文本驱动'}" :title="voice.name" @click="selectVoiceRef.open()">
+			<el-button text bg class="model" :class="{'show':driveMode=='文本驱动'}" :title="voice.name"
+				@click="selectVoiceRef.open()">
 				<el-icon size="24">
 					<font-awesome-icon icon="fa-solid fa-headset" />
 				</el-icon>
@@ -18,7 +19,7 @@
 		</div>
 		<div class="text" v-if="driveMode=='文本驱动'">
 			<el-input v-model="text" type="textarea" resize="none" maxlength="5000" show-word-limit></el-input>
-			<el-button size="large">
+			<el-button size="large" :loading="loadingGenerateAudio" @click="onGenerateAudio">
 				<el-icon>
 					<font-awesome-icon icon="fa-solid fa-file-audio" />
 				</el-icon>
@@ -43,7 +44,7 @@
 				</el-button>
 			</el-upload>
 			<el-scrollbar>
-				<div class="music" v-for="item in audioList">
+				<div class="music" v-for="item in audioList" @click="onChangeAudio(item)">
 					<div class="icon">
 						<el-button link v-if="true">
 							<el-icon size="12">
@@ -78,14 +79,30 @@
 				</div>
 			</el-scrollbar>
 		</div>
+		<div class="audio-preview" v-if="layersDataStore.activeUnit.resource.audio">
+			<audio id="player" crossorigin playsinline>
+				<source :src="layersDataStore.activeUnit.resource.audio.url" type="audio/mp3">
+			</audio>
+			<el-button text @click="layersDataStore.activeUnit.resource.audio=null">
+				<el-icon>
+					<Delete></Delete>
+				</el-icon>
+			</el-button>
+		</div>
+		<div class="audio-preview-mask" v-if="layersDataStore.activeUnit.resource.audio">
+			已选择音频
+		</div>
 	</div>
 </template>
 
 <script setup>
+	import Plyr from 'plyr';
 	import SelectVoice from '../../components/select-voice.vue'
 	import {
 		ref,
-		onMounted
+		onMounted,
+		watch,
+		nextTick
 	} from 'vue'
 	import {
 		loadAudios
@@ -93,7 +110,20 @@
 	import {
 		dateFormat
 	} from '../../utils/time.js'
+	import {
+		getOptimumBatch,
+		ttsJob,
+		edgeTtsVoicesJob
+	} from '../../api/batch.js'
+	import {
+		upload
+	} from '../../api/file.js'
+	import {
+		useLayersDataStore
+	} from '../../store/layers.js'
+	import MediaFile from '../../bean/MediaFile'
 
+	const layersDataStore = useLayersDataStore()
 	const selectVoiceRef = ref()
 	const driveMode = ref('文本驱动')
 	const text = ref('')
@@ -102,16 +132,86 @@
 		id: 1,
 		name: '晓晓'
 	})
+	const loadingGenerateAudio = ref(false)
+	let player = null;
+
+	watch(() => layersDataStore.activeUnit.resource.audio, (value) => {
+		if (value) {
+			nextTick(() => loadAudioPreview())
+		} else {
+			player = null;
+		}
+	}, {
+		immediate: true
+	})
 
 	const handleUpload = async (file) => {
+		console.log(file)
+		const remoteFile = await upload(file.raw, 'audio')
+		const mediaFile = MediaFile.parse({
+			...remoteFile,
+			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + remoteFile.url,
+			blob: file.raw
+		});
+		layersDataStore.activeUnit.resource.audio = mediaFile
+		loadAudioPreview()
+	}
+	const onChangeAudio = (file) => {
+		const mediaFile = MediaFile.parse(file);
+		layersDataStore.activeUnit.resource.audio = mediaFile
+		loadAudioPreview()
+	}
+	const onGenerateAudio = async () => {
+		loadingGenerateAudio.value = true
+		const activeUnit = layersDataStore.activeUnit
+		try {
+			const batch = await getOptimumBatch()
+			const blob = await ttsJob(batch, {
+				"type": "edge",
+				"text": text.value,
+				"voice": "zh-HK-HiuGaaiNeural",
+				"rate": 10,
+				"volume": 0,
+				"pitch": 0
+			})
+			const localFile = new File([blob], 'audio.mp3', {
+				type: blob.type
+			})
+			const remoteFile = await upload(localFile, 'audio')
+			const mediaFile = MediaFile.parse({
+				...remoteFile,
+				url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + remoteFile.url,
+				blob
+			});
+			activeUnit.resource.audio = mediaFile
+		} catch (e) {}
+		loadAudioPreview()
+		loadingGenerateAudio.value = false
 	}
 	const load = async () => {
 		const res = await loadAudios()
 		audioList.value = res
 	}
 
+	const loadAudioPreview = () => {
+		nextTick(() => {
+			if (player != null) {
+				player.source = {
+					type: 'audio',
+					sources: [{
+						src: layersDataStore.activeUnit.resource.audio.url,
+						type: 'audio/mp3',
+					}],
+				};
+			} else {
+				player = new Plyr('#player')
+			}
+		})
+	}
+
 	onMounted(() => {
 		load()
+
 	})
 </script>
 
@@ -159,8 +259,8 @@
 		gap: 8px;
 		font-size: 12px;
 	}
-	
-	.model .user .user-name{
+
+	.model .user .user-name {
 		max-width: 100px;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -173,7 +273,7 @@
 	}
 
 	.text {
-		background-color: #141414;
+		background-color: var(--layer-bg-dark);
 		flex: 1 1 0%;
 		display: flex;
 		flex-direction: column;
@@ -279,6 +379,31 @@
 		right: 10%;
 		top: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	.audio-preview {
+		margin-top: 5px;
+		display: flex;
+		align-items: center;
+	}
+
+	.audio-preview .el-button {
+		background-color: var(--layer-bg-dark);
+		height: 100%;
+		margin-left: 2px;
+	}
+
+	.audio-preview-mask {
+		position: absolute;
+		background-color: #000;
+		width: 100%;
+		height: calc(100% - 56px);
+		opacity: 0.7;
+		top: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 30px;
 	}
 </style>
 <style>

@@ -15,13 +15,26 @@
 	} from 'vue'
 
 	const currenComponent = shallowRef(null)
+	// const requireComponent = require.context('./', true, /\.vue$/);  
+	// console.log(requireComponent)
 
 	const load = (data) => {
 		currenComponent.value = defineAsyncComponent({
 			loadingComponent: LoadingComponent,
 			errorComponent: ErrorComponent,
 			timeout: 5000,
-			loader: () => import( /* @vite-ignore */ `./${data.label}.vue`)
+			loader: () => {
+				if (data.label == 'image') {
+					return import(`./image.vue`);
+				} else
+				if (data.label == 'video') {
+					return import(`./video.vue`);
+				} else
+				if (data.label == 'bgm') {
+					return import(`./bgm.vue`);
+				}
+				return import(`./figure.vue`);
+			}
 		});
 	}
 

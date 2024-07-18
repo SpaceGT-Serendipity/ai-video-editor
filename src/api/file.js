@@ -11,7 +11,7 @@ export function upload(file, path) {
 	const id = uuidv4()
 	return axios({
 		method: 'post',
-		url: import.meta.env.VITE_APP_FILE_API + '/upload',
+		url: import.meta.env.VITE_APP_FILE_SERVER + '/upload',
 		headers: {
 			'Content-Type': 'multipart/form-data'
 		},
@@ -31,7 +31,7 @@ export function upload(file, path) {
 export function download(url) {
 	return axios({
 		method: 'get',
-		url: import.meta.env.VITE_APP_FILE_API + '/download/' + url,
+		url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + url,
 		responseType: 'blob',
 		withCredentials: false,
 	})
@@ -40,7 +40,7 @@ export function download(url) {
 export function ppt2image(file) {
 	return axios({
 		method: 'post',
-		url: import.meta.env.VITE_APP_FILE_API + '/ppt/ppt2image',
+		url: import.meta.env.VITE_APP_FILE_SERVER + '/ppt/ppt2image',
 		headers: {
 			'Content-Type': 'multipart/form-data'
 		},
