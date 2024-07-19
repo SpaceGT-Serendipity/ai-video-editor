@@ -23,6 +23,12 @@ export default class Resource {
 		this.name = name;
 	}
 
+	clone() {
+		return this;
+	}
+
+	destroy() {}
+
 	static ImageResourceStyle = `
 		width: 100%;
 	    height: 100%;

@@ -9,6 +9,10 @@ import Layer from '../bean/Layer.js'
 export const useLayersDataStore = defineStore('layers-data', {
 	state: () => ({
 		layers: [], // 轨道时间线层级
+		/* 主视频层 */
+		mainVideoLayerId: null,
+		/* 主音频层 */
+		mainAudioLayerId: null
 	}),
 	getters: {
 		videoTotalDuration() {
@@ -46,6 +50,12 @@ export const useLayersDataStore = defineStore('layers-data', {
 				}
 			}
 			return null;
+		},
+		mainVideoLayer() {
+			return this.layers.find(item => item.id == this.mainVideoLayerId)
+		},
+		mainAudioLayer() {
+			return this.layers.find(item => item.id == this.mainAudioLayerId)
 		}
 	},
 	actions: {
@@ -116,6 +126,40 @@ export const useLayersDataStore = defineStore('layers-data', {
 			this.delLayerById(...this.layers.map(layer => layer.id))
 			for (let i = 0; i < data.length; i++)
 				this.layers.push(await Layer.deserialize(data[i]))
+		},
+		/*添加图层*/
+		addLayer(layer) {
+			this.layers.push(layer)
+			this.voteMainLayer()
+		},
+		/*插入图层*/
+		insertLayer(index, layer) {
+			this.layers.splice(index, 0, layer);
+			this.clearEmptyLayer()
+			this.voteMainLayer()
+		},
+		/*图层追加元素*/
+		appendUnit(index, unit) {
+			this.layers[index].units.push(unit)
+			this.clearEmptyLayer()
+			this.voteMainLayer()
+		},
+		/*选举主图层*/
+		voteMainLayer() {
+			if (this.mainVideoLayer == null) {
+				for (let layer of this.layers) {
+					if (layer.type == 'video' || layer.type == 'image') {
+						this.mainVideoLayerId = layer.id
+					}
+				}
+			}
+			if (this.mainAudioLayer == null) {
+				for (let layer of this.layers) {
+					if (layer.type == 'audio') {
+						this.mainAudioLayerId = layer.id
+					}
+				}
+			}
 		}
 	}
 })

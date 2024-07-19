@@ -21,7 +21,6 @@ export default class ImageResource extends Resource {
 		});
 	}
 
-
 	get view() {
 		return `<div style="${Resource.ImageResourceStyle} background-image: url(${this.cover});">
 			<span style="${Resource.NameStyle}">${this.name}</span>

@@ -126,15 +126,13 @@
 		layers.value[layerIndex].units.splice(unitIndex, 1)
 		// 元素放置到新图层
 		if (event.dropMode == 'newLayer')
-			layers.value.splice(newIndex + 1, 0, Layer.list(event.dropData));
+			layersDataStore.insertLayer(newIndex + 1, Layer.list(event.dropData))
 		// 元素追加到现有图层
 		if (event.dropMode == 'appendUnit')
-			layers.value[newIndex].units.push(event.dropData)
+			layersDataStore.appendUnit(newIndex, event.dropData)
 		// 元素添加顶部新图层
 		if (event.dropMode == 'topLayer')
-			layers.value.splice(newIndex, 0, Layer.list(event.dropData));
-		// 清除空图层
-		layersDataStore.clearEmptyLayer()
+			layersDataStore.insertLayer(newIndex, Layer.list(event.dropData))
 		// 拖拽结束后(不选择拖拽中进行节省性能,所以拖拽中可以重合,用户体验良好)进行一个x坐标的排序，并且如果有重合调整坐标，保证友好的顺序以及不重合。
 		sortLayers()
 	}

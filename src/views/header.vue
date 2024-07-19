@@ -72,6 +72,7 @@
 	}
 	const compound = () => {
 		show()
+		
 	}
 	
 </script>

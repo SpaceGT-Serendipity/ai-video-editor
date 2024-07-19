@@ -137,7 +137,7 @@
 					// 单元宽度的一半，指针指向中间
 					(unit.track.w / 2)
 				unit.track.x = x;
-				layersDataStore.layers.push(Layer.list(unit))
+				layersDataStore.addLayer(Layer.list(unit))
 				// 主动触发单元点击事件
 				nextTick(() => unit.track.onMousedown(event))
 			})

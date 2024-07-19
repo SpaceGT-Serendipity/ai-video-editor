@@ -60,24 +60,24 @@ export default class Layer {
 	/* 获取图层元素类型 */
 	get type() {
 		const unit = this.units.find(item => true)
-		return unit.type
+		return unit ? unit.type : null;
 	}
 
 	/* 图层是否是可见的 */
 	get visible() {
 		const unit = this.units.find(item => true)
-		return unit.visible
+		return unit ? unit.visible : null;
 	}
 
 	/* 图层是否是有声音的 */
 	get audible() {
 		const unit = this.units.find(item => true)
-		return unit.audible
+		return unit ? unit.audible : null;
 	}
 
 	get height() {
 		const unit = this.units.find(item => true)
-		return unit.track.h
+		return unit ? unit.track.h : null;
 	}
 
 	get length() {

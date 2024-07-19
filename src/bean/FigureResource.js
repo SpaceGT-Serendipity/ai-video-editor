@@ -23,10 +23,17 @@ export default class FigureResource extends Resource {
 	}
 
 	clone() {
-		return this
+		return new FigureResource({
+			name: this.name,
+			tag: this.tag,
+			url: this.url,
+			cover: this.cover
+		})
 	}
 
 	get view() {
-		return `<div style="${Resource.ImageResourceStyle} background-image: url(${this.cover});"></div>`
+		return `<div style="${Resource.ImageResourceStyle} background-image: url(${this.cover});">
+			<span style="${Resource.NameStyle}">${this.name}</span>
+		</div>`;
 	}
 }

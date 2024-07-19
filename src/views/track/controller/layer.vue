@@ -45,7 +45,13 @@
 				<font-awesome-icon icon="fa-solid fa-volume-low" />
 			</el-icon>
 		</el-button>
-		<el-button link size="small" @click="onDel" @keydown.space.prevent="onSpace">
+		<el-button v-if="data.id==layersDataStore.mainVideoLayerId||data.id==layersDataStore.mainAudioLayerId" link
+			size="small" disabled title="主图层">
+			<el-icon size="14px">
+				<Lock />
+			</el-icon>
+		</el-button>
+		<el-button v-else link size="small" @click="onDel" @keydown.space.prevent="onSpace">
 			<el-icon size="14px">
 				<Delete />
 			</el-icon>
