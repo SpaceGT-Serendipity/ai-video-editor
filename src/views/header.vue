@@ -40,6 +40,9 @@
 	import {
 		useLayersDataStore
 	} from '../store/layers.js'
+	import {
+		job
+	} from '../api/batch.js'
 
 	const globalStore = useGlobalStore()
 	const layersDataStore = useLayersDataStore()
@@ -72,9 +75,100 @@
 	}
 	const compound = () => {
 		show()
-		
+		const options = {
+			"samplingRate": 44100,
+			"codeRate": "192k",
+			"width": 1920,
+			"height": 1080,
+			"codec": "libx264",
+			"fps": 25,
+		}
+		const audios = []
+		const videos = []
+		const figures = []
+		if (layersDataStore.mainAudioLayer) {
+			let time = 0
+			layersDataStore.mainAudioLayer.units.forEach(unit => {
+				if (time < unit.duration.left) {
+					audios.push({
+						"type": "blank",
+						"duration": unit.duration.left - time
+					})
+				}
+				audios.push({
+					"type": "audio",
+					"url": unit.resource.url,
+					"start": unit.duration.start,
+					"end": unit.duration.end,
+					"duration": unit.duration.duration
+				})
+				time = unit.duration.right
+			})
+			if (time < layersDataStore.videoTotalDuration) {
+				audios.push({
+					"type": "blank",
+					"duration": layersDataStore.videoTotalDuration - time
+				})
+			}
+		}
+		if (layersDataStore.mainVideoLayer) {
+			let time = 0
+			layersDataStore.mainVideoLayer.units.forEach(unit => {
+				if (time < unit.duration.left) {
+					videos.push({
+						"type": "blank",
+						"duration": unit.duration.left - time
+					})
+				}
+				videos.push({
+					"type": unit.type,
+					"url": unit.resource.url,
+					"start": unit.duration.start,
+					"end": unit.duration.end,
+					"duration": unit.duration.duration,
+					"scale": {
+						"x": unit.scene.scale.x,
+						"y": unit.scene.scale.y
+					},
+					"overlay": {
+						"x": unit.scene.position.x,
+						"y": unit.scene.position.y
+					}
+				})
+				time = unit.duration.right
+			})
+			if (time < layersDataStore.videoTotalDuration) {
+				videos.push({
+					"type": "blank",
+					"duration": layersDataStore.videoTotalDuration - time
+				})
+			}
+		}
+		layersDataStore.layers.forEach(layer => {
+			if (layer.type == 'figure') {
+				layer.units.forEach(unit => {
+					figures.push({
+						"type": "picture",
+						"avatar": unit.resource.url,
+						"audio": unit.resource.audio.url,
+						"anchor": unit.duration.left,
+						"scale": {
+							"x": unit.scene.scale.x,
+							"y": unit.scene.scale.y
+						},
+						"overlay": {
+							"x": unit.scene.position.x,
+							"y": unit.scene.position.y
+						}
+					})
+				})
+			}
+		})
+		options.audios = audios;
+		options.videos = videos;
+		options.figures = figures;
+		job('channel-synthesis-job', globalStore.title , options)
 	}
-	
 </script>
 
 <style scoped>

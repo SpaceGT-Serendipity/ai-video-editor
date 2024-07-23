@@ -146,18 +146,12 @@ export const useLayersDataStore = defineStore('layers-data', {
 		},
 		/*选举主图层*/
 		voteMainLayer() {
-			if (this.mainVideoLayer == null) {
-				for (let layer of this.layers) {
-					if (layer.type == 'video' || layer.type == 'image') {
-						this.mainVideoLayerId = layer.id
-					}
+			for (let layer of this.layers) {
+				if (layer.type == 'video' || layer.type == 'image') {
+					this.mainVideoLayerId = layer.id
 				}
-			}
-			if (this.mainAudioLayer == null) {
-				for (let layer of this.layers) {
-					if (layer.type == 'audio') {
-						this.mainAudioLayerId = layer.id
-					}
+				if (layer.type == 'audio') {
+					this.mainAudioLayerId = layer.id
 				}
 			}
 		}

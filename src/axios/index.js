@@ -7,6 +7,7 @@ const service = axios.create({
 })
 
 service.interceptors.request.use((config) => {
+	config.headers['x-openid'] = 'wangshuo'
 	return config
 }, (error) => {
 	return Promise.reject(error)

@@ -100,6 +100,20 @@ export default class Scene {
 		}
 	}
 
+	get position() {
+		return {
+			x: this.container.x,
+			y: this.container.y
+		}
+	}
+
+	get scale() {
+		return {
+			x: this.container.scale.x,
+			y: this.container.scale.y
+		}
+	}
+
 	static deserialize(data) {
 		const scene = new Scene();
 		scene.timestamp = data.timestamp;

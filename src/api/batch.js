@@ -25,3 +25,15 @@ export function edgeTtsVoicesJob(batch) {
 		url: batch.path + '/edge-tts-voices-job'
 	})
 }
+
+
+export function job(jobName, jobTitle, options) {
+	return axios({
+		method: 'post',
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/jobs/' + jobName + '/' + jobTitle,
+		headers: {
+			"Content-Type": "application/json"
+		},
+		data: options
+	})
+}
