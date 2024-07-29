@@ -1,8 +1,10 @@
 <template>
 	<div class="resource">
-		<Transition name="fade" mode="out-in">
-			<component :is="currenComponent"></component>
-		</Transition>
+		<KeepAlive>
+			<Transition name="fade" mode="out-in">
+				<component :is="currenComponent"></component>
+			</Transition>
+		</KeepAlive>
 	</div>
 </template>
 

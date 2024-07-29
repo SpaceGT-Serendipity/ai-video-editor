@@ -52,7 +52,7 @@ export function timeFormat2(size) {
 		minute = parseInt(size / 60)
 		size = size % 60
 	}
-	return (hour > 0 ? `${hour.toString()}时 ` : ``) + `${minute.toString()}分`
+	return (hour > 0 ? `${hour.toString()}小时 ` : ``) + `${minute.toString()}分钟`
 }
 
 /* 获取已经经过的天数 */

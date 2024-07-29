@@ -2,7 +2,7 @@ import Resource from './Resource'
 import axios from '../axios/index.js'
 
 export default class VideoResource extends Resource {
-	type= 'video'
+	type = 'video'
 	_file = null;
 	_video = null;
 
@@ -42,7 +42,7 @@ export default class VideoResource extends Resource {
 		const file = new File([blob], name, {
 			type: blob.type
 		})
-		const videoResource = VideoResource.file(file)
+		const videoResource = await VideoResource.file(file)
 		videoResource.url = url
 		return videoResource;
 	}

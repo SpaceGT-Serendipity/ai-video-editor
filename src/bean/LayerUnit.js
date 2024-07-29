@@ -106,9 +106,9 @@ export default class LayerUnit {
 
 	get duration() {
 		return {
-			start: this._durationStart,
-			end: this._durationEnd,
-			duration: this._durationEnd - this._durationStart,
+			start: 0,
+			end: parseInt(this.track.w / this.trackStore.milliscondWidth),
+			duration: parseInt(this.track.w / this.trackStore.milliscondWidth),
 			left: parseInt(this.track.x / this.trackStore.milliscondWidth),
 			right: parseInt((this.track.x + this.track.w) / this.trackStore.milliscondWidth)
 		}
@@ -137,7 +137,7 @@ export default class LayerUnit {
 
 	/* 元素是否是有声音的 */
 	get audible() {
-		return ['video', 'figure', 'audio'].includes(this.type)
+		return ['figure', 'audio'].includes(this.type)
 	}
 
 	get serialize() {

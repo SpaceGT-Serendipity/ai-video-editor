@@ -45,3 +45,21 @@ html.dark .el-input {
 html.dark .plyr--audio .plyr__controls {
 	background-color: var(--layer-bg-dark);
 }
+
+::-webkit-scrollbar {
+	width: 6px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+	background-color: #fff3;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #0003;
+	border-radius: 10px;
+	transition: all .2s ease-in-out;
+}
+
+::-webkit-scrollbar-track {
+	border-radius: 10px;
+}

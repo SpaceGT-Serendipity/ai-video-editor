@@ -12,7 +12,10 @@ export const useGlobalStore = defineStore('global', {
 		serialize: null, // layers 序列化存档
 		menu: 'image' //菜单打开的选项
 	}),
-	persist: true
+	persist: true,
+	actions: {
+		
+	},
 })
 
 export const useStateStore = defineStore('state', {

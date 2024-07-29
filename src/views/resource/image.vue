@@ -1,5 +1,5 @@
 <template>
-	<el-tabs model-value="预设图片" class="tabs">
+	<el-tabs model-value="预设图片" class="tabs" v-loading="loading">
 		<el-tab-pane label="预设图片" name="预设图片">
 			<el-scrollbar>
 				<div class="list">
@@ -7,10 +7,10 @@
 				</div>
 			</el-scrollbar>
 		</el-tab-pane>
-		<el-tab-pane label="本地图片" name="本地图片">
-			<el-scrollbar>
+		<el-tab-pane label="本地图片" name="本地图片" >
+			<el-scrollbar >
 				<el-upload class="upload" :show-file-list="false" action :auto-upload="false" multiple
-					accept=".jpg,.png" :on-change="handleUpload">
+					accept=".jpg,.png,.pptx" :on-change="handleUpload">
 					<el-button icon="Plus">点击上传本地图片</el-button>
 					<el-tooltip class="box-item" effect="dark" content="支持批量上传文件,单文件不超过10MB" placement="top">
 						<el-button link>
@@ -65,7 +65,8 @@
 		loadImage
 	} from '../../api/resource.js'
 	import {
-		upload
+		upload,
+		ppt2image
 	} from '../../api/file.js'
 	import {
 		useResourceLocalStore,
@@ -78,18 +79,38 @@
 	const localFileList = reactive([])
 	const linkFileList = reactive([])
 	const link = ref()
+	const loading = ref(false)
 
 	const handleUpload = async (file) => {
-		const image = ImageResource.file(file.raw)
-		localFileList.push(image)
-		// 上传至服务器
-		const res = await upload(file.raw, 'ai-video-editor/source/image')
-		image.url = `${import.meta.env.VITE_APP_FILE_SERVER}/download/${res.url}`
-		// 加入本地列表
-		resourceLocalStore.images.push({
-			name: image.name,
-			url: image.url
-		})
+		loading.value = true
+		if (file.name.lastIndexOf('.pptx') == file.name.length - 5) {
+			const res = await ppt2image(file.raw)
+			console.log(res)
+			res.forEach(item => {
+				const image = new ImageResource({
+					name: dateFormat(new Date()),
+					url: `${import.meta.env.VITE_APP_FILE_SERVER}/download/${item.url}`
+				})
+				localFileList.push(image)
+				// 加入本地列表
+				resourceLocalStore.images.push({
+					name: image.name,
+					url: image.url
+				})
+			})
+		} else {
+			const image = ImageResource.file(file.raw)
+			localFileList.push(image)
+			// 上传至服务器
+			const res = await upload(file.raw, 'ai-video-editor/source/image')
+			image.url = `${import.meta.env.VITE_APP_FILE_SERVER}/download/${res.url}`
+			// 加入本地列表
+			resourceLocalStore.images.push({
+				name: image.name,
+				url: image.url
+			})
+		}
+		loading.value = false
 	}
 	const addLinkResource = () => {
 		const image = new ImageResource({

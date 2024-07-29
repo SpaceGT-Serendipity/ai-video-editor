@@ -23,9 +23,9 @@ export async function loadVoices() {
 	})
 	voices.push(...res.map(item => {
 		return {
-			id: item.id,
+			type: 'edge',
 			name: item.name,
-			type: 'edge-tts'
+			voice: item.voice,
 		}
 	}))
 	const res2 = await axios({
@@ -34,9 +34,10 @@ export async function loadVoices() {
 	})
 	voices.push(...res2.map(item => {
 		return {
-			id: item.id,
+			type: 'rvc',
 			name: item.name,
-			type: 'rvc'
+			model: item.rvc,
+			voice: item.voice,
 		}
 	}))
 	const res3 = await axios({
@@ -45,9 +46,11 @@ export async function loadVoices() {
 	})
 	voices.push(...res3.map(item => {
 		return {
-			id: item.id,
+			type: 'gpt-sovits',
 			name: item.name,
-			type: 'gpt-sovits'
+			model: item.modelName,
+			promptAudio: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.promptAudio,
+			promptText: item.promptText
 		}
 	}))
 	return voices

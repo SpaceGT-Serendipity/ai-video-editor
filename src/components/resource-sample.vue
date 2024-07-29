@@ -1,6 +1,6 @@
 <template>
 	<div class="resource-sample" ref="resourceSampleRef" v-loading="!data.loaded">
-		<div class="card">
+		<div class="card" :class="{'drag':props.drag}">
 			<el-image :src="data.cover" fit="contain">
 				<template #placeholder>
 					<div class="image-slot">
@@ -54,7 +54,15 @@
 	} from 'vue'
 
 	const props = defineProps({
-		data: Object
+		data: Object,
+		drag: {
+			type: Boolean,
+			default: true
+		},
+		size: {
+			type: String,
+			default: 'default' // 'large'| 'default'| 'small'
+		}
 	})
 	const store = useResourceDragStore()
 	const resourceSampleRef = ref()
@@ -78,16 +86,19 @@
 		GLightbox({
 			type: ['image', 'video'].includes(props.data.type) ? props.data.type : 'image'
 		});
-
-		resourceSampleRef.value.addEventListener('mousedown', handleMousedown)
-		resourceSampleRef.value.addEventListener('mouseup', handleMouseup)
-		resourceSampleRef.value.addEventListener('mouseleave', handleMouseleave)
+		if (props.drag) {
+			resourceSampleRef.value.addEventListener('mousedown', handleMousedown)
+			resourceSampleRef.value.addEventListener('mouseup', handleMouseup)
+			resourceSampleRef.value.addEventListener('mouseleave', handleMouseleave)
+		}
 	})
 
 	onBeforeUnmount(() => {
-		resourceSampleRef.value.removeEventListener('mousedown', handleMousedown)
-		resourceSampleRef.value.removeEventListener('mouseup', handleMouseup)
-		resourceSampleRef.value.removeEventListener('mouseleave', handleMouseleave)
+		if (props.drag) {
+			resourceSampleRef.value.removeEventListener('mousedown', handleMousedown)
+			resourceSampleRef.value.removeEventListener('mouseup', handleMouseup)
+			resourceSampleRef.value.removeEventListener('mouseleave', handleMouseleave)
+		}
 	})
 </script>
 
@@ -118,6 +129,9 @@
 		justify-content: center;
 		background-size: cover;
 		border-radius: 5px;
+	}
+
+	.card.drag {
 		cursor: all-scroll;
 	}
 

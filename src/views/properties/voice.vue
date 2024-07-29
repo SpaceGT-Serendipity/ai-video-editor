@@ -129,13 +129,17 @@
 	const text = ref('')
 	const audioList = ref([])
 	const voice = ref({
-		id: 1,
-		name: '晓晓'
+		type: "edge",
+		name: "中文-晓晓-女",
+		voice: "zh-CN-XiaoxiaoNeural",
+		model: null,
+		promptAudio: null,
+		promptText: null
 	})
 	const loadingGenerateAudio = ref(false)
 	let player = null;
 
-	watch(() => layersDataStore.activeUnit.resource.audio, (value) => {
+	watch(() => layersDataStore.activeUnit?.resource.audio, (value) => {
 		if (value) {
 			nextTick(() => loadAudioPreview())
 		} else {
@@ -146,19 +150,19 @@
 	})
 
 	const handleUpload = async (file) => {
-		console.log(file)
 		const remoteFile = await upload(file.raw, 'audio')
 		const mediaFile = MediaFile.parse({
 			...remoteFile,
 			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + remoteFile.url,
-			blob: file.raw
+			blob: file.raw,
+			duration: remoteFile.duration * 1000
 		});
-		layersDataStore.activeUnit.resource.audio = mediaFile
+		layersDataStore.setUnitFigureResourceAudio(layersDataStore.activeUnit, mediaFile)
 		loadAudioPreview()
 	}
 	const onChangeAudio = (file) => {
 		const mediaFile = MediaFile.parse(file);
-		layersDataStore.activeUnit.resource.audio = mediaFile
+		layersDataStore.setUnitFigureResourceAudio(layersDataStore.activeUnit, mediaFile)
 		loadAudioPreview()
 	}
 	const onGenerateAudio = async () => {
@@ -167,12 +171,15 @@
 		try {
 			const batch = await getOptimumBatch()
 			const blob = await ttsJob(batch, {
-				"type": "edge",
-				"text": text.value,
-				"voice": "zh-HK-HiuGaaiNeural",
-				"rate": 10,
-				"volume": 0,
-				"pitch": 0
+				type: voice.value.type,
+				text: text.value,
+				voice: voice.value.voice,
+				model: voice.value.model,
+				promptAudio: voice.value.promptAudio,
+				promptText: voice.value.promptText,
+				rate: 0,
+				volume: 0,
+				pitch: 0
 			})
 			const localFile = new File([blob], 'audio.mp3', {
 				type: blob.type
@@ -181,9 +188,10 @@
 			const mediaFile = MediaFile.parse({
 				...remoteFile,
 				url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + remoteFile.url,
-				blob
+				blob,
+				duration: remoteFile.duration * 1000
 			});
-			activeUnit.resource.audio = mediaFile
+			layersDataStore.setUnitFigureResourceAudio(activeUnit, mediaFile)
 		} catch (e) {}
 		loadAudioPreview()
 		loadingGenerateAudio.value = false
@@ -192,7 +200,6 @@
 		const res = await loadAudios()
 		audioList.value = res
 	}
-
 	const loadAudioPreview = () => {
 		nextTick(() => {
 			if (player != null) {
@@ -211,7 +218,6 @@
 
 	onMounted(() => {
 		load()
-
 	})
 </script>
 

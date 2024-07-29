@@ -30,6 +30,7 @@ export default class FigureResource extends Resource {
 			cover: this.cover
 		})
 	}
+	
 
 	get view() {
 		return `<div style="${Resource.ImageResourceStyle} background-image: url(${this.cover});">

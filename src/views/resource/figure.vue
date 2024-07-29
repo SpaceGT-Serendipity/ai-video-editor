@@ -61,10 +61,10 @@
 
 	const load = async () => {
 		const res = await loadFigure()
-		for (let i = 0; i < res.length; i++) {
-			const figure = new FigureResource(res[i])
+		res.filter(item => item.tag == 'picture').forEach(item => {
+			const figure = new FigureResource(item)
 			list.value.push(figure)
-		}
+		})
 	}
 
 	onMounted(() => {

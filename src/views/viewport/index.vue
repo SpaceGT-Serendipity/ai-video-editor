@@ -188,4 +188,11 @@
 		transform: translateX(-50%);
 		border-radius: 20px;
 	}
+
+	.el-slider:deep(.el-slider__button) {
+		border-radius: 0 0 50% 50%;
+		width: 12px;
+		height: 14px;
+		border-width: 1px;
+	}
 </style>

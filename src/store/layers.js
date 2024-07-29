@@ -115,6 +115,12 @@ export const useLayersDataStore = defineStore('layers-data', {
 				}
 			}
 		},
+		setUnitFigureResourceAudio(unit, mediaFile) {
+			const trackStore = useTrackStore()
+			unit.resource.audio = mediaFile
+			unit.resource.duration = mediaFile.duration
+			unit.track.w = mediaFile.duration / trackStore.rulerScaleTime * trackStore.rulerScaleWidth
+		},
 		/* 清除空图层 */
 		clearEmptyLayer() {
 			for (let i = this.layers.length - 1; i >= 0; i--) {

@@ -3,7 +3,7 @@
 		<div class="select-voice">
 			<div class="button-group">
 				<el-button text :type="category=='all'?'primary':''" @click="category='all'">全部</el-button>
-				<el-button text :type="category=='edge-tts'?'primary':''" @click="category='edge-tts'">标准音色</el-button>
+				<el-button text :type="category=='edge'?'primary':''" @click="category='edge'">标准音色</el-button>
 				<el-button text :type="category=='rvc'?'primary':''" @click="category='rvc'">RVC 专属音色</el-button>
 				<el-button text :type="category=='gpt-sovits'?'primary':''" @click="category='gpt-sovits'">
 					GPT-Sovits 专属音色
@@ -81,7 +81,6 @@
 		const res = await loadVoices()
 		list.value = res
 	}
-
 
 	onMounted(() => {
 		load()

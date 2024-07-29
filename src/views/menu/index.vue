@@ -8,6 +8,16 @@
 			</div>
 		</el-scrollbar>
 		<div class="setting-menu">
+			<Item @click="jobsRef.open()">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#setting"></use>
+				</svg>
+				<div>
+					作业进度
+				</div>
+			</Item>
+		</div>
+		<div class="setting-menu">
 			<Item @click="settingRef.open()">
 				<svg class="icon" aria-hidden="true">
 					<use xlink:href="#setting"></use>
@@ -18,12 +28,14 @@
 			</Item>
 		</div>
 		<setting ref="settingRef"></setting>
+		<jobs ref="jobsRef"></jobs>
 	</div>
 </template>
 
 <script setup>
 	import Setting from './setting.vue'
 	import Item from './item.vue'
+	import Jobs from '../jobs/index.vue'
 	import {
 		ref,
 		onMounted
@@ -35,6 +47,7 @@
 	const globalStore = useGlobalStore()
 	const emits = defineEmits(['click'])
 	const settingRef = ref()
+	const jobsRef = ref()
 	const menuList = [
 		// 	{ label: 'template', title: '模板' },
 		{
