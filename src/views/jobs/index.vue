@@ -53,6 +53,17 @@
 											{{useDateFormat(item.endTime, 'YYYY-MM-DD HH:mm:ss').value}}
 										</div>
 									</div>
+									<div v-if="item.status=='WAITING'">
+										<div class="el-statistic__head">
+											<el-icon>
+												<Calendar />
+											</el-icon>
+											队列中
+										</div>
+										<div class="el-statistic__number">
+											第 {{item.waitingNumber==0?'?':item.waitingNumber}} 位
+										</div>
+									</div>
 									<div>
 										<div class="el-statistic__head">
 											<el-icon>
