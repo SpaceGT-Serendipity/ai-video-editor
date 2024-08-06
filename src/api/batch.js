@@ -1,9 +1,9 @@
 import axios from '../axios/index.js'
 
-export function getOptimumBatch() {
+export function getOptimumBatch(support) {
 	return axios({
 		method: 'get',
-		url: import.meta.env.VITE_APP_BATCH_SERVER + '/batch/getOptimumBatch'
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/batch/getOptimumBatch/' + support
 	})
 }
 
@@ -54,75 +54,48 @@ export function listByIds(ids) {
 }
 
 export const steps = [{
-	"name": "video-init-step"
+	"name": "transparent-background-step",
+	"label": "初始化背景"
 }, {
-	"name": "transparent-background-step"
+	"name": "unit-init-step",
+	"label": "初始化元素"
 }, {
-	"name": "video-clip-step"
+	"name": "unit-clip-step",
+	"label": "裁剪元素"
 }, {
-	"name": "video-blank-step"
+	"name": "unit-image-step",
+	"label": "图片合成视频"
 }, {
-	"name": "video-image-step"
+	"name": "unit-figure-bg-color-step",
+	"label": "数字人背景初始化"
 }, {
-	"name": "video-update-size-step"
+	"name": "unit-figure-video-step",
+	"label": "数字人视频合成"
 }, {
-	"name": "video-update-sampling-rate-step"
+	"name": "unit-figure-transparent-format-step",
+	"label": "数字人透明通道"
 }, {
-	"name": "video-update-code-rate-step"
+	"name": "unit-blank-step",
+	"label": "空白区域"
 }, {
-	"name": "video-update-frame-rate-step"
+	"name": "unit-format-step",
+	"label": "格式化"
 }, {
-	"name": "video-scale-overlay-step"
+	"name": "unit-scale-step",
+	"label": "元素缩放"
 }, {
-	"name": "video-concat-step"
+	"name": "unit-main-overlay-step",
+	"label": "元素偏移"
 }, {
-	"name": "video-mixture-blank-step"
+	"name": "unit-main-concat-step",
+	"label": "组图层合并"
 }, {
-	"name": "video-mixture-step"
+	"name": "unit-mixture-step",
+	"label": "元素混合"
 }, {
-	"name": "video-channel-output-step"
+	"name": "clear-transparent-background-step",
+	"label": "清除背景"
 }, {
-	"name": "audio-init-step"
-}, {
-	"name": "audio-clip-step"
-}, {
-	"name": "blank-audio-step"
-}, {
-	"name": "update-sampling-rate-step"
-}, {
-	"name": "update-code-rate-step"
-}, {
-	"name": "audio-concat-step"
-}, {
-	"name": "audio-mixed-blank-step"
-}, {
-	"name": "audio-mixed-step"
-}, {
-	"name": "audio-channel-output-step"
-}, {
-	"name": "video-channel-audio-mixed-step"
-}, {
-	"name": "figure-init-step"
-}, {
-	"name": "figure-set-background-color-step"
-}, {
-	"name": "sadtalker-step"
-}, {
-	"name": "figure-transparent-format-step"
-}, {
-	"name": "figure-channel-mixed-blank-step"
-}, {
-	"name": "figure-channel-mixed-step"
-}, {
-	"name": "figure-channel-audio-update-code-rate-step"
-}, {
-	"name": "figure-channel-audio-update-sampling-rate-step"
-}, {
-	"name": "figure-channel-audio-mixed-blank-step"
-}, {
-	"name": "figure-channel-audio-mixed-step"
-}, {
-	"name": "clear-transparent-background-step"
-}, {
-	"name": "channel-checkout-step"
+	"name": "unit-checkout-step",
+	"label": "校验合成结果"
 }]

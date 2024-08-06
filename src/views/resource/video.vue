@@ -62,7 +62,8 @@
 		dateFormat
 	} from '../../utils/time.js'
 	import {
-		loadVideo
+		loadVideo,
+		loadResource
 	} from '../../api/resource.js'
 	import {
 		upload
@@ -107,7 +108,8 @@
 		})
 	}
 	const load = async () => {
-		const res = await loadVideo()
+		/* const res = await loadVideo() */
+		const res = await loadResource('video')
 		for (let i = 0; i < res.length; i++) {
 			const video = new VideoResource(res[i])
 			publicFileList.push(video)

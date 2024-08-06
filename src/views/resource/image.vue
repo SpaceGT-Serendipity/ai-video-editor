@@ -62,7 +62,8 @@
 		dateFormat
 	} from '../../utils/time.js'
 	import {
-		loadImage
+		loadImage,
+		loadResource
 	} from '../../api/resource.js'
 	import {
 		upload,
@@ -125,7 +126,8 @@
 		})
 	}
 	const load = async () => {
-		const res = await loadImage()
+		/* const res = await loadImage() */
+		const res = await loadResource('image')
 		for (let i = 0; i < res.length; i++) {
 			const image = new ImageResource({
 				name: res[i].name,

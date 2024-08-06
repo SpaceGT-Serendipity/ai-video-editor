@@ -1,5 +1,5 @@
 <template>
-	<el-dialog v-model="dialogVisible" title="作业进度" width="1000" center align-center>
+	<el-dialog v-model="dialogVisible" title="作业进度" width="1000" center align-center @close="onClose">
 		<el-skeleton style="width: 100%;" :loading="loading" animated>
 			<template #template>
 				<div style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
@@ -124,7 +124,8 @@
 	const tableData = ref([])
 	const loading = ref(true)
 	const timeLineVueRef = ref()
-
+	let intervalId = null;
+	
 	const open = async () => {
 		loading.value = true
 		dialogVisible.value = true
@@ -132,6 +133,9 @@
 		tableData.value = []
 		await load()
 		loading.value = false
+		intervalId = setInterval(() => {
+			updateStatus()
+		}, 2000)
 	}
 
 	const onShowResult = async (jobId) => {
@@ -170,17 +174,18 @@
 			})
 		}
 	}
-	let intervalId = null;
 	onMounted(() => {
-		intervalId = setInterval(() => {
-			updateStatus()
-		}, 2000)
+		
 	})
-
 	onUnmounted(() => {
-		clearInterval(intervalId)
+		onClose()
 	})
-
+	const onClose = () => {
+		if (intervalId) {
+			clearInterval(intervalId)
+			intervalId = null
+		}
+	}
 	defineExpose({
 		open
 	})

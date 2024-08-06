@@ -65,6 +65,9 @@
 		loadAudios
 	} from '../../api/audio.js'
 	import {
+		loadResource
+	} from '../../api/resource.js'
+	import {
 		upload
 	} from '../../api/file.js'
 	import {
@@ -103,7 +106,8 @@
 		})
 	}
 	const load = async () => {
-		const res = await loadAudios()
+		/* const res = await loadAudios() */
+		const res = await loadResource('bgm')
 		for (let i = 0; i < res.length; i++) {
 			const audio = new AudioResource(res[i])
 			publicFileList.push(audio)

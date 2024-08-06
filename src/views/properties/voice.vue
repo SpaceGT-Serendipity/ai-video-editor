@@ -18,7 +18,8 @@
 			<select-voice ref="selectVoiceRef" @change="(event)=>voice=event"></select-voice>
 		</div>
 		<div class="text" v-if="driveMode=='文本驱动'">
-			<el-input v-model="text" type="textarea" resize="none" maxlength="5000" show-word-limit></el-input>
+			<el-input v-model="propertiesStore.voiceText" type="textarea" resize="none" maxlength="5000"
+				show-word-limit></el-input>
 			<el-button size="large" :loading="loadingGenerateAudio" @click="onGenerateAudio">
 				<el-icon>
 					<font-awesome-icon icon="fa-solid fa-file-audio" />
@@ -122,11 +123,14 @@
 		useLayersDataStore
 	} from '../../store/layers.js'
 	import MediaFile from '../../bean/MediaFile'
+	import {
+		usePropertiesStore
+	} from '../../store/properties.js'
 
+	const propertiesStore = usePropertiesStore()
 	const layersDataStore = useLayersDataStore()
 	const selectVoiceRef = ref()
 	const driveMode = ref('文本驱动')
-	const text = ref('')
 	const audioList = ref([])
 	const voice = ref({
 		type: "edge",
@@ -169,10 +173,10 @@
 		loadingGenerateAudio.value = true
 		const activeUnit = layersDataStore.activeUnit
 		try {
-			const batch = await getOptimumBatch()
+			const batch = await getOptimumBatch('TTS')
 			const blob = await ttsJob(batch, {
 				type: voice.value.type,
-				text: text.value,
+				text: propertiesStore.voiceText,
 				voice: voice.value.voice,
 				model: voice.value.model,
 				promptAudio: voice.value.promptAudio,
@@ -181,6 +185,7 @@
 				volume: 0,
 				pitch: 0
 			})
+			propertiesStore.voiceText = ''
 			const localFile = new File([blob], 'audio.mp3', {
 				type: blob.type
 			})

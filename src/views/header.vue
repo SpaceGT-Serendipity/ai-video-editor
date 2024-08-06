@@ -150,20 +150,18 @@
 			"codec": "libx264",
 			"fps": 25,
 		}
-		const audios = []
-		const videos = []
-		const figures = []
+		const units = []
 		if (layersDataStore.mainAudioLayer) {
 			let time = 0
 			layersDataStore.mainAudioLayer.units.forEach(unit => {
 				if (time < unit.duration.left) {
-					audios.push({
-						"type": "blank",
+					units.push({
+						"type": "main-audio-blank",
 						"duration": unit.duration.left - time
 					})
 				}
-				audios.push({
-					"type": "audio",
+				units.push({
+					"type": "main-audio",
 					"url": unit.resource.url,
 					"start": unit.duration.start,
 					"end": unit.duration.end,
@@ -172,8 +170,8 @@
 				time = unit.duration.right
 			})
 			if (time < layersDataStore.videoTotalDuration) {
-				audios.push({
-					"type": "blank",
+				units.push({
+					"type": "main-audio-blank",
 					"duration": layersDataStore.videoTotalDuration - time
 				})
 			}
@@ -182,13 +180,13 @@
 			let time = 0
 			layersDataStore.mainVideoLayer.units.forEach(unit => {
 				if (time < unit.duration.left) {
-					videos.push({
-						"type": "blank",
+					units.push({
+						"type": "main-video-blank",
 						"duration": unit.duration.left - time
 					})
 				}
-				videos.push({
-					"type": unit.type,
+				units.push({
+					"type": 'main-' + unit.type,
 					"url": unit.resource.url,
 					"start": unit.duration.start,
 					"end": unit.duration.end,
@@ -205,37 +203,33 @@
 				time = unit.duration.right
 			})
 			if (time < layersDataStore.videoTotalDuration) {
-				videos.push({
-					"type": "blank",
+				units.push({
+					"type": "main-video-blank",
 					"duration": layersDataStore.videoTotalDuration - time
 				})
 			}
 		}
-		layersDataStore.layers.forEach(layer => {
+		let layers = [...layersDataStore.layers]
+		layers.reverse()
+		layers.forEach(layer => {
 			if (layer.id != layersDataStore.mainVideoLayerId &&
 				layer.id != layersDataStore.mainAudioLayerId) {
-				if (layer.type == 'figure') {
+				if (layer.type == 'audio') {
 					layer.units.forEach(unit => {
-						figures.push({
-							"type": "picture",
-							"avatar": unit.resource.url,
-							"audio": unit.resource.audio.url,
-							"anchor": unit.duration.left,
-							"scale": {
-								"x": unit.scene.scale.x,
-								"y": unit.scene.scale.y
-							},
-							"overlay": {
-								"x": unit.scene.position.x,
-								"y": unit.scene.position.y
-							}
+						units.push({
+							"type": 'audio',
+							"url": unit.resource.url,
+							"start": unit.duration.start,
+							"end": unit.duration.end,
+							"duration": unit.duration.duration,
+							"anchor": unit.duration.left
 						})
 					})
 				}
 				if (layer.type == 'video') {
 					layer.units.forEach(unit => {
-						videos.push({
-							"type": 'mixture',
+						units.push({
+							"type": 'video',
 							"url": unit.resource.url,
 							"start": unit.duration.start,
 							"end": unit.duration.end,
@@ -254,8 +248,8 @@
 				}
 				if (layer.type == 'image') {
 					layer.units.forEach(unit => {
-						videos.push({
-							"type": 'mixture-image',
+						units.push({
+							"type": 'image',
 							"url": unit.resource.url,
 							"duration": unit.duration.duration,
 							"anchor": unit.duration.left,
@@ -270,13 +264,28 @@
 						})
 					})
 				}
-
+				if (layer.type == 'figure') {
+					layer.units.forEach(unit => {
+						units.push({
+							"type": "figure-picture",
+							"avatar": unit.resource.url,
+							"audio": unit.resource.audio.url,
+							"anchor": unit.duration.left,
+							"scale": {
+								"x": unit.scene.scale.x,
+								"y": unit.scene.scale.y
+							},
+							"overlay": {
+								"x": unit.scene.position.x,
+								"y": unit.scene.position.y
+							}
+						})
+					})
+				}
 			}
-		})
-		options.audios = audios;
-		options.videos = videos;
-		options.figures = figures;
-		if (options.videos.length == 0) {
+		}) 
+		options.units = units;
+		if ((layersDataStore.mainVideoLayer&&layersDataStore.mainVideoLayer.units.length == 0)||options.units.length==0) {
 			ElNotification({
 				title: '请添加图片或视频素材',
 				type: 'warning',

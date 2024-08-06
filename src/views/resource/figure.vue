@@ -38,6 +38,13 @@
 					</div>
 				</el-scrollbar>
 			</el-tab-pane>
+			<!-- <el-tab-pane label="我的" name="我的">
+				<el-scrollbar>
+					<div class="list">
+						<resource-sample v-for="item in [pictureList.at(0)]" :key="item.id" :data="item"></resource-sample>
+					</div>
+				</el-scrollbar>
+			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>

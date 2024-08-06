@@ -37,3 +37,22 @@ export async function loadVideo() {
 		}
 	})
 }
+
+export async function loadResource(type) {
+	const res = await axios({
+		method: 'get',
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/resource/list',
+		params: {
+			type
+		}
+	})
+	return res.map(item => {
+		return {
+			name: item.name,
+			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.url,
+			cover: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.cover,
+			duration: item.duration * 1000,
+			size: item.size
+		}
+	})
+}

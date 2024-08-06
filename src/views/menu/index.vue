@@ -7,17 +7,17 @@
 				</Item>
 			</div>
 		</el-scrollbar>
-		<div class="setting-menu">
+		<div class="work-menu">
 			<Item @click="jobsRef.open()">
 				<svg class="icon" aria-hidden="true">
-					<use xlink:href="#setting"></use>
+					<use xlink:href="#work"></use>
 				</svg>
 				<div>
 					作业进度
 				</div>
 			</Item>
 		</div>
-		<div class="setting-menu">
+		<!-- <div class="setting-menu">
 			<Item @click="settingRef.open()">
 				<svg class="icon" aria-hidden="true">
 					<use xlink:href="#setting"></use>
@@ -26,7 +26,7 @@
 					项目设置
 				</div>
 			</Item>
-		</div>
+		</div> -->
 		<setting ref="settingRef"></setting>
 		<jobs ref="jobsRef"></jobs>
 	</div>
@@ -113,5 +113,20 @@
 	.setting-menu .icon {
 		width: 32px;
 		height: 32px;
+	}
+
+	.work-menu {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-top: 1px solid var(--el-border-color);
+		padding: 6px;
+		text-align: center;
+	}
+
+	.work-menu .icon {
+		width: 58px;
+		height: 32px;
+		margin-left: -32px;
 	}
 </style>

@@ -97,15 +97,15 @@
 		toggle
 	} = useFullscreen(viewportRef)
 	const adaptiveSize = useElementSize(adaptiveSizeRef)
-	const {
-		space
-	} = useMagicKeys()
+	// const {
+	// 	space
+	// } = useMagicKeys()
 
-	watch(space, (v) => {
-		if (v) {
-			viewportStore.playing = !viewportStore.playing
-		}
-	})
+	// watch(space, (v) => {
+	// 	if (v) {
+	// 		viewportStore.playing = !viewportStore.playing
+	// 	}
+	// })
 	watch(() => ({
 		width: adaptiveSize.width.value,
 		height: adaptiveSize.height.value,
