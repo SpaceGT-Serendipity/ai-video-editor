@@ -137,10 +137,19 @@
 		sortLayers()
 	}
 	const sortLayers = () => {
+		let figureIndex = 0
+		const figureLayers = []
 		for (let i = 0; i < layers.value.length; i++) {
+			const layer = layers.value[i];
 			// 图层排序
-			layers.value[i].sort()
+			layer.sort()
+			// 将数字人图层防止顶层
+			if (layer.type == 'figure') {
+				layers.value.splice(i, 1)
+				figureLayers.push(layer)
+			}
 		}
+		layers.value.unshift(...figureLayers)
 	}
 </script>
 

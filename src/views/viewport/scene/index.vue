@@ -140,7 +140,7 @@
 		if (background.value) background.value.destroy()
 		background.value = await loadBackground(app)
 		if (backgroundText.value) backgroundText.value.destroy()
-		backgroundText.value = await loadBackgroundText(app)
+		// backgroundText.value = await loadBackgroundText(app)
 	})
 
 
@@ -168,7 +168,7 @@
 		app.stage.interactive = true
 		scene.appendChild(app.canvas);
 		background.value = await loadBackground(app)
-		backgroundText.value = await loadBackgroundText(app)
+		// backgroundText.value = await loadBackgroundText(app)
 		loading.value = false
 		handleTicker()
 	})

@@ -45,7 +45,6 @@
 				<font-awesome-icon icon="fa-solid fa-volume-low" />
 			</el-icon>
 		</el-button>
-
 		<el-button link size="small" @click="onDel" @keydown.space.prevent="onSpace">
 			<el-icon size="14px">
 				<Delete />
@@ -61,6 +60,15 @@
 				<Flag />
 			</el-icon>
 		</el-button>
+		<div v-if="data.type=='figure'" class="top" >
+			<el-tooltip effect="dark" content="数字人默认置顶" placement="top">
+				<el-icon size="20">
+					<svg aria-hidden="true">
+						<use xlink:href="#top"></use>
+					</svg>
+				</el-icon>
+			</el-tooltip>
+		</div>
 	</div>
 </template>
 
@@ -88,10 +96,17 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		position: relative;
 	}
 
 	.controller.layer .el-button {
 		margin-left: 0;
 		height: min-content;
+	}
+
+	.top {
+		position: absolute;
+		top: -2px;
+		right: 0;
 	}
 </style>

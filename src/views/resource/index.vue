@@ -17,8 +17,6 @@
 	} from 'vue'
 
 	const currenComponent = shallowRef(null)
-	// const requireComponent = require.context('./', true, /\.vue$/);  
-	// console.log(requireComponent)
 
 	const load = (data) => {
 		currenComponent.value = defineAsyncComponent({
@@ -34,6 +32,9 @@
 				} else
 				if (data.label == 'bgm') {
 					return import(`./bgm.vue`);
+				}else
+				if (data.label == 'template') {
+					return import(`./template.vue`);
 				}
 				return import(`./figure.vue`);
 			}

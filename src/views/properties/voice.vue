@@ -2,8 +2,8 @@
 	<div class="audio-panel">
 		<div class="setting">
 			<div class="drive-mode">
-				<el-button text bg :class="{'active':driveMode=='文本驱动'}" @click="driveMode='文本驱动'">文本驱动</el-button>
-				<el-button text bg :class="{'active':driveMode=='音频驱动'}" @click="driveMode='音频驱动'">音频驱动</el-button>
+				<el-button text bg :class="{'active':driveMode=='文本驱动'}" @click="driveMode='文本驱动'">生成声音</el-button>
+				<el-button text bg :class="{'active':driveMode=='音频驱动'}" @click="driveMode='音频驱动'">选择声音</el-button>
 			</div>
 			<el-button text bg class="model" :class="{'show':driveMode=='文本驱动'}" :title="voice.name"
 				@click="selectVoiceRef.open()">
@@ -60,8 +60,9 @@
 					</div>
 					<div class="file">
 						<span class="name">{{item.name}}</span>
-						<span
-							class="duration">{{dateFormat(new Date(0).setUTCMilliseconds(item.duration),'mm:ss')}}</span>
+						<span class="duration">
+							{{dateFormat(new Date(0).setUTCMilliseconds(item.duration),'mm:ss')}}
+						</span>
 					</div>
 					<div class="button-group">
 						<el-button link type="info">

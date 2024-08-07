@@ -71,6 +71,9 @@
 		}, {
 			label: 'bgm',
 			title: '背景音乐'
+		}, {
+			label: 'template',
+			title: '模板库'
 		}
 	]
 	const active = ref(globalStore.menu)
