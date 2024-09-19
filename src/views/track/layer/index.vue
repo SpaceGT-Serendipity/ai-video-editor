@@ -3,9 +3,11 @@
 		<layer-item v-for="(item,index) in layers" :key="item.id" v-model="layers[index]" :last="layers.length==index+1"
 			:drop-data="dragData" @on-drag="onDrag($event,index)" @on-drop="onDrop($event,index)"></layer-item>
 	</div>
+	<adsorption-line-hint-vue></adsorption-line-hint-vue>
 </template>
 
 <script setup>
+	import adsorptionLineHintVue from './adsorption-line-hint.vue'
 	import ContextMenu from '@imengyu/vue3-context-menu'
 	import LayerItem from './item.vue'
 	import {

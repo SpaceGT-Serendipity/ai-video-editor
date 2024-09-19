@@ -16,6 +16,10 @@
 			<el-tag type="info" :class="{'open':recordStore.autosave}" @click="openAutosave">
 				自动保存
 			</el-tag>
+			<el-tag type="info" :class="{'open':adsorptionLineStore.enable}"
+				@click="adsorptionLineStore.enable=!adsorptionLineStore.enable">
+				智能吸附
+			</el-tag>
 		</div>
 	</div>
 </template>
@@ -30,7 +34,8 @@
 		useStateStore
 	} from '../store/global.js'
 	import {
-		useLayersDataStore
+		useLayersDataStore,
+		useAdsorptionLineStore
 	} from '../store/layers.js'
 	import {
 		dateFormat
@@ -46,6 +51,7 @@
 	const globalStore = useGlobalStore()
 	const stateStore = useStateStore()
 	const layersDataStore = useLayersDataStore()
+	const adsorptionLineStore = useAdsorptionLineStore()
 	const online = useOnline()
 
 	const openDebug = (state) => {

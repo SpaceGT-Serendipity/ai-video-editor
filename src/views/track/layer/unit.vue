@@ -35,7 +35,11 @@
 	import {
 		useGlobalStore
 	} from '../../../store/global.js'
+	import {
+		useAdsorptionLineStore
+	} from '../../../store/layers.js'
 
+	const adsorptionLineStore = useAdsorptionLineStore()
 	const trackStore = useTrackStore()
 	const layersDataStore = useLayersDataStore()
 	const globalStore = useGlobalStore()
@@ -78,7 +82,7 @@
 	const onDrag = (x, y) => {
 		props.data.track.x = parseInt(x)
 		// 开启吸附
-		if (trackStore.unitAdsorption) dragAdsorption(x)
+		if (adsorptionLineStore.enable) dragAdsorption(x)
 		emitsDrag()
 		return false
 	}
@@ -100,6 +104,7 @@
 	}
 	// 移动吸附判定
 	const dragAdsorption = (x) => {
+		//行内吸附
 		const headLines = []
 		const tailLines = []
 		const layer = layersDataStore.getLayerByUnitId(props.data.id)
@@ -114,17 +119,43 @@
 		tailLines.push(trackStore.seekerLocation)
 		for (let i = 0; i < headLines.length; i++) {
 			// 头-尾对齐
-			if (x > (tailLines[i] - trackStore.unitAdsorptionDecisionRange * 2) &&
-				x < (tailLines[i] + trackStore.unitAdsorptionDecisionRange)) {
+			if (x > (tailLines[i] - adsorptionLineStore.decisionRange * 2) &&
+				x < (tailLines[i] + adsorptionLineStore.decisionRange)) {
 				props.data.track.x = tailLines[i]
 			}
 			// 尾-头对齐
-			if ((x + config.w) > (headLines[i] - trackStore.unitAdsorptionDecisionRange) &&
-				(x + config.w) < (headLines[i] + trackStore.unitAdsorptionDecisionRange * 2)) {
+			if ((x + config.w) > (headLines[i] - adsorptionLineStore.decisionRange) &&
+				(x + config.w) < (headLines[i] + adsorptionLineStore.decisionRange * 2)) {
 				props.data.track.x = headLines[i] - config.w
 			}
 		}
-
+		//其他行吸附
+		for (let i = 0; i < layersDataStore.adsorptionLine.length; i++) {
+			// 排除自己行
+			if (layer.id != layersDataStore.adsorptionLine[i].layerId) {
+				// 头对齐
+				if (x > (layersDataStore.adsorptionLine[i].line - adsorptionLineStore.decisionRange * 2) &&
+					x < (layersDataStore.adsorptionLine[i].line + adsorptionLineStore.decisionRange)) {
+					props.data.track.x = layersDataStore.adsorptionLine[i].line
+					adsorptionLineStore.visible = true
+					adsorptionLineStore.x = layersDataStore.adsorptionLine[i].line
+					break;
+				} else {
+					adsorptionLineStore.visible = false
+				}
+				// 尾对齐
+				if ((x + config.w) > (layersDataStore.adsorptionLine[i].line - adsorptionLineStore.decisionRange) &&
+					(x + config.w) < (layersDataStore.adsorptionLine[i].line + adsorptionLineStore.decisionRange *
+						2)) {
+					props.data.track.x = layersDataStore.adsorptionLine[i].line - config.w
+					adsorptionLineStore.visible = true
+					adsorptionLineStore.x = layersDataStore.adsorptionLine[i].line
+					break;
+				} else {
+					adsorptionLineStore.visible = false
+				}
+			}
+		}
 	}
 
 	const emitsDrag = () => {
@@ -141,6 +172,7 @@
 			props.data.track.dragging = false
 			emitsDrag()
 		}
+		adsorptionLineStore.visible = false
 	}
 
 	/* 渲染，部分资源需要加载后渲染样式 */

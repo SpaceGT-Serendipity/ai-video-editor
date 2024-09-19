@@ -24,10 +24,6 @@ export const useTrackStore = defineStore('track', {
 		rulerDefultTime: 1000 * 60 * 20,
 		// 时间线滚动区域左侧内边距 (px)
 		trackTimelineScrollbarPaddingLeft: 5,
-		// 元素虚拟位置于元素启动吸附
-		unitAdsorption: true,
-		// 吸附判定范围(px)
-		unitAdsorptionDecisionRange: 10,
 		// 时间引导线位置
 		seekerLocation: 0,
 		// 时间引导线时间(毫秒ms)

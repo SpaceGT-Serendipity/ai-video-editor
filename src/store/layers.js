@@ -56,6 +56,24 @@ export const useLayersDataStore = defineStore('layers-data', {
 		},
 		stringify() {
 			return JSON.stringify(this.layers.map(item => item.stringify))
+		},
+		adsorptionLine() {
+			const lines = []
+			this.layers.forEach(layer => {
+				layer.units.forEach(unit => {
+					lines.push({
+						layerId: layer.id,
+						unitId: unit.id,
+						line: parseInt(unit.track.x)
+					})
+					lines.push({
+						layerId: layer.id,
+						unitId: unit.id,
+						line: parseInt(unit.track.x + unit.track.w)
+					})
+				})
+			})
+			return lines
 		}
 	},
 	actions: {
@@ -187,4 +205,17 @@ export const useLayersDataStore = defineStore('layers-data', {
 			this.layers.unshift(...figureLayers)
 		}
 	}
+})
+
+export const useAdsorptionLineStore = defineStore('adsorption-line', {
+	state: () => ({
+		// 元素虚拟位置于元素启动吸附
+		enable: true,
+		// 吸附判定范围(px)
+		decisionRange: 10,
+		// 显示吸附提示线
+		visible: false,
+		// 吸附提示线位置
+		x: 0
+	}),
 })

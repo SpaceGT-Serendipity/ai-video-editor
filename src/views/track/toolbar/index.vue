@@ -2,7 +2,7 @@
 	<div class="toolbar">
 		<div class="button-group-left">
 			<history></history>
-			<split></split>
+			<!-- <split></split> -->
 		</div>
 		<div class="button-group-right">
 			<!-- <scale></scale> -->
@@ -12,7 +12,7 @@
 
 <script setup>
 	import History from './history.vue'
-	import Split from './split.vue'
+	// import Split from './split.vue'
 	import Scale from './scale.vue'
 </script>
 
