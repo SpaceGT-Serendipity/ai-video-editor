@@ -1,5 +1,6 @@
 <template>
-	<el-dialog v-model="dialogVisible" title="作业进度" width="1000" center align-center @close="onClose">
+	<el-dialog v-model="menuStore.jobProgressDialogVisible" title="作业进度" width="1000" center align-center
+		@close="onClose">
 		<el-skeleton style="width: 100%;" :loading="loading" animated>
 			<template #template>
 				<div style="padding: 20px; display: flex; flex-direction: column; gap: 20px;">
@@ -102,7 +103,8 @@
 	import {
 		ref,
 		onMounted,
-		onUnmounted
+		onUnmounted,
+		watch
 	} from 'vue'
 	import {
 		useLayersDataStore
@@ -126,20 +128,32 @@
 		steps as defaultSteps,
 		listByIds
 	} from '../../api/batch.js'
+	import {
+		useAccountStore
+	} from '../../store/account.js'
+	import {
+		useMenuStore
+	} from '../../store/menu.js'
 
+	const menuStore = useMenuStore()
+	const accountStore = useAccountStore()
 	const layersDataStore = useLayersDataStore()
 	const globalStore = useGlobalStore()
-	const dialogVisible = ref(false)
 	const currentPage = ref(0)
 	const pageSize = ref(10)
 	const tableData = ref([])
 	const loading = ref(true)
 	const timeLineVueRef = ref()
 	let intervalId = null;
-	
+
+	watch(() => menuStore.jobProgressDialogVisible, (value) => {
+		if (value) {
+			open()
+		}
+	})
+
 	const open = async () => {
 		loading.value = true
-		dialogVisible.value = true
 		currentPage.value = 0
 		tableData.value = []
 		await load()
@@ -161,6 +175,9 @@
 		myGallery.open();
 	}
 	const load = async () => {
+		if (!accountStore.account) {
+			return;
+		}
 		currentPage.value++;
 		const res = await selectOwn(currentPage.value, pageSize.value)
 		tableData.value.push(...res)
@@ -186,7 +203,7 @@
 		}
 	}
 	onMounted(() => {
-		
+
 	})
 	onUnmounted(() => {
 		onClose()

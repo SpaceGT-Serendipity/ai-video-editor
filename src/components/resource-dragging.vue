@@ -1,25 +1,24 @@
 <template>
 	<div class="resource-dragging" ref="resourceDraggingRef" v-if="store.data">
 		<div class="card">
-			<el-image :src="store.data.cover" fit="contain">
+			<el-image v-if="['video','image','figure'].includes(store.data.type)" :src="store.data.cover"
+				fit="contain">
 				<template #placeholder>
 					<div class="placeholder">
-						<el-icon size="90" v-if="store.data.type=='audio'">
-							<svg aria-hidden="true">
-								<use xlink:href="#undraw_happy_music_g6wc"></use>
-							</svg>
-						</el-icon>
-						<el-icon size="90" v-if="store.data.type=='text'">
-							<svg aria-hidden="true">
-								<use xlink:href="#text"></use>
-							</svg>
-						</el-icon>
-						<el-icon size="60" v-else>
+						<el-icon size="60">
 							<Picture></Picture>
 						</el-icon>
 					</div>
 				</template>
 			</el-image>
+			<el-icon size="40" v-if="['audio'].includes(store.data.type)">
+				<font-awesome-icon icon="fa-solid fa-file-audio" />
+			</el-icon>
+			<el-icon size="40" v-if="['text'].includes(store.data.type)">
+				<svg aria-hidden="true">
+					<use xlink:href="#text"></use>
+				</svg>
+			</el-icon>
 			<div class="shade"></div>
 		</div>
 		<div class="title">{{store.data.name}}</div>
@@ -108,8 +107,8 @@
 		transform: translate(-50%, -50%);
 		transition: height 0.3s, width 0.3s;
 	}
-	
-	.card .placeholder{
+
+	.card .placeholder {
 		display: flex;
 		justify-content: center;
 		align-items: center;

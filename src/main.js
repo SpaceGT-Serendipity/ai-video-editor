@@ -32,6 +32,8 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 // 右键菜单
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import ContextMenu from '@imengyu/vue3-context-menu'
+// 引入动画
+import 'animate.css';
 
 const app = createApp(App)
 app.use(ElementPlus, {
@@ -47,11 +49,12 @@ for (let key in ElIconModules) app.component(key, ElIconModules[key])
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('vue-draggable-resizable', VueDraggableResizable)
 library.add(
-	freeSolidSvgIcons.faExpand,
-	freeSolidSvgIcons.faEyeSlash,
-	freeSolidSvgIcons.faCompress,
 	freeSolidSvgIcons.faArrowRotateLeft,
 	freeSolidSvgIcons.faArrowRotateRight,
+	freeSolidSvgIcons.faCompress,
+	freeSolidSvgIcons.faExpand,
+	freeSolidSvgIcons.faEyeSlash,
+	freeSolidSvgIcons.faFileAudio,
 	freeSolidSvgIcons.faICursor,
 	freeSolidSvgIcons.faFileAudio,
 	freeSolidSvgIcons.faVolumeLow,

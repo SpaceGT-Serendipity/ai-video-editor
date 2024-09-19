@@ -29,9 +29,9 @@
 						</el-button>
 					</div>
 					<div class="right-option">
-						<select-scene-size></select-scene-size>
+						<!-- <select-scene-size></select-scene-size> -->
 						<!-- <select-scene-speed></select-scene-speed> -->
-						<cover></cover>
+						<!-- <cover></cover> -->
 						<el-button v-if="!isFullscreen" text @click="enter()">
 							<el-icon size="20">
 								<font-awesome-icon icon="expand" />

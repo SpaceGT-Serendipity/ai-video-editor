@@ -4,13 +4,16 @@
 			<div class="button-group">
 				<el-button text :type="category=='all'?'primary':''" @click="category='all'">全部</el-button>
 				<el-button text :type="category=='edge'?'primary':''" @click="category='edge'">标准音色</el-button>
-				<el-button text :type="category=='rvc'?'primary':''" @click="category='rvc'">RVC 专属音色</el-button>
+				<!-- <el-button text :type="category=='rvc'?'primary':''" @click="category='rvc'">RVC 专属音色</el-button>
 				<el-button text :type="category=='gpt-sovits'?'primary':''" @click="category='gpt-sovits'">
 					GPT-Sovits 专属音色
+				</el-button> -->
+				<el-button text :type="category=='gpt-sovits'?'primary':''" @click="category='gpt-sovits'">
+					专属音色
 				</el-button>
 			</div>
 			<el-scrollbar height="40vh">
-				<div class="list">
+				<div class="list" v-if="listByCategory">
 					<div class="card" :class="{'active':selected==item}" v-for="item in listByCategory"
 						@click="selected=item">
 						<el-image>
@@ -36,6 +39,7 @@
 						<p>{{item.name}}</p>
 					</div>
 				</div>
+				<el-empty description="暂无音色"></el-empty>
 			</el-scrollbar>
 		</div>
 		<template #footer>
@@ -57,7 +61,11 @@
 	import {
 		loadVoices
 	} from '../api/audio.js'
+	import {
+		useAccountStore
+	} from '../store/account.js'
 
+	const accountStore = useAccountStore()
 	const emit = defineEmits(['change'])
 	const dialogVisible = ref(false)
 	const category = ref('all')
@@ -78,7 +86,7 @@
 		dialogVisible.value = true
 	}
 	const load = async () => {
-		const res = await loadVoices()
+		const res = await loadVoices(accountStore.id)
 		list.value = res
 	}
 

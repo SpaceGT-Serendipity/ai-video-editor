@@ -1,0 +1,112 @@
+import {
+	defineStore
+} from 'pinia'
+import {
+	ElNotification
+} from 'element-plus'
+import Layer from '../bean/Layer.js'
+import {
+	save,
+	logNewest,
+	logOne
+} from '../api/project.js'
+import {
+	useLayersDataStore
+} from './layers.js'
+import {
+	useGlobalStore
+} from './global.js'
+import {
+	useRoute,
+	useRouter
+} from 'vue-router'
+import {
+	ref,
+	computed
+} from 'vue'
+
+export const useRecordStore = defineStore('record', () => {
+	const globalStore = useGlobalStore()
+	const layersDataStore = useLayersDataStore()
+	const route = useRoute()
+	const router = useRouter()
+	const dialogVisible = ref(false)
+	const autosave = ref(true)
+	const autosaveTime = ref(60 * 5) //5分钟
+	const current = ref(null);
+	const list = ref([])
+	const index = ref(0)
+	const max = ref(30)
+	const projectId = computed(() => route.params.pid)
+	const logId = computed(() => route.params.logid)
+	/* 撤回 */
+	const undo = () => {
+		if (index.value < list.value.length - 1) {
+			index.value++;
+			Deserialize(list.value[index.value])
+		}
+	}
+	const push = (data) => {
+		list.value.unshift(data)
+		index.value = 0
+	}
+	const Deserialize = (data) => {
+		layersDataStore.clearAllLayer()
+		JSON.parse(data).forEach(layer => {
+			const layerObj = Layer.parse(layer);
+			if (layerObj) {
+				layersDataStore.addLayer(layerObj);
+			}
+		})
+		dialogVisible.value = false
+	}
+	const loadCurrent = async () => {
+		list.value = []
+		index.value = 0
+		if (projectId.value == null && logId.value == null) {
+			if (current.value) {
+				Deserialize(current.value)
+			}
+		} else {
+			if (logId.value != null) {
+				const res = await logOne(logId.value)
+				Deserialize(res.data)
+			} else {
+				const res = await logNewest(projectId.value)
+				Deserialize(res.data)
+			}
+		}
+	}
+	const loadProject = async (pid, logid) => {
+		let log = null;
+		if (logid) {
+			log = await logOne(logid)
+		} else {
+			log = await logNewest(pid)
+		}
+	}
+	const saveProject = () => {
+		ElNotification({
+			title: '项目已保存',
+			type: 'success',
+		})
+		current.value = layersDataStore.stringify;
+		save(projectId.value, globalStore.title, layersDataStore.stringify)
+			.then(pid => router.push('/editor/' + pid));
+	}
+	return {
+		dialogVisible,
+		autosave,
+		current,
+		list,
+		index,
+		max,
+		undo,
+		push,
+		loadCurrent,
+		loadProject,
+		saveProject
+	}
+}, {
+	persist: true
+})

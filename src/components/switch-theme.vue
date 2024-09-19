@@ -32,19 +32,24 @@
 
 <script setup>
 	import {
-		ref
+		ref,
+		onMounted
 	} from 'vue'
+	import {
+		useGlobalStore
+	} from '../store/global.js'
 
+	const globalStore = useGlobalStore()
 	const checkbox = ref(true)
 
 	const onSwitchTheme = () => {
 		const html = document.querySelector('html')
-		if (checkbox.value) {
-			html.classList.add('dark')
-		} else {
-			html.classList.remove('dark')
-		}
+		globalStore.switchTheme(checkbox.value ? 'dark' : 'light')
 	}
+
+	onMounted(() => {
+		checkbox.value = globalStore.theme == 'dark'
+	})
 </script>
 
 <style>

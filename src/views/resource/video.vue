@@ -3,12 +3,12 @@
 		<el-tab-pane label="预设视频" name="预设视频">
 			<el-scrollbar>
 				<div class="list">
-					<resource-sample v-for="item in publicFileList" :key="item.id" :data="item"></resource-sample>
+					<resource-sample v-for="item in videoDataStore.publicData" :key="item.id" :data="item"></resource-sample>
 				</div>
 			</el-scrollbar>
 		</el-tab-pane>
-		<el-tab-pane label="本地视频" name="本地视频">
-			<el-scrollbar v-loading="loadingLocalVideos" element-loading-text="正在加载本地视频,请稍等...">
+		<el-tab-pane label="我的视频" name="我的视频">
+			<el-scrollbar v-loading="loadingVideos" element-loading-text="正在加载视频,请稍等...">
 				<el-upload class="upload" :show-file-list="false" action :auto-upload="false" multiple accept=".mp4"
 					:on-change="handleUpload">
 					<el-button icon="Plus">点击上传本地视频</el-button>
@@ -20,21 +20,9 @@
 						</el-button>
 					</el-tooltip>
 				</el-upload>
+
 				<div class="list">
-					<div v-for="item in localFileList">
-						<resource-sample :data="item"></resource-sample>
-					</div>
-				</div>
-			</el-scrollbar>
-		</el-tab-pane>
-		<el-tab-pane label="视频链接" name="视频链接">
-			<el-scrollbar v-loading="loadingLinkVideos" element-loading-text="正在加载远程视频,请稍等...">
-				<div class="link-group-button">
-					<el-input v-model="link" placeholder="URL"></el-input>
-					<el-button @click="addLinkResource">添加</el-button>
-				</div>
-				<div class="list">
-					<div v-for="item in linkFileList">
+					<div v-for="item in videoDataStore.privateData">
 						<resource-sample :data="item"></resource-sample>
 					</div>
 				</div>
@@ -47,97 +35,38 @@
 	import ResourceSample from '../../components/resource-sample.vue'
 	import {
 		ref,
-		reactive,
 		onMounted
 	} from 'vue'
 	import {
-		ElMessage,
-		ElMessageBox
-	} from 'element-plus'
-	import VideoResource from '../../bean/VideoResource'
+		useAccountStore
+	} from '../../store/account.js'
 	import {
-		reactify
-	} from '@vueuse/core'
-	import {
-		dateFormat
-	} from '../../utils/time.js'
-	import {
-		loadVideo,
-		loadResource
-	} from '../../api/resource.js'
-	import {
-		upload
+		upload,
 	} from '../../api/file.js'
 	import {
-		useResourceLocalStore,
-		useResourceLinkStore
-	} from '../../store/resource.js'
+		useVideoDataStore
+	} from '../../store/data/video.js'
 
-	const resourceLocalStore = useResourceLocalStore()
-	const resourceLinkStore = useResourceLinkStore()
-	const publicFileList = reactive([])
-	const localFileList = reactive([])
-	const linkFileList = reactive([])
-	const link = ref()
-	const loadingLocalVideos = ref(false)
-	const loadingLinkVideos = ref(false)
+	const videoDataStore = useVideoDataStore()
+	const accountStore = useAccountStore()
+	const loadingVideos = ref(false)
 
 	const handleUpload = async (file) => {
-		loadingLocalVideos.value = true
-		const video = await VideoResource.file(file.raw)
-		localFileList.push(video)
-		loadingLocalVideos.value = false
-		// 上传至服务器
-		const res = await upload(file.raw, 'ai-video-editor/source/video')
-		video.url = `${import.meta.env.VITE_APP_FILE_SERVER}/download/${res.url}`
-		// 加入本地列表
-		resourceLocalStore.videos.push({
-			name: video.name,
-			url: video.url
+		loadingVideos.value = true
+		const res = await upload(file.raw, 'ai-video/source/video')
+		await videoDataStore.save({
+			name: res.name,
+			size: res.size,
+			url: res.url,
+			cover: res.cover,
+			duration: res.duration * 1000,
+			creator: accountStore.id
 		})
-	}
-	const addLinkResource = async () => {
-		loadingLinkVideos.value = true
-		const video = await VideoResource.url(link.value, dateFormat(new Date()))
-		linkFileList.push(video)
-		loadingLinkVideos.value = false
-		// 加入本地列表
-		resourceLinkStore.videos.push({
-			name: video.name,
-			url: link.value
-		})
-	}
-	const load = async () => {
-		/* const res = await loadVideo() */
-		const res = await loadResource('video')
-		for (let i = 0; i < res.length; i++) {
-			const video = new VideoResource(res[i])
-			publicFileList.push(video)
-		}
-	}
-	const loadLocal = async () => {
-		loadingLocalVideos.value = true
-		for (let i = 0; i < resourceLocalStore.videos.length; i++) {
-			const video =
-				await VideoResource.url(resourceLocalStore.videos[i].url, resourceLocalStore.videos[i].name)
-			localFileList.push(video)
-		}
-		loadingLocalVideos.value = false
-	}
-	const loadLink = async () => {
-		loadingLinkVideos.value = true
-		for (let i = 0; i < resourceLinkStore.videos.length; i++) {
-			const video =
-				await VideoResource.url(resourceLinkStore.videos[i].url, resourceLinkStore.videos[i].name)
-			linkFileList.push(video)
-		}
-		loadingLinkVideos.value = false
+		loadingVideos.value = false
 	}
 
 	onMounted(() => {
-		load()
-		loadLocal()
-		loadLink()
+		videoDataStore.load()
 	})
 </script>
 

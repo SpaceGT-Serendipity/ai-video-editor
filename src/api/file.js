@@ -6,6 +6,8 @@ import {
 	v4 as uuidv4
 } from 'uuid'
 
+export const filePath = import.meta.env.VITE_APP_FILE_RESOURCE + '/'
+
 export function upload(file, path) {
 	const stateStore = useStateStore()
 	const id = uuidv4()

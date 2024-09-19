@@ -6,35 +6,27 @@ import {
 } from '../store/track.js'
 
 export default class Track {
-	/* 轨道配置 */
-	trackStore = useTrackStore()
-	/* 原始坐标 */
-	_x = 0;
-	/* 原始宽度 */
-	_w = 0;
-	/* 高度(固定) */
-	h = 50;
-	/* 拖拽中状态 */
-	dragging = false;
-	/* 组件实例 */
-	instance = null;
-	/* 组件激活状态 */
-	active = false;
-
 	constructor({
+		id,
 		x,
-		w
+		w,
+		h
 	}) {
-		this.id = uuidv4()
+		this.id = id ? id : uuidv4()
+		/* 轨道配置 */
+		this.trackStore = useTrackStore()
+		/* 原始坐标 */
 		this._x = x
+		/* 原始宽度 */
 		this._w = w
-	}
-
-	clone() {
-		return new Track({
-			x: this._x,
-			w: this._w
-		})
+		/* 高度,可调整 */
+		this.h = h ? h : 50;
+		/* 拖拽中状态 */
+		this.dragging = false;
+		/* 组件实例 */
+		this.instance = null;
+		/* 组件激活状态 */
+		this.active = false;
 	}
 
 	destroy() {
@@ -60,7 +52,7 @@ export default class Track {
 
 	set x(value) {
 		if (value < 0) this._x = 0
-		else this._x = value / this.trackStore.controllerScale
+		else this._x = parseInt(value / this.trackStore.controllerScale)
 	}
 
 	get w() {
@@ -69,7 +61,7 @@ export default class Track {
 
 	set w(value) {
 		if (value < 0) this._w = 0
-		else this._w = value / this.trackStore.controllerScale
+		else this._w = parseInt(value / this.trackStore.controllerScale)
 	}
 
 	get location() {
@@ -79,20 +71,21 @@ export default class Track {
 		}
 	}
 
-	get serialize() {
-		return {
+	get stringify() {
+		return JSON.stringify({
 			id: this.id,
 			x: this._x,
 			w: this._w,
-			active: this.active
+			h: this.h
+		})
+	}
+
+	static parse(str) {
+		try {
+			return new Track(JSON.parse(str))
+		} catch (e) {
+			return null;
 		}
 	}
 
-	static deserialize(data) {
-		const track = new Track({
-			x: data.x,
-			w: data.w
-		});
-		return track;
-	}
 }

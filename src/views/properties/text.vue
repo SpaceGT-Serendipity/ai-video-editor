@@ -113,7 +113,7 @@
 	}, (value) => {
 		if (value) {
 			const read = () => {
-				if (value.scene.loaded && value.scene.text) {
+				if (value.scene.initialized && value.scene.text) {
 					textInstance.value = value.scene.text
 					options.text = value.scene.text.text
 					options.fill = value.scene.text.style.fill

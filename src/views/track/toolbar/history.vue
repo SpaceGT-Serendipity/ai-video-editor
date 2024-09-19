@@ -1,15 +1,8 @@
 <template>
-	<el-button link size="small" :disabled="historyStore.currentIndex<1" @click="undo">
+	<el-button link size="small" :disabled="!(recordStore.index < recordStore.list.length - 1)" @click="recordStore.undo()">
 		<el-tooltip class="box-item" effect="dark" content="撤销" placement="top">
 			<el-icon>
 				<font-awesome-icon icon="arrow-rotate-left" />
-			</el-icon>
-		</el-tooltip>
-	</el-button>
-	<el-button link size="small" :disabled="(historyStore.history.length-1)-historyStore.currentIndex<1" @click="redo">
-		<el-tooltip class="box-item" effect="dark" content="重做" placement="top">
-			<el-icon>
-				<font-awesome-icon icon="arrow-rotate-right" />
 			</el-icon>
 		</el-tooltip>
 	</el-button>
@@ -18,9 +11,13 @@
 <script setup>
 	import {
 		ref,
+		onMounted,
 		nextTick,
 		watch
 	} from 'vue'
+	import {
+		watchDebounced
+	} from '@vueuse/core'
 	import {
 		watchTriggerable,
 		watchThrottled
@@ -29,15 +26,19 @@
 		useLayersDataStore
 	} from '../../../store/layers.js'
 	import {
-		useHistoryStore
-	} from '../../../store/track.js'
-	import {
 		useGlobalStore
 	} from '../../../store/global.js'
 	import Layer from '../../../bean/Layer.js'
+	import {
+		useRecordStore
+	} from '../../../store/record.js'
+	import {
+		useRoute
+	} from 'vue-router'
 
+	const route = useRoute()
+	const recordStore = useRecordStore()
 	const layersDataStore = useLayersDataStore()
-	const historyStore = useHistoryStore()
 	const globalStore = useGlobalStore()
 	const source = ref()
 	const {
@@ -48,24 +49,28 @@
 		onCleanup(() => canceled = true);
 		await new Promise(resolve => setTimeout(resolve, 500));
 		if (canceled) return;
-		historyStore.push(v);
-		globalStore.serialize = v
-	}, )
+	})
 
-	watch(() => layersDataStore.layersSerialize, (value) => source.value = layersDataStore.layersSerialize)
 
-	const undo = () => {
-		historyStore.undo()
-		load()
-	}
-	const redo = () => {
-		historyStore.redo()
-		load()
-	}
-	const load = async () => {
-		// 硬核恢复，后期优化方向有资源只更新数据，不重新加载资源
-		layersDataStore.loadSerializationConfiguration(historyStore.currentValue)
-	}
+	watch(() => route.path, () => recordStore.loadCurrent())
+	// 自动保存
+	watchDebounced(() => layersDataStore.stringify, () => {
+		recordStore.saveProject()
+	}, {
+		debounce: 1000 * 60,
+		maxWait: 1000 * 60 * 5
+	})
+	// 每次操作保存本地
+	watchDebounced(() => layersDataStore.stringify, () => {
+		if (layersDataStore.stringify) {
+			recordStore.push(layersDataStore.stringify)
+		}
+	}, {
+		debounce: 1000,
+		maxWait: 1000 * 5
+	})
+
+	onMounted(() => recordStore.loadCurrent())
 </script>
 
 <style>

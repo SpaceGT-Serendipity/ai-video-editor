@@ -106,7 +106,7 @@
 		// 拖拽结束后(不选择拖拽中进行节省性能,所以拖拽中可以重合,用户体验良好)进行一个x坐标的排序，并且如果有重合调整坐标，保证友好的顺序以及不重合。
 		if (!event.track.dragging) {
 			// 走线程，onDrag 比 onDrop 触发早，防止优先排序后在更换时间线
-			setTimeout(() => sortLayers())
+			setTimeout(() => layersDataStore.sortLayers())
 		}
 		viewportStore.playing = false
 	}
@@ -134,24 +134,6 @@
 		if (event.dropMode == 'topLayer')
 			layersDataStore.insertLayer(newIndex, Layer.list(event.dropData))
 		// 拖拽结束后(不选择拖拽中进行节省性能,所以拖拽中可以重合,用户体验良好)进行一个x坐标的排序，并且如果有重合调整坐标，保证友好的顺序以及不重合。
-		sortLayers()
-	}
-	const sortLayers = () => {
-		let figureIndex = 0
-		const figureLayers = []
-		for (let i = 0; i < layers.value.length; i++) {
-			const layer = layers.value[i];
-			// 图层排序
-			layer.sort()
-			// 将数字人图层防止顶层
-			if (layer.type == 'figure') {
-				layers.value.splice(i, 1)
-				figureLayers.push(layer)
-			}
-		}
-		layers.value.unshift(...figureLayers)
+		layersDataStore.sortLayers()
 	}
 </script>
-
-<style scoped>
-</style>

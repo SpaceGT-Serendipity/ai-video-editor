@@ -16,15 +16,15 @@
 	} from 'vue'
 
 	const publicFileList = reactive([{
-		cover: 'https://oss.file.yigee.cn/ai-video-editor/source/image/49242ace-34d2-449c-baca-1b24f3247bfa.jpg',
-		url: 'https://oss.file.yigee.cn/ai-video-editor/source/image/49242ace-34d2-449c-baca-1b24f3247bfa.jpg',
+		cover: 'https://yigee-file.oss-cn-beijing.aliyuncs.com/ai-video-editor/source/image/49242ace-34d2-449c-baca-1b24f3247bfa.jpg',
+		url: 'https://yigee-file.oss-cn-beijing.aliyuncs.com/ai-video-editor/source/image/49242ace-34d2-449c-baca-1b24f3247bfa.jpg',
 		name: '恬静片头',
-		loaded: true
+		initialized: true
 	}, {
-		cover: 'https://oss.file.yigee.cn/ai-video-editor/source/image/32438e9b-2f08-4240-84f0-e775cc3b6af7.jpg',
-		url: 'https://oss.file.yigee.cn/ai-video-editor/source/image/32438e9b-2f08-4240-84f0-e775cc3b6af7.jpg',
+		cover: 'https://yigee-file.oss-cn-beijing.aliyuncs.com/ai-video-editor/source/image/32438e9b-2f08-4240-84f0-e775cc3b6af7.jpg',
+		url: 'https://yigee-file.oss-cn-beijing.aliyuncs.com/ai-video-editor/source/image/32438e9b-2f08-4240-84f0-e775cc3b6af7.jpg',
 		name: '科技片头',
-		loaded: true
+		initialized: true
 	}])
 </script>
 

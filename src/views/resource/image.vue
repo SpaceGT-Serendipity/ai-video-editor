@@ -3,12 +3,13 @@
 		<el-tab-pane label="预设图片" name="预设图片">
 			<el-scrollbar>
 				<div class="list">
-					<resource-sample v-for="item in publicFileList" :key="item.id" :data="item"></resource-sample>
+					<resource-sample v-for="item in imageDataStore.publicData" :key="item.id"
+						:data="item"></resource-sample>
 				</div>
 			</el-scrollbar>
 		</el-tab-pane>
-		<el-tab-pane label="本地图片" name="本地图片" >
-			<el-scrollbar >
+		<el-tab-pane label="我的图片" name="我的图片">
+			<el-scrollbar>
 				<el-upload class="upload" :show-file-list="false" action :auto-upload="false" multiple
 					accept=".jpg,.png,.pptx" :on-change="handleUpload">
 					<el-button icon="Plus">点击上传本地图片</el-button>
@@ -21,20 +22,7 @@
 					</el-tooltip>
 				</el-upload>
 				<div class="list">
-					<div v-for="item in localFileList">
-						<resource-sample :data="item"></resource-sample>
-					</div>
-				</div>
-			</el-scrollbar>
-		</el-tab-pane>
-		<el-tab-pane label="图片链接" name="图片链接">
-			<el-scrollbar>
-				<div class="link-group-button">
-					<el-input v-model="link" placeholder="URL"></el-input>
-					<el-button @click="addLinkResource">添加</el-button>
-				</div>
-				<div class="list">
-					<div v-for="item in linkFileList">
+					<div v-for="item in imageDataStore.privateData">
 						<resource-sample :data="item"></resource-sample>
 					</div>
 				</div>
@@ -44,121 +32,88 @@
 </template>
 
 <script setup>
-	import ResourceSample from '../../components/resource-sample.vue'
-	import {
-		ref,
-		reactive,
-		onMounted
-	} from 'vue'
-	import {
-		reactify
-	} from '@vueuse/core'
 	import {
 		ElMessage,
 		ElMessageBox
 	} from 'element-plus'
-	import ImageResource from '../../bean/ImageResource'
+	import ResourceSample from '../../components/resource-sample.vue'
 	import {
-		dateFormat
-	} from '../../utils/time.js'
+		ref,
+		onMounted
+	} from 'vue'
 	import {
-		loadImage,
-		loadResource
-	} from '../../api/resource.js'
+		useAccountStore
+	} from '../../store/account.js'
 	import {
 		upload,
-		ppt2image
+		ppt2image,
+		filePath
 	} from '../../api/file.js'
+	import LayerUnit from '../../bean/LayerUnit.js'
+	import ImageSource from '../../bean/source/ImageSource.js'
 	import {
-		useResourceLocalStore,
-		useResourceLinkStore
-	} from '../../store/resource.js'
+		useImageDataStore
+	} from '../../store/data/image.js'
+	import {
+		useLayersDataStore
+	} from '../../store/layers.js'
 
-	const resourceLocalStore = useResourceLocalStore()
-	const resourceLinkStore = useResourceLinkStore()
-	const publicFileList = reactive([])
-	const localFileList = reactive([])
-	const linkFileList = reactive([])
-	const link = ref()
+	const layersDataStore = useLayersDataStore()
+	const imageDataStore = useImageDataStore()
+	const accountStore = useAccountStore()
 	const loading = ref(false)
 
 	const handleUpload = async (file) => {
 		loading.value = true
+		let list = []
 		if (file.name.lastIndexOf('.pptx') == file.name.length - 5) {
 			const res = await ppt2image(file.raw)
-			console.log(res)
-			res.forEach(item => {
-				const image = new ImageResource({
-					name: dateFormat(new Date()),
-					url: `${import.meta.env.VITE_APP_FILE_SERVER}/download/${item.url}`
-				})
-				localFileList.push(image)
-				// 加入本地列表
-				resourceLocalStore.images.push({
-					name: image.name,
-					url: image.url
-				})
-			})
+			list = res
 		} else {
-			const image = ImageResource.file(file.raw)
-			localFileList.push(image)
-			// 上传至服务器
 			const res = await upload(file.raw, 'ai-video-editor/source/image')
-			image.url = `${import.meta.env.VITE_APP_FILE_SERVER}/download/${res.url}`
-			// 加入本地列表
-			resourceLocalStore.images.push({
-				name: image.name,
-				url: image.url
+			list = [res]
+		}
+		for (const item of list) {
+			await imageDataStore.save({
+				name: item.name,
+				size: item.size,
+				url: item.url,
+				cover: item.cover,
+				creator: accountStore.id
 			})
 		}
+		await imageDataStore.load()
 		loading.value = false
+		importScene(list)
 	}
-	const addLinkResource = () => {
-		const image = new ImageResource({
-			name: dateFormat(new Date()),
-			url: link.value
-		})
-		linkFileList.push(image)
-		// 加入本地列表
-		resourceLinkStore.images.push({
-			name: image.name,
-			url: link.value
-		})
-	}
-	const load = async () => {
-		/* const res = await loadImage() */
-		const res = await loadResource('image')
-		for (let i = 0; i < res.length; i++) {
-			const image = new ImageResource({
-				name: res[i].name,
-				url: res[i].url
+	const importScene = (list) => {
+		ElMessageBox.confirm(
+			'是否导入场景?',
+			'上传成功', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'success',
+			}
+		).then(() => {
+			const units = []
+			list.forEach((item, index) => {
+				const unit = new LayerUnit({
+					resource: new ImageSource({
+						name: item.name,
+						size: item.size,
+						url: filePath + item.url,
+						cover: filePath + item.cover
+					})
+				})
+				unit.track.x = index * unit.track.w
+				units.push(unit)
 			})
-			publicFileList.push(image)
-		}
-	}
-	const loadLocal = async () => {
-		for (let i = 0; i < resourceLocalStore.images.length; i++) {
-			const image = new ImageResource({
-				name: resourceLocalStore.images[i].name,
-				url: resourceLocalStore.images[i].url
-			})
-			localFileList.push(image)
-		}
-	}
-	const loadLink = async () => {
-		for (let i = 0; i < resourceLinkStore.images.length; i++) {
-			const image = new ImageResource({
-				name: resourceLinkStore.images[i].name,
-				url: resourceLinkStore.images[i].url
-			})
-			linkFileList.push(image)
-		}
+			layersDataStore.addUnits(units)
+		}).catch(() => {})
 	}
 
 	onMounted(() => {
-		load()
-		loadLocal()
-		loadLink()
+		imageDataStore.load()
 	})
 </script>
 

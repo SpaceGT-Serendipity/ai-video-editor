@@ -1,5 +1,5 @@
 <template>
-	<div class="resource-sample" ref="resourceSampleRef" v-loading="!data.loaded">
+	<div class="resource-sample" ref="resourceSampleRef">
 		<div class="card" :class="{'drag':props.drag}">
 			<el-image :src="data.cover" fit="contain">
 				<template #placeholder>
@@ -17,7 +17,15 @@
 					</div>
 				</template>
 			</el-image>
-			<div class="shade"></div>
+			<div class="shade">
+			</div>
+			<div v-if="down" class="shade">
+				<el-button link @click="download(data.url)">
+					<el-icon size="26">
+						<Download />
+					</el-icon>
+				</el-button>
+			</div>
 			<a class="glightbox" :href="data.url">
 				<el-button link>
 					<el-icon size="26">
@@ -25,8 +33,14 @@
 					</el-icon>
 				</el-button>
 			</a>
+			<el-button v-if="delFlag" class="item-btn" text @click="handleDel(data.id)">
+				<el-icon size="25">
+					<Delete />
+				</el-icon>
+			</el-button>
 		</div>
-		<div class="title">{{data.name}}</div>
+		<p v-if="rechange" class="title" @dblclick.stop="handleRename(data.id)">{{data.name}}</p>
+		<div v-else class="title">{{data.name}}</div>
 		<div class="tag" v-if="data.tag">
 			<el-tag type="info" effect="dark" v-if="data.tag=='picture'">
 				静态
@@ -42,6 +56,9 @@
 </template>
 
 <script setup>
+	import {
+		saveAs
+	} from 'file-saver';
 	import GLightbox from 'glightbox';
 	import {
 		useResourceDragStore
@@ -52,7 +69,26 @@
 		onMounted,
 		onBeforeUnmount
 	} from 'vue'
+	import {
+		ElNotification,
+		ElMessageBox
+	} from 'element-plus'
+	import {
+		rename
+	} from '../api/video.js'
+	import {
+		del as delOne
+	} from '../api/avatar.js'
+	import {
+		useAccountStore
+	} from '../store/account.js'
+	import {
+		useFigureDataStore
+	} from '../store/data/figure.js'
 
+	const figureDataStore = useFigureDataStore()
+	const accountStore = useAccountStore()
+	const emit = defineEmits(['load'])
 	const props = defineProps({
 		data: Object,
 		drag: {
@@ -62,11 +98,27 @@
 		size: {
 			type: String,
 			default: 'default' // 'large'| 'default'| 'small'
-		}
+		},
+		rechange: {
+			type: Boolean,
+			default: false
+		},
+		down: {
+			type: Boolean,
+			default: false
+		},
+		delFlag: {
+			type: Boolean,
+			default: false
+		},
 	})
 	const store = useResourceDragStore()
 	const resourceSampleRef = ref()
 	let drop = false
+
+	const download = (url) => {
+		saveAs(url, 'mp4')
+	}
 
 	function handleMousedown() {
 		drop = true
@@ -80,6 +132,55 @@
 		if (drop)
 			store.data = props.data
 		drop = false
+	}
+
+	const handleRename = (id) => {
+		ElMessageBox.prompt('请输入新文件名', '重命名', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消'
+			}).then(({
+				value
+			}) => {
+				if (value) {
+					rename(id, value).then(res => {
+						emit('load', res)
+					})
+				} else {
+					ElNotification({
+						title: '消息',
+						message: '新文件名不得为空',
+					})
+				}
+			})
+			.catch(() => {})
+	}
+
+	const handleDel = async (id) => {
+		ElMessageBox.confirm(
+				'确定删除吗？',
+				'警告', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning',
+					draggable: true,
+					overflow: true,
+				}
+			)
+			.then(() => {
+				delOne(id, accountStore.id).then(res => {
+					ElNotification({
+						title: '消息',
+						message: '删除成功',
+					})
+					figureDataStore.load()
+				})
+			})
+			.catch(() => {
+				ElNotification({
+					title: '消息',
+					message: '删除失败',
+				})
+			})
 	}
 
 	onMounted(() => {
@@ -189,5 +290,22 @@
 		position: absolute;
 		top: 4px;
 		left: 4px;
+	}
+	
+	
+	.item-btn {
+		position: absolute;
+		opacity: 0;
+		transition: all 0.3s;
+		top: 5px;
+		right: 5px;
+		width: 30px;
+		height: 30px;
+		font-size: 11px;
+	}
+	
+	.item-btn:hover {
+		color: white;
+		background-color: transparent !important;
 	}
 </style>

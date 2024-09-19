@@ -32,13 +32,10 @@ export const useLayersDataStore = defineStore('layers-data', {
 			return 0;
 		},
 		layersScenes() {
-			return this.layers.map(layer => layer.scenes)
+			return this.layers.map(layer => layer.units.map(item => item.scene.stringify))
 		},
 		layersTracks() {
-			return this.layers.map(layer => layer.tracks)
-		},
-		layersSerialize() {
-			return this.layers.map(layer => layer.serialize)
+			return this.layers.map(layer => layer.units.map(item => item.track.stringify))
 		},
 		// 选中激活的元素
 		activeUnit() {
@@ -56,6 +53,9 @@ export const useLayersDataStore = defineStore('layers-data', {
 		},
 		mainAudioLayer() {
 			return this.layers.find(item => item.id == this.mainAudioLayerId)
+		},
+		stringify() {
+			return JSON.stringify(this.layers.map(item => item.stringify))
 		}
 	},
 	actions: {
@@ -128,10 +128,19 @@ export const useLayersDataStore = defineStore('layers-data', {
 					this.layers.splice(i, 1)
 			}
 		},
+		/* 清除所有图层 */
+		clearAllLayer() {
+			this.layers.forEach(layer => layer.destroy())
+			this.layers.splice(0, this.layers.length)
+		},
 		async loadSerializationConfiguration(data) {
 			this.delLayerById(...this.layers.map(layer => layer.id))
 			for (let i = 0; i < data.length; i++)
 				this.layers.push(await Layer.deserialize(data[i]))
+		},
+		/*加入新的元素*/
+		addUnits(units) {
+			this.addLayer(Layer.list(...units))
 		},
 		/*添加图层*/
 		addLayer(layer) {
@@ -160,6 +169,22 @@ export const useLayersDataStore = defineStore('layers-data', {
 					this.mainAudioLayerId = layer.id
 				}
 			}
+		},
+		/*图层排序*/
+		sortLayers() {
+			let figureIndex = 0
+			const figureLayers = []
+			for (let i = 0; i < this.layers.length; i++) {
+				const layer = this.layers[i];
+				// 图层排序
+				layer.sort()
+				// 将数字人图层防止顶层
+				if (layer.type == 'figure') {
+					this.layers.splice(i, 1)
+					figureLayers.push(layer)
+				}
+			}
+			this.layers.unshift(...figureLayers)
 		}
 	}
 })

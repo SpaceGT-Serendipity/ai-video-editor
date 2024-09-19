@@ -112,7 +112,7 @@
 	}, (value) => {
 		if (value) {
 			const read = () => {
-				if (value.scene.loaded && value.scene.container) {
+				if (value.scene.initialized && value.scene.container) {
 					container.value = value.scene.container
 					options.positionSize.scale.x = container.value.scale.x
 					options.positionSize.scale.y = container.value.scale.y

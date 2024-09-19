@@ -1,58 +1,79 @@
 import axios from '../axios/index.js'
 
+export async function loadResource(type, current, size) {
+	return await axios({
+		method: 'get',
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/resource/list',
+		params: {
+			type,
+			current,
+			size
+		}
+	})
+}
+
+export async function count(type) {
+	return await axios({
+		method: 'get',
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/resource/count',
+		params: {
+			type
+		}
+	})
+}
+
 export async function loadFigure() {
 	const res = await axios({
 		method: 'get',
-		url: 'https://ai-api.yigee.cn/avatar/list'
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/avatar/list'
 	})
 	return res.map(item => {
 		return {
-			name: item.name,
-			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.url,
-			cover: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.cover,
+			...item,
 			tag: item.type
 		}
 	})
 }
 
-export async function loadImage() {
-	return [{
-		name: '带妆上阵',
-		url: 'https://mobvoi-digitalhuman-public.weta365.com/93284288ca624b63a4285036d200f390.jpeg'
-	}]
-}
-
-export async function loadVideo() {
-	const res = await axios({
-		method: 'get',
-		url: 'https://ai-api.yigee.cn/video/list?uid=dfcb32daa5870d271ae1f7519cadf3b8'
-	})
-	return res.map(item => {
-		return {
-			name: item.name,
-			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.url,
-			cover: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.cover,
-			duration: item.duration * 1000,
-			size: item.size
+export function save(id, name, type, size, duration, url, cover, creator) {
+	return axios({
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/resource/save',
+		method: 'post',
+		headers: {
+			"Content-Type": 'multipart/form-data'
+		},
+		data: {
+			id,
+			name,
+			type,
+			size,
+			duration,
+			url,
+			cover,
+			creator
 		}
 	})
 }
 
-export async function loadResource(type) {
-	const res = await axios({
-		method: 'get',
-		url: import.meta.env.VITE_APP_BATCH_SERVER + '/resource/list',
-		params: {
-			type
+export function del(id) {
+	return axios({
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/resource/del/' + id,
+		method: 'post',
+		headers: {
+			"Content-Type": 'multipart/form-data'
 		}
 	})
-	return res.map(item => {
-		return {
-			name: item.name,
-			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.url,
-			cover: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.cover,
-			duration: item.duration * 1000,
-			size: item.size
+}
+
+export function rename(id, name) {
+	return axios({
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/resource/rename/' + id,
+		method: 'post',
+		headers: {
+			"Content-Type": 'multipart/form-data'
+		},
+		data: {
+			name
 		}
 	})
 }

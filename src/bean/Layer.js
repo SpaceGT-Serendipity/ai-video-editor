@@ -4,17 +4,16 @@ import {
 import LayerUnit from './LayerUnit.js'
 
 export default class Layer {
-	/* 元素集合 */
-	units = null
-	/* 显示隐藏图层 */
-	display = true
-	/* 静音图层 */
-	muted = false
-	/* 实例元素 */
-	instance = null
-
 	constructor() {
 		this.id = uuidv4();
+		/* 元素集合 */
+		this.units = null
+		/* 显示隐藏图层 */
+		this.display = true
+		/* 静音图层 */
+		this.muted = false
+		/* 实例元素 */
+		this.instance = null
 	}
 
 	static list(...list) {
@@ -57,6 +56,10 @@ export default class Layer {
 		}
 	}
 
+	get(index) {
+		return this.units[index]
+	}
+
 	/* 获取图层元素类型 */
 	get type() {
 		const unit = this.units.find(item => true)
@@ -84,51 +87,22 @@ export default class Layer {
 		return this.units.length
 	}
 
-	get scenes() {
-		return {
+	get stringify() {
+		return JSON.stringify({
 			id: this.id,
-			units: this.units.map(item => item.scenes),
+			units: this.units.map(unit => unit.stringify),
 			display: this.display,
-			muted: this.muted,
-			length: this.length,
-			remove: this.remove,
-			visible: this.visible,
-			audible: this.audible
-		}
+			muted: this.muted
+		})
 	}
 
-	get tracks() {
-		return {
-			id: this.id,
-			units: this.units.map(item => item.tracks),
-			display: this.display,
-			muted: this.muted,
-			length: this.length,
-			remove: this.remove,
-			visible: this.visible,
-			audible: this.audible
-		}
-	}
-
-	get serialize() {
-		return {
-			id: this.id,
-			units: this.units.map(item => item.serialize),
-			display: this.display,
-			muted: this.muted,
-			visible: this.visible,
-			audible: this.audible
-		}
-	}
-
-	static async deserialize(data) {
+	static parse(str) {
+		const data = JSON.parse(str);
 		const layer = new Layer()
-		layer.units = []
-		for (let i = 0; i < data.units.length; i++) {
-			layer.units.push(await LayerUnit.deserialize(data.units[i]))
-		}
+		layer.units = data.units.map(unit => LayerUnit.parse(unit))
 		layer.display = data.display
 		layer.muted = data.muted
 		return layer;
 	}
+
 }

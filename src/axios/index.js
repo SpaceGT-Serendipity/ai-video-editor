@@ -4,7 +4,7 @@ import {
 } from '../store/account.js'
 
 const service = axios.create({
-	baseURL: import.meta.env.VITE_APP_BASE_SERVER,
+	baseURL: import.meta.env.VITE_APP_BATCH_SERVER,
 	withCredentials: false,
 	timeout:0
 })

@@ -63,11 +63,11 @@
 	}
 
 	const saveLocal = () => {
-		const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(layersDataStore.layersSerialize), secretKey).toString()
-		var blob = new Blob([ciphertext], {
-			type: 'text/plain'
-		});
-		saveAs(blob, globalStore.title + ".ai");
+		// const ciphertext = CryptoJS.AES.encrypt(JSON.stringify(layersDataStore.layersSerialize), secretKey).toString()
+		// var blob = new Blob([ciphertext], {
+		// 	type: 'text/plain'
+		// });
+		// saveAs(blob, globalStore.title + ".ai");
 	}
 
 	defineExpose({

@@ -5,16 +5,8 @@
 				<el-button text bg :class="{'active':driveMode=='文本驱动'}" @click="driveMode='文本驱动'">生成声音</el-button>
 				<el-button text bg :class="{'active':driveMode=='音频驱动'}" @click="driveMode='音频驱动'">选择声音</el-button>
 			</div>
-			<el-button text bg class="model" :class="{'show':driveMode=='文本驱动'}" :title="voice.name"
-				@click="selectVoiceRef.open()">
-				<el-icon size="24">
-					<font-awesome-icon icon="fa-solid fa-headset" />
-				</el-icon>
-				<div class="user">
-					<div class="user-name">{{voice.name}}</div>
-					<div class="hint">切换声音</div>
-				</div>
-			</el-button>
+			<select-voice-button-vue :show="driveMode=='文本驱动'" :voice="voice.name"
+				@click="selectVoiceRef.open()"></select-voice-button-vue>
 			<select-voice ref="selectVoiceRef" @change="(event)=>voice=event"></select-voice>
 		</div>
 		<div class="text" v-if="driveMode=='文本驱动'">
@@ -45,7 +37,8 @@
 				</el-button>
 			</el-upload>
 			<el-scrollbar>
-				<div class="music" v-for="item in audioList" @click="onChangeAudio(item)">
+				<el-empty v-if="voiceDataStore.data.length==0" description="暂无音频"></el-empty>
+				<div class="music" v-for="item in voiceDataStore.data" @click="onChangeAudio(item)">
 					<div class="icon">
 						<el-button link v-if="true">
 							<el-icon size="12">
@@ -98,8 +91,12 @@
 </template>
 
 <script setup>
+	import {
+		ElNotification
+	} from 'element-plus'
 	import Plyr from 'plyr';
 	import SelectVoice from '../../components/select-voice.vue'
+	import selectVoiceButtonVue from '../../components/select-voice-button.vue';
 	import {
 		ref,
 		onMounted,
@@ -107,8 +104,9 @@
 		nextTick
 	} from 'vue'
 	import {
-		loadAudios
-	} from '../../api/audio.js'
+		loadResource,
+		save
+	} from '../../api/resource.js'
 	import {
 		dateFormat
 	} from '../../utils/time.js'
@@ -118,21 +116,29 @@
 		edgeTtsVoicesJob
 	} from '../../api/batch.js'
 	import {
-		upload
+		upload,
+		filePath
 	} from '../../api/file.js'
 	import {
 		useLayersDataStore
 	} from '../../store/layers.js'
-	import MediaFile from '../../bean/MediaFile'
+	import MediaFile from '../../bean/source/MediaFile'
 	import {
 		usePropertiesStore
 	} from '../../store/properties.js'
+	import {
+		useAccountStore
+	} from '../../store/account.js'
+	import {
+		useVoiceDataStore
+	} from '../../store/data/voice.js'
 
+	const voiceDataStore = useVoiceDataStore()
+	const accountStore = useAccountStore()
 	const propertiesStore = usePropertiesStore()
 	const layersDataStore = useLayersDataStore()
 	const selectVoiceRef = ref()
 	const driveMode = ref('文本驱动')
-	const audioList = ref([])
 	const voice = ref({
 		type: "edge",
 		name: "中文-晓晓-女",
@@ -156,21 +162,35 @@
 
 	const handleUpload = async (file) => {
 		const remoteFile = await upload(file.raw, 'audio')
-		const mediaFile = MediaFile.parse({
+		await voiceDataStore.save({
+			name: remoteFile.name?.substring(0, 49),
+			size: remoteFile.size,
+			url: remoteFile.url,
+			duration: remoteFile.duration * 1000,
+			creator: accountStore.id
+		})
+		const mediaFile = new MediaFile({
 			...remoteFile,
-			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + remoteFile.url,
-			blob: file.raw,
-			duration: remoteFile.duration * 1000
+			url: filePath + remoteFile.url,
+			duration: parseInt(remoteFile.duration * 1000)
 		});
 		layersDataStore.setUnitFigureResourceAudio(layersDataStore.activeUnit, mediaFile)
 		loadAudioPreview()
+
 	}
 	const onChangeAudio = (file) => {
-		const mediaFile = MediaFile.parse(file);
+		const mediaFile = new MediaFile(file);
 		layersDataStore.setUnitFigureResourceAudio(layersDataStore.activeUnit, mediaFile)
 		loadAudioPreview()
 	}
 	const onGenerateAudio = async () => {
+		if (!propertiesStore.voiceText) {
+			ElNotification({
+				title: '请输入文案。',
+				type: 'warning',
+			})
+			return;
+		}
 		loadingGenerateAudio.value = true
 		const activeUnit = layersDataStore.activeUnit
 		try {
@@ -186,25 +206,27 @@
 				volume: 0,
 				pitch: 0
 			})
-			propertiesStore.voiceText = ''
 			const localFile = new File([blob], 'audio.mp3', {
 				type: blob.type
 			})
 			const remoteFile = await upload(localFile, 'audio')
-			const mediaFile = MediaFile.parse({
+			await voiceDataStore.save({
+				name: propertiesStore.voiceText?.substring(0, 49),
+				size: remoteFile.size,
+				url: remoteFile.url,
+				duration: parseInt(remoteFile.duration * 1000),
+				creator: accountStore.id
+			})
+			const mediaFile = new MediaFile({
 				...remoteFile,
-				url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + remoteFile.url,
-				blob,
-				duration: remoteFile.duration * 1000
+				url: filePath + remoteFile.url,
+				duration: parseInt(remoteFile.duration * 1000)
 			});
 			layersDataStore.setUnitFigureResourceAudio(activeUnit, mediaFile)
+			propertiesStore.voiceText = ''
 		} catch (e) {}
 		loadAudioPreview()
 		loadingGenerateAudio.value = false
-	}
-	const load = async () => {
-		const res = await loadAudios()
-		audioList.value = res
 	}
 	const loadAudioPreview = () => {
 		nextTick(() => {
@@ -223,7 +245,7 @@
 	}
 
 	onMounted(() => {
-		load()
+		voiceDataStore.load()
 	})
 </script>
 
@@ -398,6 +420,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		z-index: 1;
 	}
 
 	.audio-preview .el-button {

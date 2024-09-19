@@ -6,41 +6,39 @@ import {
 } from '../store/track.js'
 import Scene from './Scene.js'
 import Track from './Track.js'
+import * as SourceUtils from './utils/SourceUtils.js'
 
 export default class LayerUnit {
-	/* 轨道配置 */
-	trackStore = useTrackStore()
-	/* 资源信息 */
-	resource = null
-	/* 轨道信息 */
-	track = null
-	/* 场景信息 */
-	scene = null
-	/* 开始时间,并不是真实时间,仅为显示的开始时间(ms) */
-	_durationStart = 0
-	/* 结束时间,并不是真实时间,仅为显示的结束时间(ms) */
-	_durationEnd = 0
-	/* 显示隐藏元素 */
-	display = true
-	/* 静音元素 */
-	muted = false
-
 	constructor({
+		id,
 		resource,
 		scene,
 		track
 	}) {
-		this.id = uuidv4();
+		this.id = id ? id : uuidv4();
+		/* 轨道配置 */
+		this.trackStore = useTrackStore()
+		/* 资源信息 */
 		this.resource = resource;
 		this._durationStart = 0
-		this._durationEnd = resource.duration
+		this._durationEnd = resource ? resource.duration : 0
+		/* 场景信息 */
 		this.scene = scene || new Scene()
+		/* 轨道信息 */
 		this.track = track || new Track({
 			x: 0,
 			// 原始宽度不进行缩放计算
-			w: resource.duration / this.trackStore.rulerScaleTime * this.trackStore.rulerScaleWidth,
+			w: (resource ? resource.duration : 0) / this.trackStore.rulerScaleTime * this.trackStore.rulerScaleWidth,
 		})
+		/* 显示 */
+		this.display = true
+		/* 静音 */
+		this.muted = false
 
+		// /* 开始时间,并不是真实时间,仅为显示的开始时间(ms) */
+		// _durationStart = 0
+		// /* 结束时间,并不是真实时间,仅为显示的结束时间(ms) */
+		// _durationEnd = 0
 	}
 
 	destroy() {
@@ -52,56 +50,30 @@ export default class LayerUnit {
 	clone() {
 		const unit = new LayerUnit({
 			resource: this.resource.clone(),
-			scene: this.scene.clone(),
-			track: this.track.clone()
+			// scene: this.scene.clone()
 		})
 		return unit;
 	}
 
-	split(ratio) {
-		const start = this._durationStart
-		const end = this._durationEnd
-		const splitLine = parseInt((end - start) * ratio);
-		this._durationEnd = start + splitLine;
-		this.track.w = (this._durationEnd - this._durationStart) * this.trackStore.milliscondWidth;
-		const unit = this.clone();
-		unit._durationStart = start + splitLine;
-		unit._durationEnd = end;
-		unit.track.x = this.track.x + this.track.w
-		unit.track.w = (unit._durationEnd - unit._durationStart) * this.trackStore.milliscondWidth;
-		return unit;
-	}
+	// split(ratio) {
+	// 	const start = this._durationStart
+	// 	const end = this._durationEnd
+	// 	const splitLine = parseInt((end - start) * ratio);
+	// 	this._durationEnd = start + splitLine;
+	// 	this.track.w = (this._durationEnd - this._durationStart) * this.trackStore.milliscondWidth;
+	// 	const unit = this.clone();
+	// 	unit._durationStart = start + splitLine;
+	// 	unit._durationEnd = end;
+	// 	unit.track.x = this.track.x + this.track.w
+	// 	unit.track.w = (unit._durationEnd - unit._durationStart) * this.trackStore.milliscondWidth;
+	// 	return unit;
+	// }
 
 	get view() {
 		if (this.resource) {
 			return this.resource.view
 		} else
 			return '<没有绑定资源>'
-	}
-
-	get scenes() {
-		return {
-			id: this.id,
-			resource: this.resource,
-			scene: this.scene,
-			duration: this.duration,
-			type: this.type,
-			display: this.display,
-			muted: this.muted
-		}
-	}
-
-	get tracks() {
-		return {
-			id: this.id,
-			resource: this.resource,
-			track: this.track.serialize,
-			scene: this.scene,
-			duration: this.duration,
-			type: this.type,
-			display: this.display,
-			muted: this.muted
-		}
 	}
 
 	get duration() {
@@ -140,58 +112,28 @@ export default class LayerUnit {
 		return ['figure', 'audio'].includes(this.type)
 	}
 
-	get serialize() {
-		return {
+	get stringify() {
+		return JSON.stringify({
 			id: this.id,
-			resource: this.resource.serialize,
-			track: this.track.serialize,
-			scene: this.scene.serialize,
-			durationStart: this._durationStart,
-			durationEnd: this._durationEnd,
+			resource: this.resource.stringify,
+			scene: this.scene.stringify,
+			track: this.track.stringify,
 			display: this.display,
-			muted: this.muted,
-			visible: this.visible,
-			audible: this.audible
-		}
+			muted: this.muted
+		})
 	}
 
-	static async deserialize(data) {
+	static parse(str) {
+		const data = JSON.parse(str);
 		const unit = new LayerUnit({
-			resource: await ResourceDeserialize(data.resource),
-			scene: Scene.deserialize(data.scene),
-			track: Track.deserialize(data.track)
+			id: data.id,
+			resource: SourceUtils.autoParse(data.resource),
+			scene: Scene.parse(data.scene),
+			track: Track.parse(data.track)
 		})
 		unit.display = data.display
 		unit.muted = data.muted
-		unit._durationStart = data.durationStart
-		unit._durationEnd = data.durationEnd
 		return unit;
 	}
-}
 
-/* 异步反序列加载远程文件 */
-async function ResourceDeserialize(data) {
-	let resource = null
-	if (data.type == 'video') {
-		resource = await VideoResource.url(data.url, data.name)
-		await resource.init()
-	} else
-	if (data.type == 'image') {
-		resource = new ImageResource({
-			name: data.name,
-			url: data.url
-		});
-	}
-	if (data.type == 'figure') {
-		resource = new FigureResource({
-			name: data.name,
-			tag: data.tag,
-			url: data.url,
-			cover: data.cover
-		});
-	}
-	resource.duration = data.duration;
-	resource.size = data.size;
-	resource.loaded = true
-	return resource;
 }

@@ -7,8 +7,38 @@
 				</Item>
 			</div>
 		</el-scrollbar>
+		<div v-show="accountStore.authorities != null && accountStore.authorities.includes('ai_video_admin')" class="res-menu">
+			<Item @click="manageRef.open()">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#resource"></use>
+				</svg>
+				<div>
+					公共资源
+				</div>
+			</Item>
+		</div>
+		<div class="video-menu">
+			<Item @click="videosRef.open()">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#video"></use>
+				</svg>
+				<div>
+					我的视频
+				</div>
+			</Item>
+		</div>
+		<div class="project-menu">
+			<Item @click="projectRef.open()">
+				<svg class="icon" aria-hidden="true">
+					<use xlink:href="#project"></use>
+				</svg>
+				<div>
+					项目管理
+				</div>
+			</Item>
+		</div>
 		<div class="work-menu">
-			<Item @click="jobsRef.open()">
+			<Item @click="menuStore.jobProgressDialogVisible = true">
 				<svg class="icon" aria-hidden="true">
 					<use xlink:href="#work"></use>
 				</svg>
@@ -29,6 +59,9 @@
 		</div> -->
 		<setting ref="settingRef"></setting>
 		<jobs ref="jobsRef"></jobs>
+		<videos ref="videosRef"></videos>
+		<project ref="projectRef"></project>
+		<resource-manage ref="manageRef"></resource-manage>
 	</div>
 </template>
 
@@ -36,6 +69,9 @@
 	import Setting from './setting.vue'
 	import Item from './item.vue'
 	import Jobs from '../jobs/index.vue'
+	import Videos from '../video/index.vue'
+	import Project from '../project/index.vue'
+	import ResourceManage from '../resource/manage/index.vue'
 	import {
 		ref,
 		onMounted
@@ -43,11 +79,22 @@
 	import {
 		useGlobalStore
 	} from '../../store/global.js'
-
+	import {
+		useMenuStore
+	} from '../../store/menu.js'
+	import {
+		useAccountStore
+	} from '../../store/account.js'
+	
+	const accountStore = useAccountStore()
+	const menuStore = useMenuStore()
 	const globalStore = useGlobalStore()
 	const emits = defineEmits(['click'])
 	const settingRef = ref()
 	const jobsRef = ref()
+	const videosRef = ref()
+	const projectRef = ref()
+	const manageRef = ref()
 	const menuList = [
 		// 	{ label: 'template', title: '模板' },
 		{
@@ -103,7 +150,49 @@
 		flex-direction: column;
 		align-items: center;
 	}
-
+	
+	.res-menu {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-top: 1px solid var(--el-border-color);
+		padding: 6px;
+		text-align: center;
+	}
+	
+	.res-menu .icon {
+		width: 20px;
+		height: 20px;
+	}
+	
+	.video-menu {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-top: 1px solid var(--el-border-color);
+		padding: 6px;
+		text-align: center;
+	}
+	
+	.video-menu .icon {
+		width: 25px;
+		height: 25px;
+	}
+	
+	.project-menu {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		border-top: 1px solid var(--el-border-color);
+		padding: 6px;
+		text-align: center;
+	}
+	
+	.project-menu .icon {
+		width: 28px;
+		height: 28px;
+	}
+	
 	.setting-menu {
 		display: flex;
 		flex-direction: column;

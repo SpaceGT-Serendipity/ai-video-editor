@@ -3,8 +3,8 @@
 		:class-name="config.className" :class-name-active="config.classNameActive" :parent="config.parent"
 		:prevent-deactivation="config.preventDeactivation" :axis="config.axis" :x="config.x" :y="config.y" :w="config.w"
 		:h="config.h" :z="config.z" :min-width="config.minWidth" :max-width="config.maxWidth" :handles="config.handles"
-		:on-drag="onDrag" :on-resize="onResize" :snap="true" :resizable="data.resizable" @activated="onActivated"
-		@deactivated="onDeactivated" @resizeStop="onResizeStop">
+		:on-drag="onDrag" :on-resize="onResize" :snap="true" :resizable="data.resizable" :grid="grid"
+		@activated="onActivated" @deactivated="onDeactivated" @resizeStop="onResizeStop">
 		<slot></slot>
 		<div class="debug float" :style="{'margin-left':(!data.display||data.muted?'70px':'10px')}">
 			X: {{data.track.x}} W: {{data.track.w}} DurableActive: {{data.track.active}}
@@ -23,7 +23,8 @@
 		onMounted,
 		onBeforeUnmount,
 		watch,
-		nextTick
+		nextTick,
+		computed
 	} from 'vue'
 	import {
 		useTrackStore
@@ -31,9 +32,13 @@
 	import {
 		useLayersDataStore
 	} from '../../../store/layers.js'
+	import {
+		useGlobalStore
+	} from '../../../store/global.js'
 
 	const trackStore = useTrackStore()
 	const layersDataStore = useLayersDataStore()
+	const globalStore = useGlobalStore()
 	const unitRef = ref()
 	const emits = defineEmits(['onDrag'])
 	const props = defineProps({
@@ -55,6 +60,9 @@
 		maxWidth: props.data.trackMaxWidth || 0,
 		handles: ['mr', 'ml'], // 拖动手柄只保留左右
 	})
+	const grid = computed(() => {
+		return globalStore.alignTimeline ? [10, 0] : [1, 0];
+	})
 
 	watch(() => props.data.track.x, (value) => {
 		config.x = value
@@ -70,7 +78,7 @@
 	const onDrag = (x, y) => {
 		props.data.track.x = parseInt(x)
 		// 开启吸附
-		if (trackStore.unitAdsorption) adsorption(x)
+		if (trackStore.unitAdsorption) dragAdsorption(x)
 		emitsDrag()
 		return false
 	}
@@ -86,12 +94,12 @@
 	const onActivated = () => {
 		layersDataStore.setUnitActive(props.data.id)
 	}
-	/* 触发失去活跃状态,使其失去活力慢一点,可在激活状态做一些事件如分割 */
+	/* 触发失去活跃状态 */
 	const onDeactivated = () => {
-		// setTimeout(() => layersDataStore.activeUnit = null, 200)
+		// layersDataStore.activeUnit = null
 	}
-	// 吸附判定
-	const adsorption = (x) => {
+	// 移动吸附判定
+	const dragAdsorption = (x) => {
 		const headLines = []
 		const tailLines = []
 		const layer = layersDataStore.getLayerByUnitId(props.data.id)
@@ -116,6 +124,7 @@
 				props.data.track.x = headLines[i] - config.w
 			}
 		}
+
 	}
 
 	const emitsDrag = () => {

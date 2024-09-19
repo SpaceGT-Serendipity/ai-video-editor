@@ -36,7 +36,7 @@
 				if (data.label == 'template') {
 					return import(`./template.vue`);
 				}
-				return import(`./figure.vue`);
+				return import(`./figure/index.vue`);
 			}
 		});
 	}

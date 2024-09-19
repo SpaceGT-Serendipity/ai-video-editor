@@ -3,12 +3,13 @@
 		<el-tab-pane label="预设音乐" name="预设音乐">
 			<el-scrollbar>
 				<div class="list">
-					<resource-audio v-for="item in publicFileList" :key="item.id" :data="item"></resource-audio>
+					<resource-audio v-for="item in bgmDataStore.publicData" :key="item.id"
+						:data="item"></resource-audio>
 				</div>
 			</el-scrollbar>
 		</el-tab-pane>
-		<el-tab-pane label="本地音乐" name="本地音乐">
-			<el-scrollbar>
+		<el-tab-pane label="我的音乐" name="我的音乐">
+			<el-scrollbar v-loading="loading" element-loading-text="正在加载音频,请稍等...">
 				<el-upload class="upload" :show-file-list="false" action :auto-upload="false" multiple accept=".mp3"
 					:on-change="handleUpload">
 					<el-button icon="Plus">点击上传本地音乐</el-button>
@@ -21,20 +22,7 @@
 					</el-tooltip>
 				</el-upload>
 				<div class="list">
-					<div v-for="item in localFileList">
-						<resource-audio :data="item"></resource-audio>
-					</div>
-				</div>
-			</el-scrollbar>
-		</el-tab-pane>
-		<el-tab-pane label="音乐链接" name="音乐链接">
-			<el-scrollbar>
-				<div class="link-group-button">
-					<el-input v-model="link" placeholder="URL"></el-input>
-					<el-button @click="addLinkResource">添加</el-button>
-				</div>
-				<div class="list">
-					<div v-for="item in linkFileList">
+					<div v-for="item in bgmDataStore.privateData">
 						<resource-audio :data="item"></resource-audio>
 					</div>
 				</div>
@@ -50,86 +38,35 @@
 		reactive,
 		onMounted
 	} from 'vue'
+	import AudioSource from '../../bean/source/AudioSource.js'
 	import {
-		reactify
-	} from '@vueuse/core'
+		useAccountStore
+	} from '../../store/account.js'
 	import {
-		ElMessage,
-		ElMessageBox
-	} from 'element-plus'
-	import AudioResource from '../../bean/AudioResource'
-	import {
-		dateFormat
-	} from '../../utils/time.js'
-	import {
-		loadAudios
-	} from '../../api/audio.js'
-	import {
-		loadResource
-	} from '../../api/resource.js'
+		useBgmDataStore
+	} from '../../store/data/bgm.js'
 	import {
 		upload
 	} from '../../api/file.js'
-	import {
-		useResourceLocalStore,
-		useResourceLinkStore
-	} from '../../store/resource.js'
 
-	const resourceLocalStore = useResourceLocalStore()
-	const resourceLinkStore = useResourceLinkStore()
-	const publicFileList = reactive([])
-	const localFileList = reactive([])
-	const linkFileList = reactive([])
-	const link = ref()
+	const bgmDataStore = useBgmDataStore()
+	const accountStore = useAccountStore()
+	const loading = ref(false)
 
 	const handleUpload = async (file) => {
-		const audio = await AudioResource.file(file.raw)
-		localFileList.push(audio)
-		// 上传至服务器
-		const res = await upload(file.raw, 'ai-video-editor/source/audio')
-		audio.url = `${import.meta.env.VITE_APP_FILE_SERVER}/download/${res.url}`
-		// 加入本地列表
-		resourceLocalStore.audios.push({
-			name: audio.name,
-			url: audio.url,
-			duration: audio.duration
+		loading.value = true
+		const res = await upload(file.raw, 'ai-video/source/audio')
+		await bgmDataStore.save({
+			name: res.name,
+			size: res.size,
+			url: res.url,
+			duration: res.duration * 1000,
+			creator: accountStore.id
 		})
+		loading.value = false
 	}
-	const addLinkResource = async () => {
-		const audio = await AudioResource.url(link.value, dateFormat(new Date()))
-		linkFileList.push(audio)
-		// 加入本地列表
-		resourceLinkStore.audios.push({
-			name: audio.name,
-			url: link.value,
-			duration: audio.duration
-		})
-	}
-	const load = async () => {
-		/* const res = await loadAudios() */
-		const res = await loadResource('bgm')
-		for (let i = 0; i < res.length; i++) {
-			const audio = new AudioResource(res[i])
-			publicFileList.push(audio)
-		}
-	}
-	const loadLocal = async () => {
-		for (let i = 0; i < resourceLocalStore.audios.length; i++) {
-			const audio = new AudioResource(resourceLocalStore.audios[i])
-			localFileList.push(audio)
-		}
-	}
-	const loadLink = async () => {
-		for (let i = 0; i < resourceLinkStore.audios.length; i++) {
-			const audio = new AudioResource(resourceLinkStore.audios[i])
-			linkFileList.push(audio)
-		}
-	}
-
 	onMounted(() => {
-		load()
-		loadLocal()
-		loadLink()
+		bgmDataStore.load()
 	})
 </script>
 

@@ -23,16 +23,16 @@ import {
 } from './utils/Wireframe.js'
 
 export default class Scene {
-	/* 最后更新时间 */
-	timestamp = 0
-	texture = null
-	sprite = null
-	container = null
-	text = null
-	loaded = false
-
 	constructor() {
-		this.id = uuidv4()
+		this.id = uuidv4();
+		/* 最后更新时间 */
+		this.timestamp = 0;
+		this.texture = null;
+		this.sprite = null;
+		this.container = null;
+		this.text = null;
+		this._initialized = false;
+		this._old = null; //老的数据参数
 	}
 
 	clone() {
@@ -44,28 +44,34 @@ export default class Scene {
 		if (this.container) this.container.destroy()
 	}
 
-	async load(app, resource) {
+	async init(app, resource) {
 		if (['video', 'image', 'figure', 'text'].includes(resource.type)) {
 			if (getLoadParserName(resource.type)) {
 				this.texture = await loadAsset({
 					alias: this.id,
-					src: resource.blobUrl || resource.url,
+					src: resource.url,
 					loadParser: getLoadParserName(resource.type)
 				})
 			}
 			if (resource.type == 'video') {
-				await loadVideo(app, this, () => this.timestamp = new Date().getTime())
+				loadVideo(app, this, () => this.timestamp = new Date().getTime())
 				this.pause()
 			} else
 			if (resource.type == 'image' || resource.type == 'figure') {
-				await loadImage(app, this, () => this.timestamp = new Date().getTime())
+				loadImage(app, this, () => this.timestamp = new Date().getTime())
 			} else
 			if (resource.type == 'text') {
-				await loadText(app, this, () => this.timestamp = new Date().getTime())
+				loadText(app, this, () => this.timestamp = new Date().getTime())
+			}
+			if (this._old) {
+				this.container.x = this._old.position.x
+				this.container.y = this._old.position.y
+				this.container.scale.x = this._old.scale.x
+				this.container.scale.y = this._old.scale.y
 			}
 			this.container.visible = false
 		}
-		this.loaded = true
+		this._initialized = true
 	}
 
 	play() {
@@ -89,36 +95,79 @@ export default class Scene {
 		else unWireframe(this, () => this.timestamp = new Date().getTime())
 	}
 
+	stringify() {
+		return JSON.stringify({
+			id: this.id
+		})
+	}
+
+	parse(str) {
+		return new Scene()
+	}
+
 	get paused() {
 		return this.texture.source.resource.paused || false
 	}
 
-	get serialize() {
-		return {
-			id: this.id,
-			timestamp: this.timestamp
-		}
-	}
-
 	get position() {
-		return {
-			x: this.container.x,
-			y: this.container.y
+		if (this.container) {
+			return {
+				x: this.container.x,
+				y: this.container.y
+			}
+		} else {
+			return {
+				x: 0,
+				y: 0
+			}
 		}
 	}
 
 	get scale() {
-		return {
-			x: this.container.scale.x,
-			y: this.container.scale.y
+		if (this.container) {
+			return {
+				x: this.container.scale.x,
+				y: this.container.scale.y
+			}
+		} else {
+			return {
+				x: 0,
+				y: 0
+			}
 		}
 	}
 
-	static deserialize(data) {
-		const scene = new Scene();
-		scene.timestamp = data.timestamp;
-		return scene;
+
+	get initialized() {
+		return this._initialized;
 	}
+
+	get stringify() {
+		return JSON.stringify({
+			id: this.id,
+			timestamp: this.timestamp,
+			position: this.position,
+			scale: this.scale
+		})
+	}
+
+	static parse(str) {
+		try {
+			const data = JSON.parse(str)
+			const scene = new Scene()
+			scene.id = data.id;
+			scene.timestamp = data.timestamp;
+			scene._old = {
+				position: data.position,
+				scale: data.scale
+			}
+			return scene;
+		} catch (e) {
+			return null;
+		}
+	}
+
+
 }
 
 const getLoadParserName = (type) => {
@@ -167,7 +216,7 @@ const loadAssets = async (...assets) => {
 }
 
 
-const loadImage = async (app, scene, callback) => {
+const loadImage = (app, scene, callback) => {
 	const container = new Container()
 	container.interactive = true
 	const sprite = Sprite.from(scene.texture);
@@ -219,7 +268,7 @@ const loadBackground = async (app) => {
 	app.stage.addChild(backgroundSprite);
 	return backgroundSprite;
 }
-const loadBackgroundText = async (app) => {
+const loadBackgroundText = (app) => {
 	const style = new TextStyle({
 		fontFamily: 'Arial',
 		fontSize: app.screen.width / 20,

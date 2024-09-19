@@ -2,10 +2,9 @@
 	<!-- 图层顶部 -->
 	<div class="timeline layer-top" ref="topRef"> </div>
 	<!-- 图层 -->
-	<div class="timeline layer container" ref="containerRef"
-		:style="{'height': `${modelValue.height}px`}">
+	<div class="timeline layer container" ref="containerRef" :style="{'height': `${modelValue.height}px`}">
 		<layer-unit v-for="(item,index) in modelValue.units" :key="item.id" :data="item"
-			@on-drag="emits('onDrag', $event)" >
+			@on-drag="emits('onDrag', $event)">
 			<div class="view" v-html="item.view"></div>
 		</layer-unit>
 	</div>
@@ -226,4 +225,28 @@
 		height: 100%;
 		min-width: 100px;
 	}
+</style>
+
+<style>
+	/* 资源预览样式 */
+
+	.source-view-image {
+		width: 100%;
+		height: 100%;
+		background-repeat: repeat-x;
+		background-size: contain;
+		background-position: left;
+	}
+
+	.source-view-name {
+		position: absolute;
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-size: 10px;
+		top: 0;
+		padding-left: 2px;
+	}
+ 
 </style>

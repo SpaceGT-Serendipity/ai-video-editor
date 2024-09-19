@@ -58,6 +58,11 @@
 	@import "vue-draggable-resizable/style.css";
 	@import 'glightbox/dist/css/glightbox.min.css';
 	@import 'plyr/dist/plyr.css';
+	
+	@font-face {
+	    font-family: 'Noto_Sans_SC';
+	    src: url('/fonts/Noto_Sans_SC/NotoSansSC-VariableFont_wght.ttf'); /* 指定字体文件的路径 */
+	}
 
 	html {
 		background-color: var(--el-bg-color);
@@ -74,6 +79,7 @@
 		min-width: 1200px;
 		min-height: 700px;
 		user-select: none;
+		font-family: 'Noto_Sans_SC';
 	}
 
 	.debug-open .debug {
@@ -91,4 +97,5 @@
 	.debug.float {
 		position: absolute;
 	}
+	
 </style>

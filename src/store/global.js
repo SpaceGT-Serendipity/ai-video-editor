@@ -4,17 +4,31 @@ import {
 
 export const useGlobalStore = defineStore('global', {
 	state: () => ({
+		theme: 'dark',
 		debug: false, // 测试模式
 		scale: '16:9',
 		width: 1920,
 		height: 1080,
 		title: '未命名项目', // 项目标题
-		serialize: null, // layers 序列化存档
-		menu: 'image' //菜单打开的选项
+		menu: 'image', //菜单打开的选项
+		alignTimeline: false, //unit移动和改变宽度对齐时间轴
+		loading: false // 编辑器加载
 	}),
 	persist: true,
 	actions: {
-		
+		switchTheme(theme) {
+			if (theme) {
+				this.theme = theme;
+			} else {
+				this.theme = this.theme == 'dark' ? null : 'dark'
+			}
+			const html = document.querySelector('html')
+			if (this.theme == 'dark') {
+				html.classList.add('dark')
+			} else {
+				html.classList.remove('dark')
+			}
+		}
 	},
 })
 
@@ -45,6 +59,6 @@ export const useStateStore = defineStore('state', {
 		destroy(id) {
 			const index = this.message.findIndex(item => item.id == id)
 			this.message.splice(index, 1)
-		}
+		},
 	}
 })

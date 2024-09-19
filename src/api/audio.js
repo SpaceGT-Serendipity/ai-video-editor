@@ -1,25 +1,14 @@
 import axios from '../axios/index.js'
 
-export async function loadAudios() {
-	const res = await axios({
-		method: 'get',
-		url: 'https://ai-api.yigee.cn/audio/list?uid=dfcb32daa5870d271ae1f7519cadf3b8'
-	})
-	return res.map(item => {
-		return {
-			id: item.id,
-			name: item.name,
-			url: import.meta.env.VITE_APP_FILE_SERVER + '/download/' + item.url,
-			duration: item.duration * 1000
-		}
-	})
-}
-
-export async function loadVoices() {
+export async function loadVoices(uid) {
 	const voices = []
 	const res = await axios({
 		method: 'get',
-		url: 'https://ai-api.yigee.cn/audio/edge-tts-list'
+		/* url: 'https://ai-api.yigee.cn/audio/edge-tts-list', */
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/audio/edge-tts-list',
+		params: {
+			uid
+		}
 	})
 	voices.push(...res.map(item => {
 		return {
@@ -30,7 +19,11 @@ export async function loadVoices() {
 	}))
 	const res2 = await axios({
 		method: 'get',
-		url: 'https://ai-api.yigee.cn/audio/rvc-list?uid=dfcb32daa5870d271ae1f7519cadf3b8'
+		/* url: 'https://ai-api.yigee.cn/audio/rvc-list?uid=dfcb32daa5870d271ae1f7519cadf3b8' */
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/audio/rvc-list',
+		params: {
+			uid
+		}
 	})
 	voices.push(...res2.map(item => {
 		return {
@@ -42,7 +35,11 @@ export async function loadVoices() {
 	}))
 	const res3 = await axios({
 		method: 'get',
-		url: 'https://ai-api.yigee.cn/audio/gpt-sovits-list?uid=dfcb32daa5870d271ae1f7519cadf3b8'
+		/* url: 'https://ai-api.yigee.cn/audio/gpt-sovits-list?uid=dfcb32daa5870d271ae1f7519cadf3b8' */
+		url: import.meta.env.VITE_APP_BATCH_SERVER + '/audio/gpt-sovits-list',
+		params: {
+			uid
+		}
 	})
 	voices.push(...res3.map(item => {
 		return {

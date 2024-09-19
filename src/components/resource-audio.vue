@@ -1,5 +1,5 @@
 <template>
-	<div class="resource-audio" ref="resourceAudioRef" v-loading="!data.loaded">
+	<div class="resource-audio" ref="resourceAudioRef">
 		<div class="icon">
 			<el-button link v-if="true">
 				<el-icon size="12">

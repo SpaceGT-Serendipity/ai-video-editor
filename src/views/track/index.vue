@@ -3,7 +3,7 @@
 		'--controller-group-width':`${trackStore.controllerGroupWidth}px`,
 		'--track-timeline-ruler-height':`${trackStore.rulerHeight}px`
 	}">
-		<!-- <toolbar ref="toolbarRef"></toolbar> -->
+		<toolbar ref="toolbarRef"></toolbar>
 		<div class="view" ref="dropZoneRef"
 			:style="{'position':isOverDropZone||resourceDragStore.data?'relative':'initial'}">
 			<div v-show="haveResources" class="controller-group" ref="controllerGroupRef">
@@ -40,9 +40,7 @@
 	import TimelineSeeker from './seeker/index.vue'
 	import LayerUnit from '../../bean/LayerUnit.js'
 	import Layer from '../../bean/Layer.js'
-	import TextResource from '../../bean/TextResource'
-	import ImageResource from '../../bean/ImageResource'
-	import VideoResource from '../../bean/VideoResource'
+	import ImageSource from '../../bean/source/ImageSource'
 	import {
 		useDropZone,
 		useMouse
@@ -98,13 +96,11 @@
 		isOverDropZone
 	} = useDropZone(dropZoneRef, {
 		onDrop(files) {
-			files.forEach(file => {
+			files.forEach(async file => {
+				const source = await ImageSource.file(file)
 				layersDataStore.layers.push(
 					Layer.list(new LayerUnit({
-						resource: new ImageResource({
-							name: file.name,
-							url: URL.createObjectURL(file)
-						})
+						resource: source
 					}))
 				)
 			})
@@ -114,7 +110,7 @@
 
 	const handleTimelineLayersOnDrag = (event) => {
 		dragData.value = event
-		const last_position = event.x + event.w
+		const last_position = event.track.x + event.track.w
 		timelineRulerRef.value.resize(last_position)
 	}
 	/* 拖拽资源到面板添加元素  */
@@ -124,7 +120,7 @@
 			resourceDragStore.data = null
 			nextTick(async () => {
 				const unit = new LayerUnit({
-					resource: await resource.clone()
+					resource: resource.clone()
 				})
 				// 元素坐标
 				const x =

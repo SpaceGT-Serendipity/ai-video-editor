@@ -61,9 +61,11 @@
 		</el-tour-step>
 	</el-tour>
 	<svg-library v-show="false"></svg-library>
+	<loading-vue v-if="globalStore.loading"></loading-vue>
 </template>
 
 <script setup>
+	import loadingVue from '../components/loading.vue'
 	import WindowResize from '../components/window-resize.vue'
 	import Header from './header.vue'
 	import Footer from './footer.vue'
@@ -78,6 +80,10 @@
 		ref,
 		onMounted
 	} from 'vue'
+	import {
+		useGlobalStore
+	} from '../store/global.js'
+	const globalStore = useGlobalStore()
 
 	const headerRef = ref()
 	const menuRef = ref()
@@ -88,6 +94,10 @@
 	const trackRef = ref()
 	const footerRef = ref()
 	const openTour = ref(false)
+
+	onMounted(() => {
+		globalStore.switchTheme(globalStore.theme)
+	})
 </script>
 
 <style scoped>

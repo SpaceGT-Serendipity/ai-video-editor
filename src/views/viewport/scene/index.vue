@@ -48,55 +48,53 @@
 	const background = ref(null)
 	const backgroundText = ref(null)
 	viewportStore.app = app
-
-	let loadSceneLoading = false
-	const loadScene = async (layers) => {
-		if (loadSceneLoading) return setTimeout(() => loadScene(layers), 200);
-		loadSceneLoading = true;
-		for (let i = 0; i < layers.length; i++) {
-			const layer = layers[i]
+	
+	const loadScene = async () => {
+		for (let i = 0; i < layersDataStore.layers.length; i++) {
+			const layer = layersDataStore.layers[i]
 			for (let j = 0; j < layer.length; j++) {
-				const unit = layer.units[j]
-				if (!unit.scene.loaded)
-					await unit.scene.load(app, unit.resource)
+				const unit = layer.get(j)
+				if (!unit.scene.initialized)
+					await unit.scene.init(app, unit.resource)
 			}
 		}
-		loadSceneLoading = false
 	}
 	const renderUnit = (layer, layerIndex, unit) => {
-		// 确保场景已加载 
-		if (unit.scene.loaded && unit.scene.container) {
-			if (layer.display && unit.display) {
-				const currentTime = trackStore.seekerTime - unit.duration.left
-				if (trackStore.seekerTime >= unit.duration.left &&
-					trackStore.seekerTime <= unit.duration.right) {
-					unit.scene.container.zIndex =
-						layersDataStore.layersTracks.length - layerIndex
-					unit.scene.container.visible = true
-					if (viewportStore.playing) {
-						if (unit.resource.type == 'video') {
-							unit.scene.play()
-							unit.scene.muted(layer.muted || unit.muted)
+		// 确保场景已加载
+		if (unit.scene.container) {
+			if (unit.scene.initialized) {
+				if (layer.display && unit.display) {
+					const currentTime = trackStore.seekerTime - unit.duration.left
+					if (trackStore.seekerTime >= unit.duration.left &&
+						trackStore.seekerTime <= unit.duration.right) {
+						unit.scene.container.zIndex = layersDataStore.layersTracks.length - layerIndex
+						unit.scene.container.visible = true
+						if (viewportStore.playing) {
+							if (unit.resource.type == 'video') {
+								unit.scene.play()
+								unit.scene.muted(layer.muted || unit.muted)
+							}
+						} else {
+							if (unit.resource.type == 'video') {
+								unit.scene.pause()
+								unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
+							}
 						}
+						unit.scene.frame(unit.track.active)
 					} else {
+						unit.scene.container.visible = false
 						if (unit.resource.type == 'video') {
 							unit.scene.pause()
-							unit.scene.currentTime((unit.duration.start + currentTime) / 1000)
+							unit.scene.currentTime(unit.duration.start / 1000)
 						}
 					}
-					unit.scene.frame(unit.track.active)
 				} else {
 					unit.scene.container.visible = false
-					if (unit.resource.type == 'video') {
-						unit.scene.pause()
-						unit.scene.currentTime(unit.duration.start / 1000)
-					}
+					if (unit.type == 'video') unit.scene.pause()
 				}
-			} else {
-				unit.scene.container.visible = false
-				if (unit.type == 'video') unit.scene.pause()
 			}
 		}
+
 	}
 	const listenUnit = (layer, layerIndex, unit) => {
 		// 只聆听音频文件，视频文件声音渲染时管理。
@@ -118,15 +116,15 @@
 	}
 	const render = () => {
 		const showUnits = []
-		layersDataStore.layersTracks.forEach((layer, layerIndex) => {
+		layersDataStore.layers.forEach((layer, layerIndex) => {
 			layer.units.forEach(unit => {
 				if (layer.visible) renderUnit(layer, layerIndex, unit)
 				if (layer.audible) listenUnit(layer, layerIndex, unit)
 			})
 		})
 	}
-	watch(() => layersDataStore.layersScenes, (layers) => loadScene(layers))
-	watch(() => layersDataStore.layersTracks, (value) => render())
+	watch(() => layersDataStore.layersScenes, () => loadScene())
+	watch(() => [layersDataStore.layersScenes, layersDataStore.layersTracks], () => render())
 	watch(() => trackStore.seekerTime, (value) => render())
 	watch(() => viewportStore.playing, (value) => render())
 	watch(() => ({
@@ -158,7 +156,7 @@
 		});
 	}
 
-	onMounted(async () => {
+	const init = async () => {
 		const scene = document.querySelector('.scene')
 		await app.init({
 			width: globalStore.width,
@@ -171,6 +169,10 @@
 		// backgroundText.value = await loadBackgroundText(app)
 		loading.value = false
 		handleTicker()
+	}
+
+	onMounted(() => {
+		init()
 	})
 </script>
 
