@@ -52,6 +52,7 @@ library.add(
 	freeSolidSvgIcons.faArrowRotateLeft,
 	freeSolidSvgIcons.faArrowRotateRight,
 	freeSolidSvgIcons.faCompress,
+	freeSolidSvgIcons.faCrosshairs,
 	freeSolidSvgIcons.faExpand,
 	freeSolidSvgIcons.faEyeSlash,
 	freeSolidSvgIcons.faFileAudio,

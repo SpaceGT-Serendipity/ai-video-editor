@@ -5,7 +5,7 @@
 <script setup>
 	import {
 		useAdsorptionLineStore
-	} from '../../../store/layers.js'
+	} from '../../../../store/layers.js'
 
 	const adsorptionLineStore = useAdsorptionLineStore()
 </script>

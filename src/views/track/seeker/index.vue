@@ -32,10 +32,11 @@
 	const layersDataStore = useLayersDataStore()
 	const trackStore = useTrackStore()
 	const viewportStore = useViewportStore()
+	const rootEl = useParentElement(useParentElement(useParentElement()))
 	const parentEl = useParentElement()
 	const trackSeekerRootRef = ref()
 	const mouse = useMouse({
-		target: parentEl
+		target: rootEl
 	})
 	const drag = ref(false)
 

@@ -4,10 +4,12 @@
 			:drop-data="dragData" @on-drag="onDrag($event,index)" @on-drop="onDrop($event,index)"></layer-item>
 	</div>
 	<adsorption-line-hint-vue></adsorption-line-hint-vue>
+	<select-unit-vue></select-unit-vue>
 </template>
 
 <script setup>
-	import adsorptionLineHintVue from './adsorption-line-hint.vue'
+	import adsorptionLineHintVue from './components/adsorption-line-hint.vue'
+	import selectUnitVue from './components/select-unit.vue'
 	import ContextMenu from '@imengyu/vue3-context-menu'
 	import LayerItem from './item.vue'
 	import {
@@ -27,10 +29,13 @@
 		useViewportStore
 	} from '../../../store/viewport.js'
 	import {
-		useLayersDataStore
+		useLayersDataStore,
+		useSelectUnitStore
 	} from '../../../store/layers.js'
 
+
 	const layersDataStore = useLayersDataStore()
+	const selectUnitStore = useSelectUnitStore()
 	const trackStore = useTrackStore()
 	const viewportStore = useViewportStore()
 	const emits = defineEmits(['onDrag'])
@@ -53,6 +58,21 @@
 				x: e.x,
 				y: e.y,
 				items: [{
+					label: "对齐音频",
+					hidden: unit.type != 'image',
+					svgIcon: '#fa-crosshairs',
+					svgProps: {
+						fill: dark ? '#aaa' : '#666',
+					},
+					onClick: () => {
+						selectUnitStore.selection((selected) => {
+							unit.track.x = selected.track.x;
+							unit.track.w = selected.track.w;
+							layersDataStore.sortLayers();
+						})
+						selectUnitStore.cautionUnit('audio')
+					}
+				}, {
 					label: "显示",
 					hidden: !unit.visible || unit.display,
 					svgIcon: '#fa-eye',

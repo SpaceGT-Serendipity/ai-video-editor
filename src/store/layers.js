@@ -194,12 +194,11 @@ export const useLayersDataStore = defineStore('layers-data', {
 			const figureLayers = []
 			for (let i = 0; i < this.layers.length; i++) {
 				const layer = this.layers[i];
-				// 图层排序
 				layer.sort()
-				// 将数字人图层防止顶层
 				if (layer.type == 'figure') {
 					this.layers.splice(i, 1)
 					figureLayers.push(layer)
+					i--;
 				}
 			}
 			this.layers.unshift(...figureLayers)
@@ -218,4 +217,39 @@ export const useAdsorptionLineStore = defineStore('adsorption-line', {
 		// 吸附提示线位置
 		x: 0
 	}),
+})
+
+export const useSelectUnitStore = defineStore('select-unit', {
+	state: () => ({
+		layersDataStore: useLayersDataStore(),
+		visible: false,
+		callback: null
+	}),
+	actions: {
+		selection(callback) {
+			this.visible = true;
+			this.callback = callback;
+		},
+		cautionUnit(type) {
+			if (type) {
+				this.layersDataStore.layers.forEach(layer => {
+					layer.units.forEach(unit => {
+						if (unit.track.instance) {
+							if (unit.type != type) {
+								unit.track.instance.style.filter = 'opacity(0.7)';
+							}
+						}
+					})
+				})
+			} else {
+				this.layersDataStore.layers.forEach(layer => {
+					layer.units.forEach(unit => {
+						if (unit.track.instance) {
+							unit.track.instance.style.filter = null;
+						}
+					})
+				})
+			}
+		}
+	}
 })
