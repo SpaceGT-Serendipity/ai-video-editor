@@ -17,6 +17,9 @@ import {
 	useGlobalStore
 } from './global.js'
 import {
+	useAccountStore
+} from './account.js'
+import {
 	useRoute,
 	useRouter
 } from 'vue-router'
@@ -26,6 +29,7 @@ import {
 } from 'vue'
 
 export const useRecordStore = defineStore('record', () => {
+	const accountStore = useAccountStore()
 	const globalStore = useGlobalStore()
 	const layersDataStore = useLayersDataStore()
 	const route = useRoute()
@@ -44,9 +48,11 @@ export const useRecordStore = defineStore('record', () => {
 		if (index.value < list.value.length - 1) {
 			index.value++;
 			Deserialize(list.value[index.value])
+			current.value = list.value[index.value]
 		}
 	}
 	const push = (data) => {
+		current.value = data
 		list.value.unshift(data)
 		index.value = 0
 	}
@@ -63,7 +69,7 @@ export const useRecordStore = defineStore('record', () => {
 	const loadCurrent = async () => {
 		list.value = []
 		index.value = 0
-		if (projectId.value == null && logId.value == null) {
+		if ((projectId.value == null && logId.value == null) || accountStore.id == null) {
 			if (current.value) {
 				Deserialize(current.value)
 			}
@@ -86,13 +92,20 @@ export const useRecordStore = defineStore('record', () => {
 		}
 	}
 	const saveProject = () => {
-		ElNotification({
-			title: '项目已保存',
-			type: 'success',
-		})
-		current.value = layersDataStore.stringify;
-		save(projectId.value, globalStore.title, layersDataStore.stringify)
-			.then(pid => router.push('/editor/' + pid));
+		if (accountStore.id) {
+			ElNotification({
+				title: '项目已保存',
+				type: 'success',
+			})
+			current.value = layersDataStore.stringify;
+			save(projectId.value, globalStore.title, layersDataStore.stringify)
+				.then(pid => router.push('/editor/' + pid));
+		} else {
+			ElNotification({
+				title: '请登录后重试。',
+				type: 'error',
+			})
+		}
 	}
 	return {
 		dialogVisible,

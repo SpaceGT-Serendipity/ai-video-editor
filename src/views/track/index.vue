@@ -17,7 +17,7 @@
 					<timeline-ruler ref="timelineRulerRef" :time="trackStore.rulerDefultTime"
 						:scale-width="trackStore.rulerScaleWidth"
 						:scale-time="trackStore.rulerScaleTime"></timeline-ruler>
-					<layer-centre ref="timelineLayersRef" v-model="layersDataStore.layers"
+					<layer-centre  v-model="layersDataStore.layers"
 						@on-drag="handleTimelineLayersOnDrag"></layer-centre>
 					<timeline-seeker></timeline-seeker>
 					<layer-unit-virtual-location :drag-data="dragData"></layer-unit-virtual-location>
@@ -69,7 +69,6 @@
 	const resourceDragStore = useResourceDragStore()
 	const toolbarRef = ref()
 	const timelineRulerRef = ref()
-	const timelineLayersRef = ref()
 	const dropZoneRef = ref()
 	const controllerGroupRef = ref()
 	const uploadDragTipRef = ref()
@@ -141,7 +140,7 @@
 	}
 	/*  轨道图层管理和图层编辑滚动条同步 */
 	function handleScrollbarSynchronization(event) {
-		timelineLayersRef.value.$el.scrollTop = event.target.scrollTop
+		document.querySelector('.timeline-layers').scrollTop = event.target.scrollTop
 		controllerGroupRef.value.scrollTop = event.target.scrollTop
 	}
 	/* 点击 scrollbar 设置 seeker 位置，以及点击空白区域取消元素的激活状态 */
@@ -162,13 +161,13 @@
 	onMounted(() => {
 		uploadDragTipRef.value.addEventListener('mouseenter', handleDragResourceToUploadDragTip)
 		controllerGroupRef.value.addEventListener('scroll', handleScrollbarSynchronization)
-		timelineLayersRef.value.$el.addEventListener('scroll', handleScrollbarSynchronization)
+		document.querySelector('.timeline-layers').addEventListener('scroll', handleScrollbarSynchronization)
 		scrollbarRef.value.addEventListener('mousedown', handleScrollbarMouseDown)
 	})
 	onBeforeUnmount(() => {
 		uploadDragTipRef.value.removeEventListener('mouseenter', handleDragResourceToUploadDragTip)
 		controllerGroupRef.value.removeEventListener('scroll', handleScrollbarSynchronization)
-		timelineLayersRef.value.$el.removeEventListener('scroll', handleScrollbarSynchronization)
+		document.querySelector('.timeline-layers').removeEventListener('scroll', handleScrollbarSynchronization)
 		scrollbarRef.value.removeEventListener('mousedown', handleScrollbarMouseDown)
 	})
 </script>
@@ -248,15 +247,6 @@
 
 	.timeline-group .timeline.ruler {
 		flex: 0 0 var(--track-timeline-ruler-height);
-	}
-
-	.timeline-group .timeline-layers {
-		flex: 1 1 0%;
-		overflow-y: auto;
-	}
-
-	.timeline-group .timeline-layers::-webkit-scrollbar {
-		width: 0px;
 	}
 
 	.scrollbar {

@@ -159,3 +159,13 @@
 		layersDataStore.sortLayers()
 	}
 </script>
+<style scoped>
+	.timeline-layers {
+		flex: 1 1 0%;
+		overflow-y: auto;
+	}
+
+	.timeline-layers::-webkit-scrollbar {
+		width: 0px;
+	}
+</style>

@@ -93,6 +93,9 @@ export const steps = [{
 	"name": "unit-mixture-step",
 	"label": "元素混合"
 }, {
+	"name": "unit-video-format-converting-step",
+	"label": "视频转换格式"
+}, {
 	"name": "clear-transparent-background-step",
 	"label": "清除背景"
 }, {

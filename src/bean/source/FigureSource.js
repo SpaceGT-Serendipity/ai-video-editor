@@ -2,6 +2,11 @@ import Source from "./Source";
 import {
 	v4 as uuidv4
 } from 'uuid'
+import {
+	sound,
+	Sound
+} from '@pixi/sound';
+sound.disableAutoPause = true
 import MediaFile from './MediaFile.js'
 
 export default class FigureSource extends Source {
@@ -42,6 +47,23 @@ export default class FigureSource extends Source {
 			tag: this.tag
 		})
 	}
+
+	play(currentTime) {
+		if (this.instance == null && this.audio) {
+			this._sound = Sound.from({
+				url: this.audio.url
+			});
+			this.instance = this._sound.play({
+				start: currentTime / 1000
+			});
+		}
+	}
+
+	pause() {
+		if (this._sound) this._sound.pause();
+		this.instance = null;
+	}
+
 
 	get view() {
 		return `<div class="source-view-image" style="background-image: url(${this.cover});">

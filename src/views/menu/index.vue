@@ -17,7 +17,7 @@
 				</div>
 			</Item>
 		</div>
-		<div class="video-menu">
+		<div v-show="accountStore.id" class="video-menu">
 			<Item @click="videosRef.open()">
 				<svg class="icon" aria-hidden="true">
 					<use xlink:href="#video"></use>
@@ -27,7 +27,7 @@
 				</div>
 			</Item>
 		</div>
-		<div class="project-menu">
+		<div v-show="accountStore.id" class="project-menu">
 			<Item @click="projectRef.open()">
 				<svg class="icon" aria-hidden="true">
 					<use xlink:href="#project"></use>
@@ -37,7 +37,7 @@
 				</div>
 			</Item>
 		</div>
-		<div class="work-menu">
+		<div v-show="accountStore.id" class="work-menu">
 			<Item @click="menuStore.jobProgressDialogVisible = true">
 				<svg class="icon" aria-hidden="true">
 					<use xlink:href="#work"></use>

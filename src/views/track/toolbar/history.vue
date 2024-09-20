@@ -1,5 +1,6 @@
 <template>
-	<el-button link size="small" :disabled="!(recordStore.index < recordStore.list.length - 1)" @click="recordStore.undo()">
+	<el-button link size="small" :disabled="!(recordStore.index < recordStore.list.length - 1)"
+		@click="recordStore.undo()">
 		<el-tooltip class="box-item" effect="dark" content="撤销" placement="top">
 			<el-icon>
 				<font-awesome-icon icon="arrow-rotate-left" />
@@ -33,6 +34,9 @@
 		useRecordStore
 	} from '../../../store/record.js'
 	import {
+		useAccountStore
+	} from '../../../store/account.js'
+	import {
 		useRoute
 	} from 'vue-router'
 
@@ -40,6 +44,7 @@
 	const recordStore = useRecordStore()
 	const layersDataStore = useLayersDataStore()
 	const globalStore = useGlobalStore()
+	const accountStore = useAccountStore()
 	const source = ref()
 	const {
 		trigger,
@@ -55,7 +60,9 @@
 	watch(() => route.path, () => recordStore.loadCurrent())
 	// 自动保存
 	watchDebounced(() => layersDataStore.stringify, () => {
-		recordStore.saveProject()
+		if (accountStore.id) {
+			recordStore.saveProject()
+		}
 	}, {
 		debounce: 1000 * 60,
 		maxWait: 1000 * 60 * 5
