@@ -109,7 +109,7 @@ export default class LayerUnit {
 
 	/* 元素是否是有声音的 */
 	get audible() {
-		return ['figure', 'audio'].includes(this.type)
+		return ['figure', 'audio', 'video'].includes(this.type)
 	}
 
 	get stringify() {
