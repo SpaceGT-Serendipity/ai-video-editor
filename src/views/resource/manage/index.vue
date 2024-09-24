@@ -21,7 +21,7 @@
 				<el-popover v-if="type==='video'" v-for="item in videoDataStore.publicData" :key="item.id"
 					placement="bottom" width="auto" :hide-after="50" trigger="hover">
 					<template #reference>
-						<resource-sample :key="item.id" :data="item" @load="load" :rechange="true"></resource-sample>
+						<resource-sample :key="item.id" :data="item" @load="load" :rechange="true" @rename="handleRename"></resource-sample>
 					</template>
 					<div style="text-align: center;">
 						<el-button size="small" icon="Delete" text type="danger" @load="load"
@@ -32,7 +32,7 @@
 				<el-popover v-else-if="type==='image'" v-for="item in imageDataStore.publicData" :key="item.id"
 					placement="bottom" width="auto" :hide-after="50" trigger="hover">
 					<template #reference>
-						<resource-sample :key="item.id" :data="item" @load="load" :rechange="true"></resource-sample>
+						<resource-sample :key="item.id" :data="item" @load="load" :rechange="true" @rename="handleRename"></resource-sample>
 					</template>
 					<div style="text-align: center;">
 						<el-button size="small" icon="Delete" text type="danger" @load="load"
@@ -68,7 +68,8 @@
 	import ResourceAudio from '../../../components/resource-audio.vue'
 	import FileUpload from '../../../components/file-upload.vue'
 	import {
-		ElNotification
+		ElNotification,
+		ElMessageBox
 	} from 'element-plus'
 	import {
 		ref,
@@ -78,7 +79,8 @@
 	import {
 		count,
 		del,
-		save
+		save,
+		rename
 	} from '../../../api/resource.js'
 	import {
 		filePath,
@@ -170,6 +172,33 @@
 	const handleDel = async (id) => {
 		const res = await del(id)
 		load()
+	}
+
+	const handleRename = (id) => {
+		ElMessageBox.prompt('请输入新文件名', '重命名', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消'
+			}).then(({
+				value
+			}) => {
+				if (value) {
+					rename(id, value).then(res => {
+						ElNotification({
+							title: '消息',
+							message: '修改成功',
+							type: 'success',
+						})
+						load()
+					})
+				} else {
+					ElNotification({
+						title: '消息',
+						message: '新文件名不得为空',
+						type: 'warning',
+					})
+				}
+			})
+			.catch(() => {})
 	}
 
 	const load = async () => {

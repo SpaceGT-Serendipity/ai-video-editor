@@ -1,15 +1,15 @@
 <template>
 	<el-dialog v-model="dialogVisible" :title="dialogTitle" top="10vh" width="1100" :before-close="handleClose">
-		<div v-loading="loading" element-loading-text="正在处理,请勿操作..." style="padding: 10px;">
+		<div style="padding: 10px;">
 			<el-alert title="双击标题可以文件重命名." type="warning" style="margin-bottom: 10px;" />
 			<el-alert title="鼠标悬浮视频可操作观看以及删除." type="warning" style="margin-bottom: 20px;" />
-			<el-empty v-if="publicFileList.length==0" description="暂无数据" />
+			<el-empty v-if="lessonDataStore.privateData.length==0" description="暂无数据" />
 			<div style="display: flex; gap: 16px; flex-wrap: wrap; ">
-				<el-popover v-for="item in publicFileList" :key="item.id" placement="bottom" width="auto"
+				<el-popover v-for="item in lessonDataStore.privateData" :key="item.id" placement="bottom" width="auto"
 					:hide-after="50" trigger="hover">
 					<template #reference>
 						<resource-sample :key="item.id" :data="item" @load="loadVideos" :down="true"
-							:rechange="true"></resource-sample>
+							:rechange="true" @rename="handleRename"></resource-sample>
 					</template>
 					<div style="text-align: center;">
 						<el-button size="small" icon="Delete" text type="danger" @load="loadVideos"
@@ -28,9 +28,9 @@
 </template>
 
 <script setup>
-	import FileUpload from '../../components/file-upload.vue'
 	import {
-		ElNotification
+		ElNotification,
+		ElMessageBox
 	} from 'element-plus'
 	import {
 		ref,
@@ -38,7 +38,6 @@
 		reactive
 	} from 'vue'
 	import {
-		list,
 		del,
 		listCount
 	} from '../../api/video.js'
@@ -48,24 +47,22 @@
 	import {
 		useAccountStore
 	} from '../../store/account.js'
-	import VideoSource from '../../bean/source/VideoSource'
 	import ResourceSample from '../../components/resource-sample.vue'
-
+	import {
+		useLessonDataStore
+	} from '../../store/data/lesson.js'
+	import {
+		rename
+	} from '../../api/video.js'
+	
+	const lessonDataStore = useLessonDataStore()
 	const accountStore = useAccountStore()
-	const loading = ref(false)
 	const dialogVisible = ref(false)
-	const publicFileList = reactive([])
-	const videoLength = ref(0)
 	const dialogTitle = ref('我的视频(0)')
 	const currentPage = ref(1)
 	const pageSize = ref(30)
 	const pageTotle = ref(0)
 
-	const handleUpload = async (e) => {
-		await save(null, e.fileName, e.name, e.size, e.suffix, e.url, accountStore.id)
-		loadVideos()
-	}
-	
 	const handleDel = async (id) => {
 		const res = await del(id, accountStore.id)
 		await loadVideos()
@@ -73,20 +70,11 @@
 	
 	const loadVideos = async () => {
 		if (!accountStore.account) {
-			/* ElNotification({
-				title: '请重新登录',
-				type: 'warning'
-			}) */
 			return;
 		}
-		const res = await list(currentPage.value, pageSize.value)
+		lessonDataStore.load()
 		pageTotle.value = await listCount()
-		dialogTitle.value = '我的视频(' + res.length + ')'
-		publicFileList.length=0
-		for (let i = 0; i < res.length; i++) {
-			const video = new VideoSource(res[i])
-			publicFileList.push(video)
-		}
+		dialogTitle.value = '我的视频(' + pageTotle.value + ')'
 	}
 
 	const open = () => {
@@ -96,6 +84,33 @@
 
 	const handleClose = () => {
 		dialogVisible.value = false
+	}
+
+	const handleRename = (id) => {
+		ElMessageBox.prompt('请输入新文件名', '重命名', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消'
+			}).then(({
+				value
+			}) => {
+				if (value) {
+					rename(id, value).then(res => {
+						ElNotification({
+							title: '消息',
+							message: '修改成功',
+							type: 'success',
+						})
+						loadVideos()
+					})
+				} else {
+					ElNotification({
+						title: '消息',
+						message: '新文件名不得为空',
+						type: 'warning',
+					})
+				}
+			})
+			.catch(() => {})
 	}
 
 	onMounted(() => {

@@ -8,7 +8,7 @@
 			<el-scrollbar>
 				<div class="list">
 					<resource-sample v-for="item in figureDataStore.privateData" :key="item.id"
-						:data="item" :delFlag="true"></resource-sample>
+						:data="item" :delFlag="true" @remove="handleDel"></resource-sample>
 				</div>
 				<el-empty v-if="figureDataStore.privateData.length == 0" description="暂无形象"></el-empty>
 			</el-scrollbar>
@@ -17,7 +17,7 @@
 			<el-scrollbar>
 				<div class="list">
 					<resource-sample v-for="item in figureDataStore.picturePrivateData" :key="item.id"
-						:data="item" :delFlag="true"></resource-sample>
+						:data="item" :delFlag="true" @remove="handleDel"></resource-sample>
 				</div>
 				<el-empty v-if="figureDataStore.picturePrivateData.length == 0" description="暂无形象"></el-empty>
 			</el-scrollbar>
@@ -26,7 +26,7 @@
 			<el-scrollbar>
 				<div class="list">
 					<resource-sample v-for="item in figureDataStore.videoePrivateData" :key="item.id"
-						:data="item"></resource-sample>
+						:data="item" :delFlag="true" @remove="handleDel"></resource-sample>
 				</div>
 				<el-empty v-if="figureDataStore.videoePrivateData.length == 0" description="暂无形象"></el-empty>
 			</el-scrollbar>
@@ -35,7 +35,7 @@
 			<el-scrollbar>
 				<div class="list">
 					<resource-sample v-for="item in figureDataStore.dynamicPrivateData" :key="item.id"
-						:data="item"></resource-sample>
+						:data="item" :delFlag="true" @remove="handleDel"></resource-sample>
 				</div>
 				<el-empty v-if="figureDataStore.dynamicPrivateData.length == 0" description="暂无形象"></el-empty>
 			</el-scrollbar>
@@ -44,7 +44,7 @@
 			<el-scrollbar>
 				<div class="list">
 					<resource-sample v-for="item in figureDataStore.myPrivateData" :key="item.id"
-						:data="item"></resource-sample>
+						:data="item" :delFlag="true" @remove="handleDel"></resource-sample>
 				</div>
 				<el-empty v-if="figureDataStore.myPrivateData.length == 0" description="暂无形象"></el-empty>
 			</el-scrollbar>
@@ -65,12 +65,45 @@
 	import {
 		useFigureDataStore
 	} from '../../../store/data/figure.js'
+	import {
+		del as delOne
+	} from '../../../api/avatar.js'
 
 	const value = ref('全部')
 
 	const options = ['全部', '静态', '视频', '动态', '我的']
 	const figureDataStore = useFigureDataStore()
 	const accountStore = useAccountStore()
+
+	const handleDel = async (id) => {
+		ElMessageBox.confirm(
+				'确定删除吗？',
+				'警告', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning',
+					draggable: true,
+					overflow: true,
+				}
+			)
+			.then(() => {
+				delOne(id, accountStore.id).then(res => {
+					ElNotification({
+						title: '消息',
+						message: '删除成功',
+						type: 'succeed',
+					})
+					figureDataStore.load()
+				})
+			})
+			.catch(() => {
+				ElNotification({
+					title: '消息',
+					message: '删除失败',
+					type: 'warning',
+				})
+			})
+	}
 
 	watch(() => accountStore.id, () => {
 		figureDataStore.load()

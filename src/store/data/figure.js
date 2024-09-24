@@ -53,9 +53,8 @@ export const useFigureDataStore = defineStore('figure-data', {
 					cover: filePath + item.cover,
 					creator: item.creator
 				})
-				if (item.creator == null) {
-					this.data.push(figure)
-				} else {
+				this.data.push(figure)
+				if (item.creator != null) {
 					this.privateData.push(figure)
 				}
 			})
