@@ -19,26 +19,20 @@ export const useFigureDataStore = defineStore('figure-data', {
 		pictureData() {
 			return this.data.filter(item => item.tag == 'picture')
 		},
-		videoeData() {
+		videoData() {
 			return this.data.filter(item => item.tag == 'video')
 		},
 		dynamicData() {
 			return this.data.filter(item => item.tag == 'dynamic')
 		},
-		myData() {
-			return this.data.filter(item => item.creator)
-		},
 		picturePrivateData() {
 			return this.privateData.filter(item => item.tag == 'picture')
 		},
-		videoePrivateData() {
+		videoPrivateData() {
 			return this.privateData.filter(item => item.tag == 'video')
 		},
 		dynamicPrivateData() {
 			return this.privateData.filter(item => item.tag == 'dynamic')
-		},
-		myPrivateData() {
-			return this.privateData.filter(item => item.creator)
 		}
 	},
 	actions: {
@@ -53,6 +47,11 @@ export const useFigureDataStore = defineStore('figure-data', {
 					cover: filePath + item.cover,
 					creator: item.creator
 				})
+				if (item.tag == 'video') {
+					figure.figureType = 'video'
+				} else {
+					figure.figureType = 'image'
+				}
 				this.data.push(figure)
 				if (item.creator != null) {
 					this.privateData.push(figure)

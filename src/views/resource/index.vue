@@ -35,6 +35,9 @@
 				}else
 				if (data.label == 'template') {
 					return import(`./template.vue`);
+				}else
+				if (data.label == 'subtitle') {
+					return import(`./subtitle/index.vue`);
 				}
 				return import(`./figure/index.vue`);
 			}

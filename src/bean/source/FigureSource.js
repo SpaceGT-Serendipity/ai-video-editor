@@ -12,6 +12,7 @@ import MediaFile from './MediaFile.js'
 export default class FigureSource extends Source {
 	/* 资源类型 */
 	static TYPE = 'figure'
+	figureType = null
 
 	constructor({
 		id,

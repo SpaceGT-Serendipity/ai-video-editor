@@ -7,7 +7,7 @@ import {
 import {
 	filePath
 } from '../../api/file.js'
-import LessonSource from '../../bean/source/LessonSource.js'
+import VideoSource from '../../bean/source/VideoSource.js'
 
 export const useLessonDataStore = defineStore('lesson-data', {
 	state: () => ({
@@ -20,7 +20,7 @@ export const useLessonDataStore = defineStore('lesson-data', {
 			this.privateData.length = 0
 			const res = await list(currentPage, pageSize)
 			res.forEach(item => {
-				const lesson = new LessonSource({
+				const lesson = new VideoSource({
 					...item,
 					url: filePath + item.url,
 					cover: filePath + item.cover,

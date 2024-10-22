@@ -28,7 +28,7 @@
 		"srt": "^0.0.3",
 		"ssml": "^0.0.4",
 		"uuid": "^9.0.1",
-		"vue": "^3.4.23",
+		"vue": "^3.5.12",
 		"vue-cropper": "^1.1.4",
 		"vue-draggable-plus": "^0.4.0",
 		"vue-draggable-resizable": "^3.0.0",
@@ -37,8 +37,8 @@
 		"wavesurfer.js": "^7.7.15"
 	},
 	"devDependencies": {
-		"@vitejs/plugin-vue": "^1.6.0",
-		"@vue/compiler-sfc": "^3.2.6",
-		"vite": "^2.5.2"
+		"@vitejs/plugin-vue": "^5.1.4",
+		"@vue/compiler-sfc": "^3.5.12",
+		"vite": "^5.4.9"
 	}
 }

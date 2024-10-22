@@ -11,7 +11,7 @@ import {
 
 export const generalRoutes = [{
 	path: '/',
-	redirect: '/console',
+	redirect: '/editor',
 	children: [{
 		path: 'console',
 		name: 'Console',

@@ -7,7 +7,8 @@
 				</Item>
 			</div>
 		</el-scrollbar>
-		<div v-show="accountStore.authorities != null && accountStore.authorities.includes('ai_video_admin')" class="res-menu">
+		<div v-show="accountStore.authorities != null && accountStore.authorities.includes('ai_video_admin')"
+			class="res-menu">
 			<Item @click="manageRef.open()">
 				<svg class="icon" aria-hidden="true">
 					<use xlink:href="#resource"></use>
@@ -85,7 +86,7 @@
 	import {
 		useAccountStore
 	} from '../../store/account.js'
-	
+
 	const accountStore = useAccountStore()
 	const menuStore = useMenuStore()
 	const globalStore = useGlobalStore()
@@ -105,10 +106,6 @@
 		// 	label: 'text',
 		// 	title: '文本'
 		// }, 
-		// {
-		// 	label: 'subtitle',
-		// 	title: '字幕'
-		// }, 
 		{
 			label: 'image',
 			title: '图片'
@@ -118,6 +115,9 @@
 		}, {
 			label: 'bgm',
 			title: '背景音乐'
+		}, {
+			label: 'subtitle',
+			title: '字幕'
 		}, {
 			label: 'template',
 			title: '模板库'
@@ -150,7 +150,7 @@
 		flex-direction: column;
 		align-items: center;
 	}
-	
+
 	.res-menu {
 		display: flex;
 		flex-direction: column;
@@ -159,12 +159,12 @@
 		padding: 6px;
 		text-align: center;
 	}
-	
+
 	.res-menu .icon {
 		width: 20px;
 		height: 20px;
 	}
-	
+
 	.video-menu {
 		display: flex;
 		flex-direction: column;
@@ -173,12 +173,12 @@
 		padding: 6px;
 		text-align: center;
 	}
-	
+
 	.video-menu .icon {
 		width: 25px;
 		height: 25px;
 	}
-	
+
 	.project-menu {
 		display: flex;
 		flex-direction: column;
@@ -187,12 +187,12 @@
 		padding: 6px;
 		text-align: center;
 	}
-	
+
 	.project-menu .icon {
 		width: 28px;
 		height: 28px;
 	}
-	
+
 	.setting-menu {
 		display: flex;
 		flex-direction: column;

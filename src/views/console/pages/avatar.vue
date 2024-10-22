@@ -25,10 +25,10 @@
 		<div v-if="value=='视频'" style="margin-top: 20px;">
 			<el-scrollbar>
 				<div class="list">
-					<resource-sample v-for="item in figureDataStore.videoePrivateData" :key="item.id"
+					<resource-sample v-for="item in figureDataStore.videoPrivateData" :key="item.id"
 						:data="item" :delFlag="true" @remove="handleDel"></resource-sample>
 				</div>
-				<el-empty v-if="figureDataStore.videoePrivateData.length == 0" description="暂无形象"></el-empty>
+				<el-empty v-if="figureDataStore.videoPrivateData.length == 0" description="暂无形象"></el-empty>
 			</el-scrollbar>
 		</div>
 		<div v-if="value=='动态'" style="margin-top: 20px;">
@@ -43,10 +43,10 @@
 		<div v-if="value=='我的'" style="margin-top: 20px;">
 			<el-scrollbar>
 				<div class="list">
-					<resource-sample v-for="item in figureDataStore.myPrivateData" :key="item.id"
+					<resource-sample v-for="item in figureDataStore.privateData" :key="item.id"
 						:data="item" :delFlag="true" @remove="handleDel"></resource-sample>
 				</div>
-				<el-empty v-if="figureDataStore.myPrivateData.length == 0" description="暂无形象"></el-empty>
+				<el-empty v-if="figureDataStore.privateData.length == 0" description="暂无形象"></el-empty>
 			</el-scrollbar>
 		</div>
 	</div>

@@ -211,7 +211,7 @@ export const useAdsorptionLineStore = defineStore('adsorption-line', {
 		// 元素虚拟位置于元素启动吸附
 		enable: true,
 		// 吸附判定范围(px)
-		decisionRange: 10,
+		decisionRange: 6,
 		// 显示吸附提示线
 		visible: false,
 		// 吸附提示线位置

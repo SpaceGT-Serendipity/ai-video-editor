@@ -22,7 +22,7 @@
 			<el-tab-pane label="静态" name="静态">
 				<el-scrollbar>
 					<div class="list">
-						<resource-sample v-for="item in figureDataStore.pictureData" :key="item.id"
+						<resource-sample v-for="item in figureDataStore.pictureData" :key="'静态' + item.id"
 							:data="item"></resource-sample>
 					</div>
 					<el-empty v-if="figureDataStore.pictureData.length == 0" description="暂无形象"></el-empty>
@@ -31,10 +31,10 @@
 			<el-tab-pane label="视频" name="视频">
 				<el-scrollbar>
 					<div class="list">
-						<resource-sample v-for="item in figureDataStore.videoeData" :key="item.id"
+						<resource-sample v-for="item in figureDataStore.videoData" :key="'视频' + item.id"
 							:data="item"></resource-sample>
 					</div>
-					<el-empty v-if="figureDataStore.videoeData.length == 0" description="暂无形象"></el-empty>
+					<el-empty v-if="figureDataStore.videoData.length == 0" description="暂无形象"></el-empty>
 				</el-scrollbar>
 			</el-tab-pane>
 			<el-tab-pane label="动作" name="动作">
@@ -49,10 +49,10 @@
 			<el-tab-pane label="我的" name="我的">
 				<el-scrollbar>
 					<div class="list">
-						<resource-sample v-for="item in figureDataStore.myData" :key="item.id"
+						<resource-sample v-for="item in figureDataStore.privateData" :key="item.id"
 							:data="item"></resource-sample>
 					</div>
-					<el-empty v-if="figureDataStore.myData.length == 0" description="暂无形象"></el-empty>
+					<el-empty v-if="figureDataStore.privateData.length == 0" description="暂无形象"></el-empty>
 				</el-scrollbar>
 			</el-tab-pane>
 		</el-tabs>

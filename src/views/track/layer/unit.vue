@@ -90,8 +90,15 @@
 	const onResize = (handle, x, y, width, height) => {
 		props.data.track.x = parseInt(x)
 		props.data.track.w = parseInt(width);
+		// 开启吸附
+		if (adsorptionLineStore.enable) resizeAdsorption(handle, x, width)
 	}
 	const onResizeStop = () => {
+		if (adsorptionLinePosition && adsorptionLineDirection) {
+			const gap = props.data.track.x - adsorptionLinePosition
+			props.data.track.x = props.data.track.x - gap
+			props.data.track.w = props.data.track.w + gap
+		}
 		emitsDrag()
 	}
 	/* 触发活跃状态 */
@@ -153,6 +160,47 @@
 					break;
 				} else {
 					adsorptionLineStore.visible = false
+				}
+			}
+		}
+	}
+	let adsorptionLinePosition, adsorptionLineDirection;
+	// 改变大小吸附判定
+	const resizeAdsorption = (handle, x, width) => {
+		adsorptionLinePosition = null;
+		adsorptionLineDirection = null;
+		const layer = layersDataStore.getLayerByUnitId(props.data.id)
+		//其他行吸附
+		for (let i = 0; i < layersDataStore.adsorptionLine.length; i++) {
+			// 排除自己行
+			if (layer.id != layersDataStore.adsorptionLine[i].layerId) {
+				// 头对齐
+				if (handle == 'ml') {
+					if (x > (layersDataStore.adsorptionLine[i].line - adsorptionLineStore.decisionRange) &&
+						x < (layersDataStore.adsorptionLine[i].line + adsorptionLineStore.decisionRange)) {
+						adsorptionLineStore.visible = true
+						adsorptionLineStore.x = layersDataStore.adsorptionLine[i].line
+						adsorptionLinePosition = layersDataStore.adsorptionLine[i].line
+						adsorptionLineDirection = handle
+						break;
+					} else {
+						adsorptionLineStore.visible = false
+					}
+				}
+				// 尾对齐
+				if (handle == 'mr') {
+					if ((x + config.w) >
+						(layersDataStore.adsorptionLine[i].line - adsorptionLineStore.decisionRange) &&
+						(x + config.w) <
+						(layersDataStore.adsorptionLine[i].line + adsorptionLineStore.decisionRange)) {
+						adsorptionLineStore.visible = true
+						adsorptionLineStore.x = layersDataStore.adsorptionLine[i].line
+						adsorptionLinePosition = layersDataStore.adsorptionLine[i].line
+						adsorptionLineDirection = handle
+						break;
+					} else {
+						adsorptionLineStore.visible = false
+					}
 				}
 			}
 		}

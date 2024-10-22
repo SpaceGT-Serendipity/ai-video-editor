@@ -28,7 +28,6 @@
 	import {
 		useAccountStore
 	} from '../../../store/account.js'
-	import LessonSource from '../../../bean/source/LessonSource'
 	import {
 		del as delOne,
 		listCount,
