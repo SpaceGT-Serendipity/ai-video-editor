@@ -107,7 +107,7 @@
 		accountStore.avatar = account.avatar
 	}
 	const onBack = () => {
-		router.push('/')
+		window.location.href = import.meta.env.VITE_APP_BACK_PATH;
 	}
 	const onTitleChange = () => {
 		editTitle.value = false
