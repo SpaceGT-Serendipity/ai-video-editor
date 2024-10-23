@@ -1,5 +1,6 @@
 # ai-editor
 AI 视频编辑器 更新中...
 
-![image](https://github.com/SpaceGT-Serendipity/ai-video-editor/assets/39981554/29b63a57-34bf-43e8-9ac7-86da2c409ebb)
-![1715408280172](https://github.com/SpaceGT-Serendipity/ai-video-editor/assets/39981554/edfd54e7-a547-4a54-ace0-e99d0d32e4d4)
+![QQ20241022-153906](https://github.com/user-attachments/assets/bb7a830a-0728-49a9-8691-bf8417789796)
+![QQ20241022-153944](https://github.com/user-attachments/assets/d75fd9d7-68d9-4fe4-858d-7fe98f87a039)
+![QQ20241022-154016](https://github.com/user-attachments/assets/687b6ad4-f4e0-42e6-a574-347b6088c6a5)
