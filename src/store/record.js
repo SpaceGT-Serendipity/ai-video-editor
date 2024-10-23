@@ -35,9 +35,13 @@ export const useRecordStore = defineStore(
         current.value = list.value[index.value];
       }
     };
-    const push = (data) => {
-      current.value = data;
-      list.value.unshift(data);
+    const push = () => {
+      const data = {
+        layersData: layersDataStore.stringify,
+        subtitleData: subtitleDataStore.stringify,
+      };
+      current.value = JSON.stringify(data);
+      list.value.unshift(JSON.stringify(data));
       index.value = 0;
     };
     const Deserialize = (data) => {
@@ -51,7 +55,7 @@ export const useRecordStore = defineStore(
           }
         });
       }
-      if(jsonData.subtitleData){
+      if (jsonData.subtitleData) {
         subtitleDataStore.data = JSON.parse(jsonData.subtitleData);
       }
       dialogVisible.value = false;
