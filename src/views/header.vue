@@ -41,54 +41,14 @@
 				</el-popover>
 			</template>
 		</yigee-login>
-		<!-- <el-button v-if="accountStore.id == null" round @click="loginref.open()">登录</el-button>
-		<el-popover v-else placement="bottom" :width="300" trigger="hover">
-			<template #reference>
-				<div style="display: flex; align-items: center; gap: 5px;">
-					<el-image style="width: 30px; height: 30px;border-radius: 50%;" :src="accountStore.avatar">
-						<template #error>
-							<img src="/images/avatar.png" style="width: 100%; height: 100%;" />
-						</template>
-					</el-image>
-					<el-text round>{{ accountStore.name }}</el-text>
-				</div>
-			</template>
-			<template #default>
-				<div class="profile-card">
-					<div style="display: flex; gap: 10px;justify-content: space-between;">
-						<div class="name">
-							<span style="font-size: 14px;color: #666; overflow: hidden;">用户名:
-								{{ accountStore.account }}</span>
-						</div>
-					</div>
-					<el-divider style="margin: 10px 0;" />
-					<el-popconfirm title="是否退出登录?" @confirm="accountStore.logout()">
-						<template #reference>
-							<el-button text size="large">
-								<el-icon>
-									<font-awesome-icon icon="fa-solid fa-right-from-bracket" />
-								</el-icon>
-								<span>退出登录</span>
-							</el-button>
-						</template>
-					</el-popconfirm>
-				</div>
-			</template>
-		</el-popover> -->
 	</div>
-	<!-- <Login ref="loginref" @success="onSuccess"></Login> -->
 </template>
 
 <script setup>
 import SwitchTheme from '../components/switch-theme.vue'
-import Login from '../components/login.vue'
 import {
 	ref,
-	onMounted
 } from 'vue'
-import {
-	useRouter
-} from 'vue-router'
 import {
 	useAccountStore
 } from '../store/account.js'
@@ -101,14 +61,11 @@ import {
 import {
 	useGenerateStore
 } from '../store/generate.js'
-import Cookies from 'universal-cookie';
 
 const recordStore = useRecordStore()
 const generateStore = useGenerateStore()
-const router = useRouter()
 const globalStore = useGlobalStore()
 const accountStore = useAccountStore()
-const loginref = ref()
 const editTitle = ref(false)
 
 // const onSuccess = (account) => {

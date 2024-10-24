@@ -4,48 +4,7 @@
 	</div>
 	<div class="button-group">
 		<el-button type="primary" icon="BrushFilled" @click="router.push('/editor')">开始设计</el-button>
-		<el-button v-if="accountStore.id==null" round @click="loginref.open()">登录</el-button>
-		<el-popover v-else placement="bottom" :width="300" trigger="hover">
-			<template #reference>
-				<div style="display: flex; align-items: center; gap: 5px;">
-					<el-image style="width: 30px; height: 30px;border-radius: 50%;" :src="accountStore.avatar">
-						<template #error>
-							<img src="/images/avatar.png" style="width: 100%; height: 100%;" />
-						</template>
-					</el-image>
-					<el-text round>{{accountStore.name}}</el-text>
-				</div>
-			</template>
-			<template #default>
-				<div class="profile-card">
-					<div style="display: flex; gap: 10px;justify-content: space-between;">
-						<!-- <el-image style="width: 60px; height: 60px;flex:0 0 60px;border-radius: 50%;"
-							:src="accountStore.avatar">
-							<template #error>
-								<img src="/images/avatar.png" style="width: 100%; height: 100%;" />
-							</template>
-						</el-image> -->
-						<div class="name">
-							<span style="font-size: 14px;color: #666; overflow: hidden;">用户名:
-								{{accountStore.account}}</span>
-						</div>
-					</div>
-					<el-divider style="margin: 10px 0;" />
-					<el-popconfirm title="是否退出登录?" @confirm="accountStore.logout()">
-						<template #reference>
-							<el-button text size="large">
-								<el-icon>
-									<font-awesome-icon icon="fa-solid fa-right-from-bracket" />
-								</el-icon>
-								<span>退出登录</span>
-							</el-button>
-						</template>
-					</el-popconfirm>
-				</div>
-			</template>
-		</el-popover>
 	</div>
-	<Login ref="loginref" @success="onSuccess"></Login>
 </template>
 
 <script setup>
@@ -53,7 +12,6 @@
 	import {
 		ElNotification
 	} from 'element-plus'
-	import SwitchTheme from '../../components/switch-theme.vue'
 	import {
 		ref
 	} from 'vue'
@@ -72,7 +30,6 @@
 	import {
 		job
 	} from '../../api/batch.js'
-	import Login from '../../components/login.vue'
 	import {
 		useRouter
 	} from 'vue-router'
@@ -81,7 +38,6 @@
 	const globalStore = useGlobalStore()
 	const accountStore = useAccountStore()
 	const layersDataStore = useLayersDataStore()
-	const loginref = ref()
 	const options = {
 		title: 'AI 编辑器 开始合成视频!',
 		body: '点击查看详情',
