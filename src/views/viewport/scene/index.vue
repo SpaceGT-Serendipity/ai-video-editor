@@ -146,28 +146,6 @@ const render = () => {
 		})
 	})
 }
-watch(() => layersDataStore.layersScenes, () => loadScene())
-watch(() => [subtitleDataStore.stringify], () => loadSubtitle())
-watch(() => [
-	layersDataStore.layersScenes,
-	layersDataStore.layersTracks,
-	trackStore.seekerTime,
-	viewportStore.playing,
-	subtitleDataStore.visible
-], () => render())
-watch(() => ({
-	width: globalStore.width,
-	height: globalStore.height
-}), async ({
-	width,
-	height
-}) => {
-	app.renderer.resize(width, height);
-	if (background.value) background.value.destroy()
-	background.value = await loadBackground(app)
-	if (backgroundText.value) backgroundText.value.destroy()
-	// backgroundText.value = await loadBackgroundText(app)
-})
 
 
 const handleTicker = () => {
@@ -199,8 +177,32 @@ const init = async () => {
 	handleTicker()
 }
 
-onMounted(() => {
-	init()
+onMounted(async () => {
+	await init()
+
+	watch(() => layersDataStore.layersScenes, () => loadScene(), { immediate: true })
+
+	watch(() => subtitleDataStore.stringify, () => loadSubtitle(), { immediate: true })
+
+	watch(() => [
+		layersDataStore.layersScenes,
+		layersDataStore.layersTracks,
+		trackStore.seekerTime,
+		viewportStore.playing,
+		subtitleDataStore.visible
+	], () => render(), { immediate: true })
+	
+	watch(() => ({
+		width: globalStore.width,
+		height: globalStore.height
+	}), async ({ width, height }) => {
+		app.renderer.resize(width, height);
+		if (background.value) background.value.destroy()
+		background.value = await loadBackground(app)
+		if (backgroundText.value) backgroundText.value.destroy()
+		// backgroundText.value = await loadBackgroundText(app)
+	}, { immediate: true })
+
 })
 </script>
 

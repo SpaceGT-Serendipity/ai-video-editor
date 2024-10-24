@@ -13,7 +13,7 @@
 		"@fortawesome/free-solid-svg-icons": "^6.5.2",
 		"@fortawesome/vue-fontawesome": "^3.0.6",
 		"@imengyu/vue3-context-menu": "^1.4.1",
-		"@pixi/sound": "^6.0.0",
+		"@pixi/sound": "^6.0.1",
 		"@vueuse/core": "^10.9.0",
 		"animate.css": "^4.1.1",
 		"axios": "^1.6.8",
@@ -27,6 +27,8 @@
 		"plyr": "^3.7.8",
 		"srt": "^0.0.3",
 		"ssml": "^0.0.4",
+		"typescript": "^5.6.3",
+		"universal-cookie": "^7.2.1",
 		"uuid": "^9.0.1",
 		"vue": "^3.5.12",
 		"vue-cropper": "^1.1.4",
@@ -34,7 +36,8 @@
 		"vue-draggable-resizable": "^3.0.0",
 		"vue-i18n": "^9.10.2",
 		"vue-router": "^4.3.1",
-		"wavesurfer.js": "^7.7.15"
+		"wavesurfer.js": "^7.7.15",
+		"yigee-login": "^1.0.18"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^5.1.4",
