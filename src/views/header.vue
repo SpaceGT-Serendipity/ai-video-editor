@@ -24,7 +24,7 @@
 		<SwitchTheme></SwitchTheme>
 		<el-button type="primary" icon="Monitor" @click="generateStore.compound()">合成视频</el-button>
 		<el-button text type="primary" icon="Collection" @click="recordStore.saveProject()">保存项目</el-button>
-		<yigee-login :account-info="accountStore.info">
+		<yigee-login :account-info="accountStore.info" @success="accountStore.loadTokensinfo()">
 			<template #info="{ logout }">
 				<el-popover placement="bottom" :width="80">
 					<template #reference>
@@ -34,7 +34,8 @@
 					</template>
 					<div style="text-align: center;">
 						<div style="padding: 10px;">
-							60 墨豆 <el-button link icon="Refresh"></el-button>
+							{{ accountStore.tokens.quantity }} 墨豆
+							<el-button link icon="Refresh" @click="accountStore.loadTokensinfo()"></el-button>
 						</div>
 						<el-button text icon="SwitchButton" @click="logout()">退出登录</el-button>
 					</div>
@@ -68,14 +69,6 @@ const globalStore = useGlobalStore()
 const accountStore = useAccountStore()
 const editTitle = ref(false)
 
-// const onSuccess = (account) => {
-// 	accountStore.id = account.id
-// 	accountStore.name = account.name
-// 	accountStore.account = account.account
-// 	accountStore.email = account.email
-// 	accountStore.authorities = account.authorities
-// 	accountStore.avatar = account.avatar
-// }
 const onBack = () => {
 	window.location.href = import.meta.env.VITE_APP_BACK_PATH;
 }

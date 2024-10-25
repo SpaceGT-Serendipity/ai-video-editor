@@ -27,6 +27,16 @@ export const useGenerateStore = defineStore("generate", {
         });
         return;
       }
+      if (
+        parseInt(layersDataStore.videoTotalDuration / 1000) >
+        accountStore.tokens.quantity
+      ) {
+        ElNotification({
+          title: "墨豆点数不足请充值。",
+          type: "warning",
+        });
+        return;
+      }
       this.loading = true;
       let check = true;
       const options = {
@@ -205,6 +215,10 @@ export const useGenerateStore = defineStore("generate", {
         };
       }
       if (check) {
+        accountStore.expendTokens(
+          parseInt(layersDataStore.videoTotalDuration / 1000),
+          "合成视频"
+        );
         const result = await job(
           "channel-synthesis-job",
           globalStore.title,

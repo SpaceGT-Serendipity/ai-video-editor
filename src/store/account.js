@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import {
+  getTokensQuantity,
+  expendTokens as expendTokensApi,
+} from "../api/tokens.js";
 
 export const useAccountStore = defineStore("account", () => {
   const info = ref({
@@ -11,23 +15,30 @@ export const useAccountStore = defineStore("account", () => {
     avatar: null,
   });
 
-  const logout = () => {
-    info.value.id = null;
-    info.value.name = null;
-    info.value.account = null;
-    info.value.email = null;
-    info.value.authorities = null;
-    info.value.avatar = null;
+  const tokens = ref({
+    quantity: 0,
+  });
+
+  const loadTokensinfo = async () => {
+    tokens.value.quantity = await getTokensQuantity();
+  };
+
+  const expendTokens = (quantity, message) => {
+    expendTokensApi(quantity, message).then((res) => {
+      loadTokensinfo();
+    });
   };
 
   return {
     info,
+    tokens,
     id: computed(() => info.value.id),
     name: computed(() => info.value.name),
     account: computed(() => info.value.account),
     email: computed(() => info.value.email),
     authorities: computed(() => info.value.authorities),
     avatar: computed(() => info.value.avatar),
-    logout,
+    loadTokensinfo,
+    expendTokens,
   };
 });
