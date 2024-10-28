@@ -73,8 +73,6 @@
 <style scoped>
 	.tabs {
 		height: 100%;
-		display: flex;
-		flex-direction: column;
 	}
 
 	.tabs .el-tabs__header {

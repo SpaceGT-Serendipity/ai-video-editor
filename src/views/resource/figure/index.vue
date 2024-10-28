@@ -108,8 +108,6 @@
 
 	.tabs {
 		height: calc(100% - 42px);
-		display: flex;
-		flex-direction: column;
 	}
 
 	.tabs .el-tabs__header {
