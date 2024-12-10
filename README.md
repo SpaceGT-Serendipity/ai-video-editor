@@ -1,5 +1,5 @@
 # ai-editor
-AI 视频编辑器 更新中...
+AI 视频编辑器 部分展示
 
 ![QQ20241022-153906](https://github.com/user-attachments/assets/bb7a830a-0728-49a9-8691-bf8417789796)
 ![QQ20241022-153944](https://github.com/user-attachments/assets/d75fd9d7-68d9-4fe4-858d-7fe98f87a039)
